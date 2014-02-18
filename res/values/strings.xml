@@ -1,0 +1,36 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+
+    <string name="app_name">MsRobot</string>
+    <string name="common_blank"></string>
+    <string name="common_ok">OK</string>
+    <string name="common_yes">Yes</string>
+    <string name="common_no">No</string>
+
+    <string-array name="array_list_function">
+        <item>1. Read message</item>
+        <item>2. Send a message</item>
+        <item>3. Send a picture</item>
+        <item>4. Weather</item>
+        <item>5. News</item>
+        <item>6. Ask the internet</item>
+        <item>7. Check time, Set my alarm</item>
+        <item>8. Check my calender</item>
+        <item>9. Check my medicines</item>
+    </string-array>
+
+    <!-- Speak time string -->
+    <string name="Verbose_Time_Hour">It\'s %1$s o\'clock %3$s.</string>
+    <string name="Verbose_Time">It\'s %2$s past %1$s %3$s.</string>
+    <string name="Time_AM">A.M.</string>
+    <string name="Time_PM">P.M.</string>
+    <string name="Time_InMorning">in the morning</string>
+    <string name="Time_InAfternoon">in the afternoon</string>
+    <string name="Time_InEvening">in the evening</string>
+
+    
+    <!-- Speak SMS string -->
+    <string name="sms_unread">You have %1$s unread message.</string>
+    <string name="sms_unreads">You have %1$s unread messages.</string>
+    <string name="sms_read_message">\.\.\. Message from %1$s: %2$s.</string>
+</resources>

@@ -1,0 +1,32 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+
+    <!-- Default screen margins, per the Android Design guidelines. -->
+    <dimen name="common_margin_img_text">2dp</dimen>
+    <dimen name="common_margin_layout">4dp</dimen>
+    <dimen name="common_margin_layout_small">6dp</dimen>
+    <dimen name="common_margin_layout_medium">8dp</dimen>
+    <dimen name="common_margin_layout_xmedium">12dp</dimen>
+    <dimen name="common_margin_layout_xxmedium">14dp</dimen>
+    <dimen name="common_margin_layout_large">16dp</dimen>
+    <dimen name="common_margin_layout_larger">20dp</dimen>
+    <dimen name="common_margin_layout_xlarge">32dp</dimen>
+    <dimen name="common_margin_layout_xlarge2">40dp</dimen>
+    <dimen name="common_margin_layout_xxlarge">50dp</dimen>
+    <dimen name="common_margin_layout_xxlarge2">60dp</dimen>
+
+    <!-- Text size -->
+    <dimen name="common_textsize_smaller">8sp</dimen>
+    <dimen name="common_textsize_small">10sp</dimen>
+    <dimen name="common_textsize_medium">12sp</dimen>
+    <dimen name="common_textsize_large">14sp</dimen>
+    <dimen name="common_textsize_larger">16sp</dimen>
+    <dimen name="common_textsize_xlarge">18sp</dimen>
+    <dimen name="common_textsize_xlarge2">20sp</dimen>
+    <dimen name="common_textsize_xxlarge">24sp</dimen>
+    <dimen name="common_textsize_xxxlarge">32sp</dimen>
+    <dimen name="max_resize_text_size">70sp</dimen>
+
+    <!-- Other dimens -->
+
+</resources>
