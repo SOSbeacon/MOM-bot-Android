@@ -1,4 +1,4 @@
-package org.cnc.msrobot.Utils;
+package org.cnc.msrobot.utils;
 
 import org.cnc.msrobot.R;
 
@@ -69,8 +69,7 @@ public class DialogUtils {
 		dialog = dialogBuilder.create();
 		dialog.show();
 		// If not resize do nothing;
-		if (mIsResize)
-			resizeDialog(mContext, dialog);
+		if (mIsResize) resizeDialog(mContext, dialog);
 	}
 
 	/**
@@ -86,8 +85,7 @@ public class DialogUtils {
 	public void showConfirmDialog(String title, String message, final OnConfirmClickListener listener) {
 		final AlertDialog dialog;
 		AlertDialog.Builder dialogBuilder = new AlertDialog.Builder(mContext);
-		if (title != null)
-			dialogBuilder.setTitle(title);
+		if (title != null) dialogBuilder.setTitle(title);
 		final TextView myView = new TextView(mContext);
 		myView.setText(message);
 		int padding = mContext.getResources().getDimensionPixelSize(R.dimen.common_margin_layout);
@@ -96,23 +94,20 @@ public class DialogUtils {
 		dialogBuilder.setPositiveButton(R.string.common_yes, new OnClickListener() {
 			@Override
 			public void onClick(DialogInterface dialog, int which) {
-				if (listener != null)
-					listener.onConfirmOkClick();
+				if (listener != null) listener.onConfirmOkClick();
 			}
 		}).setNegativeButton(R.string.common_no, new OnClickListener() {
 
 			@Override
 			public void onClick(DialogInterface dialog, int which) {
 				dialog.cancel();
-				if (listener != null)
-					listener.onConfirmCancelClick();
+				if (listener != null) listener.onConfirmCancelClick();
 			}
 		});
 		dialog = dialogBuilder.create();
 		dialog.show();
 		// If not resize do nothing;
-		if (mIsResize)
-			resizeDialog(mContext, dialog);
+		if (mIsResize) resizeDialog(mContext, dialog);
 	}
 
 	/**
@@ -142,15 +137,67 @@ public class DialogUtils {
 			@Override
 			public void onClick(DialogInterface dialog, int which) {
 				dialog.cancel();
-				if (listener != null)
-					listener.onClick(dialog, which);
+				if (listener != null) listener.onClick(dialog, which);
 			}
 		});
 		dialog = dialogBuilder.create();
 		dialog.show();
 		// If not resize do nothing;
-		if (mIsResize)
-			resizeDialog(mContext, dialog);
+		if (mIsResize) resizeDialog(mContext, dialog);
+	}
+
+	/**
+	 * show selection dialog which list item
+	 * 
+	 * @param titleResId
+	 *            dialog title string resource
+	 * @param arrayItemResId
+	 *            dialog item array resource
+	 * @param listener
+	 *            listener for item click
+	 */
+	public void showSelectionDialog(int titleResId, int arrayItemResId, final DialogInterface.OnClickListener listener) {
+		AlertDialog.Builder builder = new AlertDialog.Builder(mContext);
+		builder.setItems(arrayItemResId, new DialogInterface.OnClickListener() {
+			@Override
+			public void onClick(DialogInterface dialog, int which) {
+				if (listener != null) {
+					listener.onClick(dialog, which);
+				}
+			}
+		});
+		builder.setTitle(titleResId);
+		final AlertDialog dialog = builder.create();
+		dialog.show();
+		// If not resize do nothing;
+		if (mIsResize) resizeDialog(mContext, dialog);
+	}
+
+	/**
+	 * show selection dialog which list item
+	 * 
+	 * @param titleResId
+	 *            dialog title string resource
+	 * @param listItems
+	 *            array string item list
+	 * @param listener
+	 *            listener for item click
+	 */
+	public void showSelectionDialog(int titleResId, String[] listItems, final DialogInterface.OnClickListener listener) {
+		AlertDialog.Builder builder = new AlertDialog.Builder(mContext);
+		builder.setItems(listItems, new DialogInterface.OnClickListener() {
+			@Override
+			public void onClick(DialogInterface dialog, int which) {
+				if (listener != null) {
+					listener.onClick(dialog, which);
+				}
+			}
+		});
+		builder.setTitle(titleResId);
+		final AlertDialog dialog = builder.create();
+		dialog.show();
+		// If not resize do nothing;
+		if (mIsResize) resizeDialog(mContext, dialog);
 	}
 
 	/**
@@ -211,7 +258,6 @@ public class DialogUtils {
 	 * Dismiss dialog.
 	 */
 	public void dismissDialog() {
-		if (alertDialog != null)
-			alertDialog.dismiss();
+		if (alertDialog != null) alertDialog.dismiss();
 	}
 }

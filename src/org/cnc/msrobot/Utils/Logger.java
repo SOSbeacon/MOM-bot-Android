@@ -1,4 +1,4 @@
-package org.cnc.msrobot.Utils;
+package org.cnc.msrobot.utils;
 
 import java.util.Set;
 

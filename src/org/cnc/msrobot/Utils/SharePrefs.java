@@ -1,4 +1,10 @@
-package org.cnc.msrobot.Utils;
+package org.cnc.msrobot.utils;
+
+import org.cnc.msrobot.resource.WeatherResource;
+import org.cnc.msrobot.resource.Weather.WeatherLocation;
+import org.cnc.msrobot.resource.Weather.WeatherTemperature;
+import org.cnc.msrobot.resource.Weather.WeatherCondition;
+import org.cnc.msrobot.resource.Weather.WeatherWind;
 
 import android.content.Context;
 import android.content.SharedPreferences;
@@ -6,15 +12,13 @@ import android.preference.PreferenceManager;
 
 public class SharePrefs {
 
-	public static final String DEFAULT_BLANK = "";
+	public static final String	DEFAULT_BLANK		= "";
 	/** Keys for saving data to shareprefs */
-	public static final String MY_FACEBOOK_TOKEN = "MyFacebookToken";
-	public static final String MY_TWITTER_TOKEN = "MyTwitterToken";
-	public static final String SHOW_RESULT_COUNT = "ShowResultCount";
-	public static final String FIRST_TIME = "FirstTime";
+	public static final String	CURRENT_LOCATION	= "current_location";
+	public static final String	CURRENT_WEATHER		= "current_weather";
 
-	private static SharePrefs instance = new SharePrefs();
-	private SharedPreferences sharedPreferences;
+	private static SharePrefs	instance			= new SharePrefs();
+	private SharedPreferences	sharedPreferences;
 
 	public static SharePrefs getInstance() {
 		return instance;
@@ -55,11 +59,65 @@ public class SharePrefs {
 		return sharedPreferences.getBoolean(key, _default);
 	}
 
-	public void saveTokenSocial(String key, String value) {
-		sharedPreferences.edit().putString(key, value).commit();
+	public WeatherLocation getCurrentLocation() {
+		int id = sharedPreferences.getInt(CURRENT_LOCATION + ".id", 0);
+		if (id != 0) {
+			String city = sharedPreferences.getString(CURRENT_LOCATION + ".city", DEFAULT_BLANK);
+			String country = sharedPreferences.getString(CURRENT_LOCATION + ".country", DEFAULT_BLANK);
+			String lng = sharedPreferences.getString(CURRENT_LOCATION + ".lng", DEFAULT_BLANK);
+			String lat = sharedPreferences.getString(CURRENT_LOCATION + ".lat", DEFAULT_BLANK);
+			WeatherLocation location = new WeatherLocation(id, city, country, lng, lat);
+			return location;
+		} else {
+			return null;
+		}
 	}
 
-	public String getTokenSocial(String key) {
-		return sharedPreferences.getString(key, DEFAULT_BLANK);
+	public void saveCurrentLocation(WeatherLocation location) {
+		sharedPreferences.edit().putInt(CURRENT_LOCATION + ".id", location.id).commit();
+		sharedPreferences.edit().putString(CURRENT_LOCATION + ".city", location.city).commit();
+		sharedPreferences.edit().putString(CURRENT_LOCATION + ".country", location.country).commit();
+		sharedPreferences.edit().putString(CURRENT_LOCATION + ".lng", location.lng).commit();
+		sharedPreferences.edit().putString(CURRENT_LOCATION + ".lat", location.lat).commit();
+	}
+
+	public WeatherResource getCurrentWeather() {
+		String main = sharedPreferences.getString(CURRENT_WEATHER + ".condition.main", DEFAULT_BLANK);
+		String description = sharedPreferences.getString(CURRENT_WEATHER + ".condition.description", DEFAULT_BLANK);
+		String icon = sharedPreferences.getString(CURRENT_WEATHER + ".condition.icon", DEFAULT_BLANK);
+		WeatherCondition weather = new WeatherCondition(main, description, icon);
+
+		float temp = sharedPreferences.getFloat(CURRENT_WEATHER + ".temperature.temp", 0);
+		float tempMax = sharedPreferences.getFloat(CURRENT_WEATHER + ".temperature.tempMax", 0);
+		float tempMin = sharedPreferences.getFloat(CURRENT_WEATHER + ".temperature.tempMin", 0);
+		float grndLevel = sharedPreferences.getFloat(CURRENT_WEATHER + ".temperature.grndLevel", 0);
+		float humidity = sharedPreferences.getFloat(CURRENT_WEATHER + ".temperature.humidity", 0);
+		float pressure = sharedPreferences.getFloat(CURRENT_WEATHER + ".temperature.pressure", 0);
+		float seaLevel = sharedPreferences.getFloat(CURRENT_WEATHER + ".temperature.seaLevel", 0);
+		WeatherTemperature temperature = new WeatherTemperature(temp, tempMin, tempMax, pressure, seaLevel, grndLevel, humidity);
+
+		float speed = sharedPreferences.getFloat(CURRENT_WEATHER + ".wind.speed", 0);
+		float deg = sharedPreferences.getFloat(CURRENT_WEATHER + ".wind.deg", 0);
+		WeatherWind wind = new WeatherWind(speed, deg);
+
+		return new WeatherResource(weather, temperature, wind);
+	}
+
+	public void saveCurrentWeather(WeatherResource weahter) {
+		if (weahter.condition.size() > 0) {
+			sharedPreferences.edit().putString(CURRENT_WEATHER + ".condition.main", weahter.condition.get(0).main).commit();
+			sharedPreferences.edit().putString(CURRENT_WEATHER + ".condition.description",
+					weahter.condition.get(0).description).commit();
+			sharedPreferences.edit().putString(CURRENT_WEATHER + ".condition.icon", weahter.condition.get(0).icon).commit();
+		}
+		sharedPreferences.edit().putFloat(CURRENT_WEATHER + ".temperature.temp", weahter.temperature.temp).commit();
+		sharedPreferences.edit().putFloat(CURRENT_WEATHER + ".temperature.tempMax", weahter.temperature.tempMax).commit();
+		sharedPreferences.edit().putFloat(CURRENT_WEATHER + ".temperature.tempMin", weahter.temperature.tempMin).commit();
+		sharedPreferences.edit().putFloat(CURRENT_WEATHER + ".temperature.grndLevel", weahter.temperature.grndLevel).commit();
+		sharedPreferences.edit().putFloat(CURRENT_WEATHER + ".temperature.humidity", weahter.temperature.humidity).commit();
+		sharedPreferences.edit().putFloat(CURRENT_WEATHER + ".temperature.pressure", weahter.temperature.pressure).commit();
+		sharedPreferences.edit().putFloat(CURRENT_WEATHER + ".temperature.seaLevel", weahter.temperature.seaLevel).commit();
+		sharedPreferences.edit().putFloat(CURRENT_WEATHER + ".wind.speed", weahter.wind.speed).commit();
+		sharedPreferences.edit().putFloat(CURRENT_WEATHER + ".wind.deg", weahter.wind.deg).commit();
 	}
 }

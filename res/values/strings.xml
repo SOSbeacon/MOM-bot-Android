@@ -2,21 +2,54 @@
 <resources>
 
     <string name="app_name">MsRobot</string>
+    <string name="google_api_key">AIzaSyDsfNv2LCu5fr3iHoTT7NyBHaP2M1Q6jbs</string>
     <string name="common_blank"></string>
     <string name="common_ok">OK</string>
     <string name="common_yes">Yes</string>
     <string name="common_no">No</string>
+    <string name="common_degress">&#176;</string>
+    <string name="dialog_sent_select_title">Choose type</string>
+    <string name="dialog_choose_message_title">Choose message</string>
+    <string name="dialog_choose_search_title">Choose search</string>
+    <string name="msg_warn_location_cannot_determine">Can\'t determine your location. Do you want to adjust your setting now?</string>
+    <string name="msg_err_cannot_open_setting">Can not open setting</string>
+
+    <!-- Function list main string -->
+    <string name="function_desc_getting_data">Getting data\.\.\.</string>
+    <string name="function_desc_no_sms">You have no unread SMS.</string>
+    <string name="function_desc_no_email">You have no unread Email.</string>
+    <string name="function_desc_unread_sms">You have %1$s unread SMS. Click here to read</string>
+    <string name="function_desc_unread_email">You have %1$s unread Email. Click here to read</string>
+    <string name="function_desc_news">You have %1$s unread news.</string>
+    <string name="function_sent_text_sms">Sent text SMS</string>
+    <string name="function_sent_picture_mms">Sent picture MMS</string>
+    <string name="function_sent_text_email">Sent text Email</string>
+    <string name="function_sent_picture_email">Sent picture Email</string>
 
     <string-array name="array_list_function">
-        <item>1. Read message</item>
-        <item>2. Send a message</item>
-        <item>3. Send a picture</item>
-        <item>4. Weather</item>
-        <item>5. News</item>
-        <item>6. Ask the internet</item>
-        <item>7. Check time, Set my alarm</item>
-        <item>8. Check my calender</item>
-        <item>9. Check my medicines</item>
+        <item>Read message</item>
+        <item>Send a message</item>
+        <item>Send a picture</item>
+        <item>Weather</item>
+        <item>News</item>
+        <item>Ask the internet</item>
+        <item>Check time, Set my alarm</item>
+        <item>Check my calender</item>
+        <item>Check my medicines</item>
+    </string-array>
+    <string-array name="array_dialog_sent_selection">
+        <item>SMS</item>
+        <item>Email</item>
+    </string-array>
+    <string-array name="array_dialog_read_selection">
+        <item>SMS</item>
+        <item>Email</item>
+        <item>Reminder</item>
+    </string-array>
+    <string-array name="array_action_bar_dropdown">
+        <item>Month</item>
+        <item>Week</item>
+        <item>Day</item>
     </string-array>
 
     <!-- Speak time string -->
@@ -28,9 +61,56 @@
     <string name="Time_InAfternoon">in the afternoon</string>
     <string name="Time_InEvening">in the evening</string>
 
-    
     <!-- Speak SMS string -->
-    <string name="sms_unread">You have %1$s unread message.</string>
-    <string name="sms_unreads">You have %1$s unread messages.</string>
+    <string name="sms_no_message">\.\.\. You have no message.</string>
+    <string name="sms_unread">\.\.\. You have %1$s unread message.</string>
+    <string name="sms_unreads">\.\.\. You have %1$s unread messages.</string>
     <string name="sms_read_message">\.\.\. Message from %1$s: %2$s.</string>
+
+    <!-- Speak SMS string -->
+    <string name="email_no_message">\.\.\. You have no Email.</string>
+    <string name="email_unread">\.\.\. You have %1$s unread Email.</string>
+    <string name="email_unreads">\.\.\. You have %1$s unread Emails.</string>
+    <string name="email_read_message">\.\.\. Email from %1$s: %2$s.</string>
+
+    <!-- Speak Weather string -->
+    <string name="weather_location">\.\.\. Your current location is %1$s.</string>
+    <string name="weather_infomation">\.\.\. Weather: %1$s \.\.\. Temperature: %2$s\.\.\.</string>
+
+    <!-- Google calendar -->
+    <string name="accounts">Accounts</string>
+    <string name="description_add">Add Calendar</string>
+    <string name="event_add">Add Event</string>
+    <string name="summary">Title</string>
+    <string name="time_start">Time start</string>
+    <string name="time_end">Time end</string>
+    <string name="summary_hint">Enter the calendar title</string>
+    <string name="event_hint">Enter the event name</string>
+    <string name="cancel">Cancel</string>
+    <string name="save">Save</string>
+    <string name="icon_desc">Application icon</string>
+    <string name="title_separator_desc">Title separator</string>
+    <string name="refresh">Refresh</string>
+    <string name="batchadd">Copy Calendar x3 (Batch)</string>
+    <string name="edit_calendar">Edit Calendar</string>
+    <string name="edit_event">Edit Event</string>
+    <string name="delete">Delete Calendar</string>
+    <string name="delete_title">Delete Calendar?</string>
+    <string name="yes">Yes</string>
+    <string name="no">No</string>
+    <string name="error">Error</string>
+    <string name="error_format">[Error] %s</string>
+    <string name="calendar_all_day">All day</string>
+
+    <!-- Email -->
+    <string name="home_instructions">Please select your email client and enter your
+         correct email id and password and click on set button to proceed. 
+         If id is provided, enbizsmtp is taken as the default id.</string>
+    <string name="showmail_instructions">Please set the email to be sent the Accept
+        or Reject Mail by pressing the menu button. 
+        By default, the mails will be sent to enbizsmtp@gmail.com</string>
+    <string name="email_name_hint">Enter your Gmail email id</string>
+    <string name="email_pass_hint">Enter your correct password</string>
+    <string name="email_login">Login</string>
+
 </resources>

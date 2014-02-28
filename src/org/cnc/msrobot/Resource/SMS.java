@@ -1,8 +1,8 @@
-package org.cnc.msrobot.Resource;
+package org.cnc.msrobot.resource;
 
 import java.util.Date;
 
-import org.cnc.msrobot.Utils.Logger;
+import org.cnc.msrobot.utils.Logger;
 
 import android.content.ContentResolver;
 import android.content.Context;
