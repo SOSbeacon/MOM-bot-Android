@@ -1,0 +1,27 @@
+<?xml version="1.0" encoding="utf-8"?>
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:orientation="vertical" >
+
+    <TextView
+        android:id="@+id/tvEmailFrom"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_margin="@dimen/common_margin_layout"
+        android:textStyle="bold" />
+
+    <TextView
+        android:id="@+id/tvEmailSubject"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_below="@id/tvEmailFrom"
+        android:layout_margin="@dimen/common_margin_layout" />
+
+    <View
+        android:layout_width="match_parent"
+        android:layout_height="@dimen/border"
+        android:layout_below="@id/tvEmailSubject"
+        android:background="@android:color/darker_gray" />
+
+</RelativeLayout>

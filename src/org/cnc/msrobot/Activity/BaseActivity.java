@@ -4,48 +4,67 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.Locale;
 
+import org.cnc.msrobot.R;
 import org.cnc.msrobot.requestmanager.RequestManager;
+import org.cnc.msrobot.utils.Consts.RequestCode;
+import org.cnc.msrobot.utils.CustomActionBar;
+import org.cnc.msrobot.utils.Logger;
 import org.cnc.msrobot.utils.SharePrefs;
 
 import android.app.ProgressDialog;
+import android.content.ComponentName;
 import android.content.Intent;
-import android.content.pm.PackageManager;
 import android.content.pm.ResolveInfo;
+import android.media.MediaPlayer;
 import android.os.Bundle;
+import android.os.Handler;
+import android.os.SystemClock;
+import android.speech.RecognitionListener;
+import android.speech.RecognitionService;
 import android.speech.RecognizerIntent;
+import android.speech.SpeechRecognizer;
 import android.speech.tts.TextToSpeech;
 import android.speech.tts.TextToSpeech.OnInitListener;
+import android.speech.tts.TextToSpeech.OnUtteranceCompletedListener;
 import android.support.v4.app.FragmentActivity;
 import android.view.Gravity;
-import android.view.MenuItem;
 import android.widget.Toast;
 
-public class BaseActivity extends FragmentActivity implements OnInitListener {
-	private static final int CODE_CHECK_TTS = 1;
-	private final int NUM_RESULT = 1;
-	private final int CODE_LISTEN = 2;
-	private final float SPEECH_RATE = 0.5f;
+@SuppressWarnings("deprecation")
+public class BaseActivity extends FragmentActivity implements OnInitListener, OnUtteranceCompletedListener {
+	private static final int DELAY_AFTER_START_BEEP = 200;
+
+	// Stop listening the user input after this period of milliseconds.
+	// The input sentences are short and using the app should be snappy so
+	// we don't want to spend too much on a single utterance.
+	public static final int LISTENING_TIMEOUT = 4000;
+	private final float SPEECH_RATE = 0.6f;
 	protected Toast mToastCenter;
 	protected SharePrefs mSharePrefs = SharePrefs.getInstance();
 	protected RequestManager mRequestManager = RequestManager.getInstance();
 	protected ProgressDialog mProgressDialog;
 	protected TextToSpeech mTts;
-	protected boolean mRecognizeEnabled = false;
 	private final Object setTextToSpeechLock = new Object();
 	private boolean syncVariable = false;
-	private RecognizeVoiceListener mRecoginzeListener;
+	private FragmentRecognizeVoiceListener mRecognizeVoiceListener;
+	private SpeechRecognizer mRecognize;
+	protected CustomActionBar mActionbar;
+	final Handler handler = new Handler();
 
 	@Override
 	protected void onCreate(Bundle savedInstanceState) {
-		// TODO Auto-generated method stub
 		super.onCreate(savedInstanceState);
-		if (getActionBar() != null) {
-			getActionBar().setDisplayHomeAsUpEnabled(true);
-			getActionBar().setDisplayUseLogoEnabled(false);
-		}
-		initVoiceRecognizor();
 		checkTTS();
 
+		mActionbar = new CustomActionBar(this);
+		getActionBar().setCustomView(mActionbar);
+		getActionBar().setDisplayShowCustomEnabled(true);
+	}
+
+	@Override
+	protected void onStart() {
+		super.onStart();
+		initVoiceRecognizor();
 	}
 
 	@Override
@@ -57,7 +76,8 @@ public class BaseActivity extends FragmentActivity implements OnInitListener {
 	}
 
 	protected void onActivityResult(int requestCode, int resultCode, Intent data) {
-		if (requestCode == CODE_CHECK_TTS) {
+		super.onActivityResult(requestCode, resultCode, data);
+		if (requestCode == RequestCode.REQUEST_CODE_CHECK_TTS) {
 			if (resultCode == TextToSpeech.Engine.CHECK_VOICE_DATA_PASS) {
 				// success, create the TTS instance
 				synchronized (setTextToSpeechLock) {
@@ -71,14 +91,14 @@ public class BaseActivity extends FragmentActivity implements OnInitListener {
 				installIntent.setAction(TextToSpeech.Engine.ACTION_INSTALL_TTS_DATA);
 				startActivity(installIntent);
 			}
-		} else if (requestCode == CODE_LISTEN && resultCode == RESULT_OK) {
-			ArrayList<String> results = data.getStringArrayListExtra(RecognizerIntent.EXTRA_RESULTS);
-			if (mRecoginzeListener != null) mRecoginzeListener.onRecognize(results);
 		}
 	}
 
-	public void setOnRecogizeVoiceListener(RecognizeVoiceListener listener) {
-		mRecoginzeListener = listener;
+	public void onRecognize(final ArrayList<String> data) {
+	}
+
+	public void setOnRecogizeVoiceListener(FragmentRecognizeVoiceListener listener) {
+		mRecognizeVoiceListener = listener;
 	}
 
 	public TextToSpeech getTextToSpeech() {
@@ -100,20 +120,147 @@ public class BaseActivity extends FragmentActivity implements OnInitListener {
 			// init TTS success, set language and speech rate
 			if (mTts.isLanguageAvailable(Locale.US) == TextToSpeech.LANG_AVAILABLE) mTts.setLanguage(Locale.US);
 			mTts.setSpeechRate(SPEECH_RATE);
+			mTts.setOnUtteranceCompletedListener(this);
 		} else {
 			showCenterToast("TTS engine not present");
 		}
+	}
+
+	// It's callback
+	public void onUtteranceCompleted(String utteranceId) {
 	}
 
 	/**
 	 * prepare to listener for voice regconize
 	 */
 	public void listen() {
-		Intent listenIntent = new Intent(RecognizerIntent.ACTION_RECOGNIZE_SPEECH);
-		listenIntent.putExtra(RecognizerIntent.EXTRA_CALLING_PACKAGE, getClass().getPackage().getName());
-		listenIntent.putExtra(RecognizerIntent.EXTRA_LANGUAGE_MODEL, RecognizerIntent.LANGUAGE_MODEL_FREE_FORM);
-		listenIntent.putExtra(RecognizerIntent.EXTRA_MAX_RESULTS, NUM_RESULT);
-		startActivityForResult(listenIntent, CODE_LISTEN);
+		Logger.info("Speech", "listen");
+		// play beep sound and sleep
+		playStartSoundAndSleep();
+		Intent recognizerIntent = new Intent(RecognizerIntent.ACTION_RECOGNIZE_SPEECH);
+		recognizerIntent.putExtra(RecognizerIntent.EXTRA_LANGUAGE_MODEL, RecognizerIntent.LANGUAGE_MODEL_FREE_FORM);
+		recognizerIntent.putExtra(RecognizerIntent.EXTRA_PARTIAL_RESULTS, true);
+		recognizerIntent.putExtra(RecognizerIntent.EXTRA_CALLING_PACKAGE, getApplicationContext().getPackageName());
+		recognizerIntent.putExtra(RecognizerIntent.EXTRA_LANGUAGE, "en");
+		recognizerIntent.putExtra(RecognizerIntent.EXTRA_MAX_RESULTS, 1);
+
+		// runnable and hanlder for stop listening
+		final Runnable stopListening = new Runnable() {
+			@Override
+			public void run() {
+				mRecognize.stopListening();
+			}
+		};
+
+		// set listener
+		mRecognize.setRecognitionListener(new RecognitionListener() {
+
+			@Override
+			public void onBeginningOfSpeech() {
+				Logger.info("Speech", "onBeginningOfSpeech");
+			}
+
+			@Override
+			public void onBufferReceived(byte[] buffer) {
+			}
+
+			@Override
+			public void onEndOfSpeech() {
+				handler.removeCallbacks(stopListening);
+				playStopSound();
+				mActionbar.hideRecAnimation();
+			}
+
+			@Override
+			public void onError(int error) {
+				Logger.info("Speech", "onError: " + error);
+				handler.removeCallbacks(stopListening);
+				playErrorSound();
+				mActionbar.hideRecAnimation();
+				switch (error) {
+					case SpeechRecognizer.ERROR_AUDIO:
+						showCenterToast(R.string.errorResultAudioError);
+						break;
+					case SpeechRecognizer.ERROR_CLIENT:
+						showCenterToast(R.string.errorResultClientError);
+						break;
+					case SpeechRecognizer.ERROR_NETWORK:
+						showCenterToast(R.string.errorResultNetworkError);
+						break;
+					case SpeechRecognizer.ERROR_NETWORK_TIMEOUT:
+						showCenterToast(R.string.errorResultNetworkError);
+						break;
+					case SpeechRecognizer.ERROR_SERVER:
+						showCenterToast(R.string.errorResultServerError);
+						break;
+					case SpeechRecognizer.ERROR_RECOGNIZER_BUSY:
+						showCenterToast(R.string.errorResultServerError);
+						break;
+					case SpeechRecognizer.ERROR_NO_MATCH:
+						showCenterToast(R.string.errorResultNoMatch);
+						break;
+					case SpeechRecognizer.ERROR_SPEECH_TIMEOUT:
+						showCenterToast(R.string.errorResultNoMatch);
+						break;
+					case SpeechRecognizer.ERROR_INSUFFICIENT_PERMISSIONS:
+						// This is programmer error.
+						break;
+					default:
+						break;
+				}
+			}
+
+			@Override
+			public void onEvent(int eventType, Bundle params) {
+				Logger.info("Speech", "onEvent: " + eventType + " " + params);
+			}
+
+			@Override
+			public void onPartialResults(Bundle partialResults) {
+			}
+
+			@Override
+			public void onReadyForSpeech(Bundle params) {
+				handler.postDelayed(stopListening, LISTENING_TIMEOUT);
+			}
+
+			@Override
+			public void onResults(Bundle results) {
+				handler.removeCallbacks(stopListening);
+				ArrayList<String> matches = results.getStringArrayList(SpeechRecognizer.RESULTS_RECOGNITION);
+				for (int i = 0; i < matches.size(); i++) {
+					Logger.info("Speech", "text: " + matches.get(i));
+				}
+				if (mRecognizeVoiceListener != null) mRecognizeVoiceListener.onRecognize(matches);
+				onRecognize(matches);
+			}
+
+			@Override
+			public void onRmsChanged(float rmsdB) {
+			}
+		});
+		mRecognize.startListening(recognizerIntent);
+		mActionbar.showRecAnimation();
+	}
+
+	/**
+	 * Look up the default recognizer service in the preferences. If the default have not been set then set the first
+	 * available recognizer as the default. If no recognizer is installed then return null.
+	 */
+	private ComponentName getServiceComponent() {
+		String pkg = mSharePrefs.get(SharePrefs.PREF_RECOGNIZE_SERVICE_PACKAGE, null);
+		String cls = mSharePrefs.get(SharePrefs.PREF_RECOGNIZE_SERVICE_CLASS, null);
+		if (pkg == null || cls == null) {
+			List<ResolveInfo> services = getPackageManager().queryIntentServices(
+					new Intent(RecognitionService.SERVICE_INTERFACE), 0);
+			if (services.isEmpty()) { return null; }
+			ResolveInfo ri = services.iterator().next();
+			pkg = ri.serviceInfo.packageName;
+			cls = ri.serviceInfo.name;
+			mSharePrefs.save(SharePrefs.PREF_RECOGNIZE_SERVICE_CLASS, cls);
+			mSharePrefs.save(SharePrefs.PREF_RECOGNIZE_SERVICE_PACKAGE, pkg);
+		}
+		return new ComponentName(pkg, cls);
 	}
 
 	/**
@@ -122,36 +269,22 @@ public class BaseActivity extends FragmentActivity implements OnInitListener {
 	private void checkTTS() {
 		Intent checkIntent = new Intent();
 		checkIntent.setAction(TextToSpeech.Engine.ACTION_CHECK_TTS_DATA);
-		startActivityForResult(checkIntent, CODE_CHECK_TTS);
+		startActivityForResult(checkIntent, RequestCode.REQUEST_CODE_CHECK_TTS);
 	}
 
 	/**
 	 * init voice recognize
 	 */
 	private void initVoiceRecognizor() {
-		PackageManager packageManager = getPackageManager();
-		List<ResolveInfo> list = packageManager.queryIntentActivities(new Intent(
-				RecognizerIntent.ACTION_RECOGNIZE_SPEECH), 0);
 
-		if (!list.isEmpty()) {
-			mRecognizeEnabled = true;
+		ComponentName serviceComponent = getServiceComponent();
+		if (serviceComponent == null) {
+			showCenterToast(getString(R.string.err_NoDefaultRecognizer));
 		} else {
-			mRecognizeEnabled = false;
-			showCenterToast("Recognizer not present");
-		}
-	}
-
-	@Override
-	public boolean onMenuItemSelected(int featureId, MenuItem item) {
-		int id = item.getItemId();
-		switch (id) {
-			case android.R.id.home:
-				finish();
-				return true;
-			case android.R.id.icon:
-				return true;
-			default:
-				return super.onMenuItemSelected(featureId, item);
+			mRecognize = SpeechRecognizer.createSpeechRecognizer(this, serviceComponent);
+			if (mRecognize == null) {
+				showCenterToast(getString(R.string.err_NoDefaultRecognizer));
+			}
 		}
 	}
 
@@ -187,6 +320,14 @@ public class BaseActivity extends FragmentActivity implements OnInitListener {
 		showCenterToast(getString(resId));
 	}
 
+	public void showActionBarProgressBar() {
+		mActionbar.showProgressBar();
+	}
+
+	public void hideActionBarProgressBar() {
+		mActionbar.hideProgressBar();
+	}
+
 	/**
 	 * Show progress dialog with indeterminate loading icon, message and cancelable
 	 * 
@@ -204,7 +345,31 @@ public class BaseActivity extends FragmentActivity implements OnInitListener {
 		if (mProgressDialog != null && mProgressDialog.isShowing()) mProgressDialog.dismiss();
 	}
 
-	public interface RecognizeVoiceListener {
+	public interface FragmentRecognizeVoiceListener {
 		void onRecognize(ArrayList<String> data);
+	}
+
+	public void playStartSoundAndSleep() {
+		playSound(R.raw.start);
+		SystemClock.sleep(DELAY_AFTER_START_BEEP);
+	}
+
+	public void playStopSound() {
+		playSound(R.raw.stop);
+	}
+
+	public void playErrorSound() {
+		playSound(R.raw.error);
+	}
+
+	private void playSound(int sound) {
+		MediaPlayer mp = MediaPlayer.create(this, sound);
+		mp.setOnCompletionListener(new MediaPlayer.OnCompletionListener() {
+			@Override
+			public void onCompletion(MediaPlayer mp) {
+				mp.release();
+			}
+		});
+		mp.start();
 	}
 }

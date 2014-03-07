@@ -2,13 +2,11 @@ package org.cnc.msrobot.fragment;
 
 import java.util.ArrayList;
 
-import org.cnc.msrobot.activity.CalendarEventActivity;
+import org.cnc.msrobot.resource.EventResource;
 
 import android.support.v4.app.Fragment;
 import android.support.v4.app.FragmentManager;
 import android.support.v4.app.FragmentStatePagerAdapter;
-
-import com.google.api.services.calendar.model.Event;
 
 public abstract class SchedulePagerAdapter extends FragmentStatePagerAdapter {
 
@@ -17,13 +15,13 @@ public abstract class SchedulePagerAdapter extends FragmentStatePagerAdapter {
 
 	public abstract ArrayList<ScheduleFragment> getFragments();
 
-	protected ArrayList<Event> listEvent;
+	protected ArrayList<EventResource> listEvent;
 
 	public int getInterval() {
 		return intervalDay;
 	}
 
-	public SchedulePagerAdapter(FragmentManager fm, ArrayList<Event> listEvent) {
+	public SchedulePagerAdapter(FragmentManager fm, ArrayList<EventResource> listEvent) {
 		super(fm);
 		this.listEvent = listEvent;
 	}
@@ -39,10 +37,10 @@ public abstract class SchedulePagerAdapter extends FragmentStatePagerAdapter {
 	public int getCount() {
 		// We need 4 gridviews for previous month, current month and next month,
 		// and 1 extra fragment for fragment recycle
-		return CalendarEventActivity.NUMBER_OF_PAGES;
+		return CalendarEventFragment.NUMBER_OF_PAGES;
 	}
 
-	public void setListEvent(ArrayList<Event> listEvent) {
+	public void setListEvent(ArrayList<EventResource> listEvent) {
 		for (int i = 0; i < getCount(); i++) {
 			ScheduleFragment fragment = getFragments().get(i);
 			fragment.addEventList(listEvent);

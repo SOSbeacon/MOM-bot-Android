@@ -8,11 +8,14 @@
     <string name="common_yes">Yes</string>
     <string name="common_no">No</string>
     <string name="common_degress">&#176;</string>
+    <string name="common_login">Login</string>
+    <string name="common_read_all">Read all</string>
+    <string name="common_stop">Stop</string>
     <string name="dialog_sent_select_title">Choose type</string>
     <string name="dialog_choose_message_title">Choose message</string>
     <string name="dialog_choose_search_title">Choose search</string>
-    <string name="msg_warn_location_cannot_determine">Can\'t determine your location. Do you want to adjust your setting now?</string>
-    <string name="msg_err_cannot_open_setting">Can not open setting</string>
+    <string name="drawer_open">Open</string>
+    <string name="drawer_close">Close</string>
 
     <!-- Function list main string -->
     <string name="function_desc_getting_data">Getting data\.\.\.</string>
@@ -20,22 +23,21 @@
     <string name="function_desc_no_email">You have no unread Email.</string>
     <string name="function_desc_unread_sms">You have %1$s unread SMS. Click here to read</string>
     <string name="function_desc_unread_email">You have %1$s unread Email. Click here to read</string>
+    <string name="function_desc_read_email_fail">Can not read email.</string>
     <string name="function_desc_news">You have %1$s unread news.</string>
     <string name="function_sent_text_sms">Sent text SMS</string>
     <string name="function_sent_picture_mms">Sent picture MMS</string>
     <string name="function_sent_text_email">Sent text Email</string>
     <string name="function_sent_picture_email">Sent picture Email</string>
+    <string name="function_setup_email_account">Setup email account.</string>
 
-    <string-array name="array_list_function">
-        <item>Read message</item>
-        <item>Send a message</item>
-        <item>Send a picture</item>
-        <item>Weather</item>
-        <item>News</item>
-        <item>Ask the internet</item>
-        <item>Check time, Set my alarm</item>
-        <item>Check my calender</item>
-        <item>Check my medicines</item>
+    <string-array name="array_list_drawer">
+        <item>Home</item>
+        <item>Month Calendar</item>
+        <item>Weekly Calendar</item>
+        <item>Daily Calendar</item>
+        <item>Setting</item>
+        <item>Logout</item>
     </string-array>
     <string-array name="array_dialog_sent_selection">
         <item>SMS</item>
@@ -46,11 +48,26 @@
         <item>Email</item>
         <item>Reminder</item>
     </string-array>
-    <string-array name="array_action_bar_dropdown">
-        <item>Month</item>
-        <item>Week</item>
-        <item>Day</item>
-    </string-array>
+
+    <!-- Toast message -->
+    <string name="err_login_fail">Login fail. Please check email and password again.</string>
+    <string name="err_logout_fail">Login fail. Please try again.</string>
+    <string name="err_email_invalid">Email is invalid</string>
+    <string name="err_password_invalid">Password must not empty</string>
+    <string name="err_NoDefaultRecognizer">Speech recognizer not installed or no default recognizer set</string>
+    <string name="errorResultAudioError">Audio recording failed. Maybe another app is currently recording.</string>
+    <string name="errorResultNetworkError">Something is wrong with the network</string>
+    <string name="errorResultClientError">General client error</string>
+    <string name="errorResultServerError">Recognizer server error</string>
+    <string name="errorResultNoMatch">No natural language phrase was heard. Please try again!</string>
+    <string name="msg_warn_location_cannot_determine">Can\'t determine your location. Do you want to adjust your setting now?</string>
+    <string name="msg_err_cannot_open_setting">Can not open setting</string>
+
+    <!-- Regconize speech -->
+    <string name="recognize_sms">Please speech message content after beep sound.</string>
+    <string name="recognize_email">Please speech email content after beep sound.</string>
+    <string name="recognize_search">Please speech search content after beep sound.</string>
+    <string name="recognize_alarm">Please speech time alarm after beep sound.</string>
 
     <!-- Speak time string -->
     <string name="Verbose_Time_Hour">It\'s %1$s o\'clock %3$s.</string>
@@ -82,10 +99,11 @@
     <string name="description_add">Add Calendar</string>
     <string name="event_add">Add Event</string>
     <string name="summary">Title</string>
-    <string name="time_start">Time start</string>
-    <string name="time_end">Time end</string>
+    <string name="time_start">FROM</string>
+    <string name="time_end">TO</string>
     <string name="summary_hint">Enter the calendar title</string>
     <string name="event_hint">Enter the event name</string>
+    <string name="event_desc_hint">Description</string>
     <string name="cancel">Cancel</string>
     <string name="save">Save</string>
     <string name="icon_desc">Application icon</string>
@@ -102,15 +120,14 @@
     <string name="error_format">[Error] %s</string>
     <string name="calendar_all_day">All day</string>
 
-    <!-- Email -->
-    <string name="home_instructions">Please select your email client and enter your
-         correct email id and password and click on set button to proceed. 
-         If id is provided, enbizsmtp is taken as the default id.</string>
-    <string name="showmail_instructions">Please set the email to be sent the Accept
-        or Reject Mail by pressing the menu button. 
-        By default, the mails will be sent to enbizsmtp@gmail.com</string>
-    <string name="email_name_hint">Enter your Gmail email id</string>
-    <string name="email_pass_hint">Enter your correct password</string>
-    <string name="email_login">Login</string>
+    <!-- Email setup -->
+    <string name="email_instructions">Please enter your correct email and password and click on login button to proceed. We will use this email account for receiver and send mail.</string>
+    <string name="email_name_hint">Enter your Gmail email</string>
+    <string name="email_pass_hint">Enter your password</string>
+
+    <!-- Login -->
+    <string name="login_instructions">Please enter your correct email and password and click on login button. Account for test: tester1@cnc.vn. Pass: Admin123</string>
+    <string name="login_name_hint">Enter your email</string>
+    <string name="login_pass_hint">Enter your password</string>
 
 </resources>

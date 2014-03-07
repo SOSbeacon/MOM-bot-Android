@@ -1,6 +1,9 @@
 package org.cnc.msrobot.utils;
 
 import java.util.Calendar;
+import java.util.Date;
+import java.util.regex.Matcher;
+import java.util.regex.Pattern;
 
 import org.cnc.msrobot.R;
 
@@ -123,5 +126,37 @@ public class AppUtils {
 		Intent intent = new Intent(Intent.ACTION_WEB_SEARCH);
 		intent.putExtra(SearchManager.QUERY, query); // query contains search string
 		context.startActivity(intent);
+	}
+
+	private static final String TIME_QUARTER_TO = "QUARTER TO";
+	private static final String TIME_QUARTER_PAST = "QUARTER TO";
+
+	public static Date recognizeTime(String timeString) {
+		Pattern patternNumber = Pattern.compile("-?\\d+");
+		// get hour, minute and set second
+		Calendar calendar = Calendar.getInstance();
+		int hour = calendar.get(Calendar.HOUR_OF_DAY);
+		int minute = calendar.get(Calendar.MINUTE);
+		calendar.set(Calendar.SECOND, 0);
+		// hh:45
+		timeString = timeString.toUpperCase();
+		Matcher m = patternNumber.matcher(timeString);
+		if (timeString.contains(TIME_QUARTER_TO)) {
+			// find first number
+			if (m.find()) {
+				hour = Integer.parseInt(m.group());
+				minute = 45;
+			} else {
+				// not found any number, return null
+				return null;
+			}
+		}
+		if (timeString.contains(TIME_QUARTER_PAST)) {
+
+		}
+		calendar.set(Calendar.HOUR_OF_DAY, hour);
+		calendar.set(Calendar.MINUTE, minute);
+		Date date = calendar.getTime();
+		return date;
 	}
 }

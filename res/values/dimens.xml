@@ -34,5 +34,6 @@
     <dimen name="text_size_small">14sp</dimen>
     <dimen name="text_size_medium">18sp</dimen>
     <dimen name="icon_size">40sp</dimen>
+    <dimen name="icon_event_size">30sp</dimen>
 
 </resources>

@@ -3,13 +3,13 @@ package org.cnc.msrobot.fragment;
 import java.util.ArrayList;
 import java.util.Calendar;
 
-import com.google.api.services.calendar.model.Event;
+import org.cnc.msrobot.resource.EventResource;
 
 import android.support.v4.app.FragmentManager;
 
 public final class DayPagerAdapter extends SchedulePagerAdapter {
 
-	public DayPagerAdapter(FragmentManager fm, ArrayList<Event> listEvent) {
+	public DayPagerAdapter(FragmentManager fm, ArrayList<EventResource> listEvent) {
 		super(fm, listEvent);
 		intervalDay = 1;
 	}

@@ -1,9 +1,9 @@
 package org.cnc.msrobot.utils;
 
 import org.cnc.msrobot.resource.WeatherResource;
+import org.cnc.msrobot.resource.Weather.WeatherCondition;
 import org.cnc.msrobot.resource.Weather.WeatherLocation;
 import org.cnc.msrobot.resource.Weather.WeatherTemperature;
-import org.cnc.msrobot.resource.Weather.WeatherCondition;
 import org.cnc.msrobot.resource.Weather.WeatherWind;
 
 import android.content.Context;
@@ -12,13 +12,18 @@ import android.preference.PreferenceManager;
 
 public class SharePrefs {
 
-	public static final String	DEFAULT_BLANK		= "";
+	public static final String DEFAULT_BLANK = "";
 	/** Keys for saving data to shareprefs */
-	public static final String	CURRENT_LOCATION	= "current_location";
-	public static final String	CURRENT_WEATHER		= "current_weather";
+	public static final String CURRENT_LOCATION = "current_location";
+	public static final String CURRENT_WEATHER = "current_weather";
+	public static final String PREF_RECOGNIZE_SERVICE_PACKAGE = "recognize_service_package";
+	public static final String PREF_RECOGNIZE_SERVICE_CLASS = "recognize_service_class";
+	private static final String PREF_GMAIL_USERNAME = "gmail_username";
+	private static final String PREF_GMAIL_PASS = "gmail_pass";
+	private static final String PREF_LOGIN_TOKEN = "login_token";
 
-	private static SharePrefs	instance			= new SharePrefs();
-	private SharedPreferences	sharedPreferences;
+	private static SharePrefs instance = new SharePrefs();
+	private SharedPreferences sharedPreferences;
 
 	public static SharePrefs getInstance() {
 		return instance;
@@ -94,7 +99,8 @@ public class SharePrefs {
 		float humidity = sharedPreferences.getFloat(CURRENT_WEATHER + ".temperature.humidity", 0);
 		float pressure = sharedPreferences.getFloat(CURRENT_WEATHER + ".temperature.pressure", 0);
 		float seaLevel = sharedPreferences.getFloat(CURRENT_WEATHER + ".temperature.seaLevel", 0);
-		WeatherTemperature temperature = new WeatherTemperature(temp, tempMin, tempMax, pressure, seaLevel, grndLevel, humidity);
+		WeatherTemperature temperature = new WeatherTemperature(temp, tempMin, tempMax, pressure, seaLevel, grndLevel,
+				humidity);
 
 		float speed = sharedPreferences.getFloat(CURRENT_WEATHER + ".wind.speed", 0);
 		float deg = sharedPreferences.getFloat(CURRENT_WEATHER + ".wind.deg", 0);
@@ -105,19 +111,52 @@ public class SharePrefs {
 
 	public void saveCurrentWeather(WeatherResource weahter) {
 		if (weahter.condition.size() > 0) {
-			sharedPreferences.edit().putString(CURRENT_WEATHER + ".condition.main", weahter.condition.get(0).main).commit();
-			sharedPreferences.edit().putString(CURRENT_WEATHER + ".condition.description",
-					weahter.condition.get(0).description).commit();
-			sharedPreferences.edit().putString(CURRENT_WEATHER + ".condition.icon", weahter.condition.get(0).icon).commit();
+			sharedPreferences.edit().putString(CURRENT_WEATHER + ".condition.main", weahter.condition.get(0).main)
+					.commit();
+			sharedPreferences.edit()
+					.putString(CURRENT_WEATHER + ".condition.description", weahter.condition.get(0).description)
+					.commit();
+			sharedPreferences.edit().putString(CURRENT_WEATHER + ".condition.icon", weahter.condition.get(0).icon)
+					.commit();
 		}
 		sharedPreferences.edit().putFloat(CURRENT_WEATHER + ".temperature.temp", weahter.temperature.temp).commit();
-		sharedPreferences.edit().putFloat(CURRENT_WEATHER + ".temperature.tempMax", weahter.temperature.tempMax).commit();
-		sharedPreferences.edit().putFloat(CURRENT_WEATHER + ".temperature.tempMin", weahter.temperature.tempMin).commit();
-		sharedPreferences.edit().putFloat(CURRENT_WEATHER + ".temperature.grndLevel", weahter.temperature.grndLevel).commit();
-		sharedPreferences.edit().putFloat(CURRENT_WEATHER + ".temperature.humidity", weahter.temperature.humidity).commit();
-		sharedPreferences.edit().putFloat(CURRENT_WEATHER + ".temperature.pressure", weahter.temperature.pressure).commit();
-		sharedPreferences.edit().putFloat(CURRENT_WEATHER + ".temperature.seaLevel", weahter.temperature.seaLevel).commit();
+		sharedPreferences.edit().putFloat(CURRENT_WEATHER + ".temperature.tempMax", weahter.temperature.tempMax)
+				.commit();
+		sharedPreferences.edit().putFloat(CURRENT_WEATHER + ".temperature.tempMin", weahter.temperature.tempMin)
+				.commit();
+		sharedPreferences.edit().putFloat(CURRENT_WEATHER + ".temperature.grndLevel", weahter.temperature.grndLevel)
+				.commit();
+		sharedPreferences.edit().putFloat(CURRENT_WEATHER + ".temperature.humidity", weahter.temperature.humidity)
+				.commit();
+		sharedPreferences.edit().putFloat(CURRENT_WEATHER + ".temperature.pressure", weahter.temperature.pressure)
+				.commit();
+		sharedPreferences.edit().putFloat(CURRENT_WEATHER + ".temperature.seaLevel", weahter.temperature.seaLevel)
+				.commit();
 		sharedPreferences.edit().putFloat(CURRENT_WEATHER + ".wind.speed", weahter.wind.speed).commit();
 		sharedPreferences.edit().putFloat(CURRENT_WEATHER + ".wind.deg", weahter.wind.deg).commit();
+	}
+
+	public String getGmailUsername() {
+		return sharedPreferences.getString(PREF_GMAIL_USERNAME, DEFAULT_BLANK);
+	}
+
+	public void saveGmailUsername(String accountName) {
+		sharedPreferences.edit().putString(PREF_GMAIL_USERNAME, accountName).commit();
+	}
+
+	public String getGmailPass() {
+		return sharedPreferences.getString(PREF_GMAIL_PASS, DEFAULT_BLANK);
+	}
+
+	public void saveGmailPass(String pass) {
+		sharedPreferences.edit().putString(PREF_GMAIL_PASS, pass).commit();
+	}
+
+	public String getLoginToken() {
+		return sharedPreferences.getString(PREF_LOGIN_TOKEN, DEFAULT_BLANK);
+	}
+
+	public void saveLoginToken(String token) {
+		sharedPreferences.edit().putString(PREF_LOGIN_TOKEN, token).commit();
 	}
 }

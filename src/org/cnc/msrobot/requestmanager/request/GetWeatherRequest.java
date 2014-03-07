@@ -6,7 +6,6 @@ import org.cnc.msrobot.requestmanager.RequestBase;
 import org.cnc.msrobot.resource.WeatherResource;
 import org.cnc.msrobot.utils.Consts;
 import org.cnc.msrobot.utils.Consts.URLConsts;
-import org.cnc.msrobot.utils.Logger;
 import org.cnc.msrobot.utils.SharePrefs;
 
 import android.content.Context;
@@ -37,7 +36,6 @@ public class GetWeatherRequest extends RequestBase<WeatherResource> {
 		} else {
 			url = URLConsts.GET_WEATHER_BY_ID_INFO.replace(Consts.HOLDER_ID_PARAM, id);
 		}
-		Logger.info("zzz", url);
 		return url;
 	}
 

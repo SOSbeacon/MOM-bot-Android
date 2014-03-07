@@ -63,16 +63,17 @@ public class ReadSMSTask extends AsyncTask<Void, Void, Boolean> {
 
 	@Override
 	protected void onPostExecute(Boolean result) {
+		if (mContext.getBaseActivity() == null) return;
 		if (result && mListSMS != null && mContext.getTextToSpeech() != null) {
 			// get string for speech unread sms
 			unReadCount = mListSMS.size();
 			String unReadString;
 			if (unReadCount == 0) {
-				unReadString = mContext.getResources().getString(R.string.sms_no_message);
+				unReadString = mContext.getBaseActivity().getString(R.string.sms_no_message);
 			} else if (unReadCount > 1) {
-				unReadString = mContext.getResources().getString(R.string.sms_unreads, unReadCount);
+				unReadString = mContext.getBaseActivity().getString(R.string.sms_unreads, unReadCount);
 			} else {
-				unReadString = mContext.getResources().getString(R.string.sms_unread, unReadCount);
+				unReadString = mContext.getBaseActivity().getString(R.string.sms_unread, unReadCount);
 			}
 			// speech
 			mContext.getTextToSpeech().speak(unReadString, TextToSpeech.QUEUE_ADD, null);
@@ -88,9 +89,10 @@ public class ReadSMSTask extends AsyncTask<Void, Void, Boolean> {
 				// get string for speech sms
 				String readMessage;
 				if (TextUtils.isEmpty(sms.person)) {
-					readMessage = mContext.getResources().getString(R.string.sms_read_message, sms.address, sms.body);
+					readMessage = mContext.getBaseActivity()
+							.getString(R.string.sms_read_message, sms.address, sms.body);
 				} else {
-					readMessage = mContext.getResources().getString(R.string.sms_read_message, sms.person, sms.body);
+					readMessage = mContext.getBaseActivity().getString(R.string.sms_read_message, sms.person, sms.body);
 				}
 				// speech
 				mContext.getTextToSpeech().speak(readMessage, TextToSpeech.QUEUE_ADD, null);

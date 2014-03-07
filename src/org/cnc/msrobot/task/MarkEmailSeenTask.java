@@ -46,7 +46,7 @@ public class MarkEmailSeenTask extends AsyncTask<String, Void, Boolean> {
 	@Override
 	protected void onPostExecute(Boolean result) {
 		if (result) {
-			mContext.changeEmailItem(0);
+			mContext.changeEmailItem(0, false);
 		}
 	}
 

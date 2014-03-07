@@ -1,0 +1,71 @@
+<?xml version="1.0" encoding="utf-8"?>
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:id="@+id/rlItemList"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:background="@drawable/item_background_click"
+    android:orientation="vertical"
+    android:paddingBottom="@dimen/common_margin_layout"
+    android:paddingTop="@dimen/common_margin_layout" >
+
+    <View
+        android:id="@+id/viewLine"
+        android:layout_width="match_parent"
+        android:layout_height="@dimen/border"
+        android:layout_marginBottom="@dimen/common_margin_layout"
+        android:background="@color/gray" />
+
+    <TextView
+        android:id="@+id/tvDate"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_below="@id/viewLine"
+        android:layout_marginBottom="@dimen/common_margin_layout"
+        android:background="@color/black"
+        android:padding="@dimen/common_margin_layout"
+        android:text="@string/function_desc_no_sms"
+        android:textColor="@color/white"
+        android:textSize="@dimen/common_textsize_larger"
+        android:textStyle="bold" />
+
+    <RelativeLayout
+        android:id="@+id/rlContent"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_below="@id/tvDate" >
+
+        <ImageView
+            android:id="@+id/imgIcon"
+            android:layout_width="@dimen/icon_event_size"
+            android:layout_height="@dimen/icon_event_size"
+            android:layout_centerVertical="true"
+            android:layout_margin="@dimen/common_margin_layout_medium"
+            android:background="@color/event1_color" />
+
+        <RelativeLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_centerVertical="true"
+            android:layout_marginTop="@dimen/common_margin_layout"
+            android:layout_toRightOf="@id/imgIcon"
+            android:paddingBottom="@dimen/common_margin_layout" >
+
+            <TextView
+                android:id="@+id/tvDesc"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:text="@string/function_desc_no_sms"
+                android:textSize="@dimen/common_textsize_large"
+                android:textStyle="bold" />
+
+            <TextView
+                android:id="@+id/tvTimer"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_below="@id/tvDesc"
+                android:text="15:30 - 16:30"
+                android:textSize="@dimen/common_textsize_medium" />
+        </RelativeLayout>
+    </RelativeLayout>
+
+</RelativeLayout>

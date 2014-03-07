@@ -1,0 +1,81 @@
+<?xml version="1.0" encoding="utf-8"?>
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent" >
+
+    <RelativeLayout
+        android:id="@+id/rlRight"
+        android:layout_width="wrap_content"
+        android:layout_height="match_parent"
+        android:layout_alignParentRight="true"
+        android:paddingRight="@dimen/common_margin_layout" >
+
+        <ImageView
+            android:id="@+id/imgRec"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_centerVertical="true"
+            android:contentDescription="@string/common_blank"
+            android:padding="@dimen/common_margin_layout"
+            android:src="@drawable/img_icon_rec"
+            android:visibility="gone" />
+
+        <ProgressBar
+            android:id="@+id/prgLoading"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_centerVertical="true"
+            android:layout_toRightOf="@id/imgRec"
+            android:padding="@dimen/common_margin_layout"
+            android:visibility="gone" />
+
+        <TextView
+            android:id="@+id/tvTimer"
+            android:layout_width="wrap_content"
+            android:layout_height="match_parent"
+            android:layout_centerVertical="true"
+            android:layout_marginRight="@dimen/common_margin_layout"
+            android:layout_toRightOf="@id/prgLoading"
+            android:background="@drawable/item_background_click"
+            android:gravity="center"
+            android:paddingRight="@dimen/common_margin_layout_medium"
+            android:textSize="@dimen/common_textsize_larger"
+            android:textStyle="bold" />
+
+        <ImageView
+            android:id="@+id/imgAlarm"
+            android:layout_width="wrap_content"
+            android:layout_height="match_parent"
+            android:layout_toRightOf="@id/tvTimer"
+            android:background="@drawable/item_background_click"
+            android:contentDescription="@string/common_blank"
+            android:paddingLeft="@dimen/common_margin_layout_medium"
+            android:paddingRight="@dimen/common_margin_layout_medium"
+            android:src="@drawable/img_icon_alarm" />
+
+        <ImageView
+            android:id="@+id/imgSearch"
+            android:layout_width="wrap_content"
+            android:layout_height="match_parent"
+            android:layout_toRightOf="@id/imgAlarm"
+            android:background="@drawable/item_background_click"
+            android:contentDescription="@string/common_blank"
+            android:paddingLeft="@dimen/common_margin_layout_medium"
+            android:paddingRight="@dimen/common_margin_layout_medium"
+            android:src="@drawable/img_btn_search_top" />
+    </RelativeLayout>
+
+    <TextView
+        android:id="@+id/tvTitle"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_alignParentLeft="true"
+        android:layout_centerVertical="true"
+        android:layout_toLeftOf="@id/rlRight"
+        android:ellipsize="end"
+        android:paddingLeft="@dimen/common_margin_layout"
+        android:paddingRight="@dimen/common_margin_layout"
+        android:singleLine="true"
+        android:textSize="@dimen/common_textsize_larger" />
+
+</RelativeLayout>

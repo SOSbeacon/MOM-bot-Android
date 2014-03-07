@@ -17,20 +17,25 @@ import javax.mail.search.FlagTerm;
 
 import org.cnc.msrobot.R;
 import org.cnc.msrobot.fragment.HomeFragment;
+import org.cnc.msrobot.resource.Email;
 
 import android.os.AsyncTask;
 import android.speech.tts.TextToSpeech;
 import android.text.TextUtils;
 
 public class ReadEmailTask extends AsyncTask<String, Void, Boolean> {
-	private ArrayList<Email> emails;
+	public static ArrayList<Email> emails;
 	private HomeFragment mContext;
-	private int unReadCount;
 	private String email;
 	private String pass;
 
 	public ReadEmailTask(HomeFragment context) {
 		mContext = context;
+	}
+
+	@Override
+	protected void onPreExecute() {
+		mContext.changeEmailLoading();
 	}
 
 	@Override
@@ -55,20 +60,23 @@ public class ReadEmailTask extends AsyncTask<String, Void, Boolean> {
 
 	@Override
 	protected void onPostExecute(Boolean result) {
+		if (mContext.getBaseActivity() == null) return;
 		if (result && emails != null && mContext.getTextToSpeech() != null) {
-			unReadCount = emails.size();
+			int unReadCount = emails.size();
 			String unReadString;
 			if (unReadCount == 0) {
-				unReadString = mContext.getResources().getString(R.string.email_no_message);
+				unReadString = mContext.getBaseActivity().getString(R.string.email_no_message);
 			} else if (unReadCount > 1) {
-				unReadString = mContext.getResources().getString(R.string.email_unreads, unReadCount);
+				unReadString = mContext.getBaseActivity().getString(R.string.email_unreads, unReadCount);
 			} else {
-				unReadString = mContext.getResources().getString(R.string.email_unread, unReadCount);
+				unReadString = mContext.getBaseActivity().getString(R.string.email_unread, unReadCount);
 			}
 			// speech
 			mContext.getTextToSpeech().speak(unReadString, TextToSpeech.QUEUE_ADD, null);
+			mContext.changeEmailItem(unReadCount, false);
+		} else if (result == false) {
+			mContext.changeEmailItem(0, true);
 		}
-		mContext.changeEmailItem(unReadCount);
 	}
 
 	public ArrayList<Email> readEmail(String email, String pass) throws NoSuchProviderException, MessagingException,
@@ -89,14 +97,21 @@ public class ReadEmailTask extends AsyncTask<String, Void, Boolean> {
 			for (int i = 0; i < msgs.length; i++) {
 				Message msg = msgs[i];
 				Email e = new Email();
-				e.content = msg.getContent().toString();
+				e.subject = msg.getSubject();
 				e.from = msg.getFrom()[0].toString();
 				String s = msg.getContent() + "";
 				if (s.indexOf("MimeMultipart") != -1) {
 					Multipart multipart = (Multipart) msg.getContent();
 
+					// get text content
 					BodyPart bodyPart = multipart.getBodyPart(0);
 					e.content = bodyPart.getContent().toString();
+
+					// get html content
+					if (multipart.getCount() > 1) {
+						bodyPart = multipart.getBodyPart(1);
+						e.htmlContent = bodyPart.getContent().toString();
+					}
 				}
 
 				emails.add(e);
@@ -113,17 +128,17 @@ public class ReadEmailTask extends AsyncTask<String, Void, Boolean> {
 		}
 	}
 
-	public class Email {
-		public String from, subject, content;
-	}
-
 	/**
 	 * return unread sms count
 	 * 
 	 * @return
 	 */
-	public int getCount() {
-		return unReadCount;
+	public static int getEmailCount() {
+		if (emails != null) {
+			return emails.size();
+		} else {
+			return 0;
+		}
 	}
 
 	public void speakEmailDetail() {
@@ -134,7 +149,8 @@ public class ReadEmailTask extends AsyncTask<String, Void, Boolean> {
 				Email email = emails.get(i);
 				// get string for speech sms
 				String readMessage;
-				readMessage = mContext.getResources().getString(R.string.email_read_message, email.from, email.content);
+				readMessage = mContext.getBaseActivity().getString(R.string.email_read_message, email.from,
+						email.content);
 				// speech
 				mContext.getTextToSpeech().speak(readMessage, TextToSpeech.QUEUE_ADD, null);
 			}

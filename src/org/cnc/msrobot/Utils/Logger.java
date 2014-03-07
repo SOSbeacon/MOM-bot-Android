@@ -21,7 +21,7 @@ public class Logger {
     public static final int ERROR = Log.ERROR;
     public static final int ASSERT = Log.ASSERT;
 
-    private static int mCurrentLevel = INFO;
+    private static int mCurrentLevel = DEBUG;
 
     private static String mAppLogTag = "MsRobot";
 

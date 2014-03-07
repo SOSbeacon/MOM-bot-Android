@@ -3,9 +3,8 @@ package org.cnc.msrobot.fragment;
 import java.util.ArrayList;
 
 import org.cnc.msrobot.activity.BaseActivity;
-import org.cnc.msrobot.activity.BaseActivity.RecognizeVoiceListener;
+import org.cnc.msrobot.activity.BaseActivity.FragmentRecognizeVoiceListener;
 import org.cnc.msrobot.requestmanager.RequestManager;
-import org.cnc.msrobot.utils.DialogUtils;
 import org.cnc.msrobot.utils.SharePrefs;
 
 import android.app.Activity;
@@ -19,18 +18,16 @@ import android.support.v4.app.Fragment;
  * @author thanhlcm
  * 
  */
-public class BaseFragment extends Fragment implements RecognizeVoiceListener {
+public class BaseFragment extends Fragment implements FragmentRecognizeVoiceListener {
 	protected SharePrefs mSharePrefs = SharePrefs.getInstance();
 	protected RequestManager mRequestManager = RequestManager.getInstance();
 	private final Object attachingActivityLock = new Object();
 	private BaseActivity mActivity;
 	private boolean syncVariable = false;
-	protected DialogUtils mDialog;
 
 	@Override
 	public void onCreate(Bundle savedInstanceState) {
 		super.onCreate(savedInstanceState);
-		mDialog = new DialogUtils(getBaseActivity());
 		getBaseActivity().setOnRecogizeVoiceListener(this);
 	}
 
@@ -40,6 +37,16 @@ public class BaseFragment extends Fragment implements RecognizeVoiceListener {
 		synchronized (attachingActivityLock) {
 			syncVariable = true;
 			mActivity = (BaseActivity) activity;
+			attachingActivityLock.notifyAll();
+		}
+	}
+
+	@Override
+	public void onDetach() {
+		super.onDetach();
+		synchronized (attachingActivityLock) {
+			syncVariable = true;
+			mActivity = null;
 			attachingActivityLock.notifyAll();
 		}
 	}

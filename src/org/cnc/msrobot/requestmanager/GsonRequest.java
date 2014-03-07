@@ -6,8 +6,6 @@ import java.lang.reflect.Type;
 import java.util.HashMap;
 import java.util.Map;
 
-import android.text.TextUtils;
-
 import com.android.volley.AuthFailureError;
 import com.android.volley.NetworkResponse;
 import com.android.volley.ParseError;
@@ -27,7 +25,6 @@ import com.google.gson.JsonSyntaxException;
  * @param <T>
  */
 public class GsonRequest<T> extends Request<T> {
-	private static final String DATA_STRING = "\"data\":";
 	/* To hold the parameter name and the File to upload */
 	private Map<String, File> fileUploads = new HashMap<String, File>();
 
