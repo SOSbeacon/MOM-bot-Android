@@ -15,14 +15,27 @@
     limitations under the License.
 -->
 <resources>
+
     <color name="title_background">#ff355689</color>
     <color name="title_text">#ffffffff</color>
     <color name="title_separator">#40ffffff</color>
     <color name="gray">#8e8e93</color>
     <color name="blue">#ff33b5e5</color>
+    <color name="green">#8FCC85</color>
     <color name="white">#ffffff</color>
+    <color name="black">#000000</color>
     <color name="function1_color">#777BF7</color>
     <color name="function2_color">#F777A4</color>
     <color name="border_color">#eaeaea</color>
     <color name="transparent">#00000000</color>
+
+    <!-- color for mic button -->
+    <color name="buttonNormal1">#858585</color>
+    <color name="buttonNormal2">#212121</color>
+    <color name="buttonPressed1">#BFBFBF</color>
+    <color name="buttonPressed2">#454545</color>
+    <color name="buttonFocused1">#ffcc00</color>
+    <color name="buttonFocused2">#ffcc00</color>
+    <color name="main_bg_color">#2b2b30</color>
+
 </resources>

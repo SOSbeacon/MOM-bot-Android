@@ -3,7 +3,7 @@ package org.cnc.msrobot.task;
 import java.util.ArrayList;
 
 import org.cnc.msrobot.R;
-import org.cnc.msrobot.fragment.HomeFragment;
+import org.cnc.msrobot.activity.MainActivity;
 import org.cnc.msrobot.resource.SMS;
 
 import android.content.ContentValues;
@@ -11,7 +11,6 @@ import android.database.Cursor;
 import android.net.Uri;
 import android.os.AsyncTask;
 import android.speech.tts.TextToSpeech;
-import android.text.TextUtils;
 
 /**
  * read unread sms inbox and speech task
@@ -20,16 +19,16 @@ import android.text.TextUtils;
  * 
  */
 public class ReadSMSTask extends AsyncTask<Void, Void, Boolean> {
-	private ArrayList<SMS> mListSMS;
-	private HomeFragment mContext;
-	private int unReadCount;
+	public static ArrayList<SMS> mListSMS;
+	private MainActivity mContext;
 
-	public ReadSMSTask(HomeFragment context) {
+	public ReadSMSTask(MainActivity context) {
 		mContext = context;
 	}
 
 	@Override
 	protected Boolean doInBackground(Void... params) {
+		if (mContext == null) return false;
 		try {
 			// uri for sms inbox
 			Uri uri = Uri.parse("content://sms/inbox");
@@ -42,7 +41,7 @@ public class ReadSMSTask extends AsyncTask<Void, Void, Boolean> {
 					// add unread sms to list
 					mListSMS = new ArrayList<SMS>();
 					do {
-						mListSMS.add(new SMS(mContext.getBaseActivity(), c));
+						mListSMS.add(new SMS(mContext, c));
 					} while (c.moveToNext());
 				}
 				c.close();
@@ -63,49 +62,22 @@ public class ReadSMSTask extends AsyncTask<Void, Void, Boolean> {
 
 	@Override
 	protected void onPostExecute(Boolean result) {
-		if (mContext.getBaseActivity() == null) return;
-		if (result && mListSMS != null && mContext.getTextToSpeech() != null) {
+		if (mContext == null) return;
+		int unReadCount = 0;
+		if (result && mListSMS != null) {
 			// get string for speech unread sms
 			unReadCount = mListSMS.size();
 			String unReadString;
 			if (unReadCount == 0) {
-				unReadString = mContext.getBaseActivity().getString(R.string.sms_no_message);
+				unReadString = mContext.getString(R.string.sms_no_message);
 			} else if (unReadCount > 1) {
-				unReadString = mContext.getBaseActivity().getString(R.string.sms_unreads, unReadCount);
+				unReadString = mContext.getString(R.string.sms_unreads, unReadCount);
 			} else {
-				unReadString = mContext.getBaseActivity().getString(R.string.sms_unread, unReadCount);
+				unReadString = mContext.getString(R.string.sms_unread, unReadCount);
 			}
 			// speech
-			mContext.getTextToSpeech().speak(unReadString, TextToSpeech.QUEUE_ADD, null);
+			mContext.speak(unReadString, TextToSpeech.QUEUE_ADD);
 		}
 		mContext.changeSmsItem(unReadCount);
-	}
-
-	public void speakSmsDetail() {
-		if (mContext.getTextToSpeech() == null) return;
-		if (mListSMS != null && mListSMS.size() > 0) {
-			for (int i = 0; i < mListSMS.size(); i++) {
-				SMS sms = mListSMS.get(i);
-				// get string for speech sms
-				String readMessage;
-				if (TextUtils.isEmpty(sms.person)) {
-					readMessage = mContext.getBaseActivity()
-							.getString(R.string.sms_read_message, sms.address, sms.body);
-				} else {
-					readMessage = mContext.getBaseActivity().getString(R.string.sms_read_message, sms.person, sms.body);
-				}
-				// speech
-				mContext.getTextToSpeech().speak(readMessage, TextToSpeech.QUEUE_ADD, null);
-			}
-		}
-	}
-
-	/**
-	 * return unread sms count
-	 * 
-	 * @return
-	 */
-	public int getCount() {
-		return unReadCount;
 	}
 }

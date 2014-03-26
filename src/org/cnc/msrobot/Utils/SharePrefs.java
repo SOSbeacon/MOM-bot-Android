@@ -21,6 +21,7 @@ public class SharePrefs {
 	private static final String PREF_GMAIL_USERNAME = "gmail_username";
 	private static final String PREF_GMAIL_PASS = "gmail_pass";
 	private static final String PREF_LOGIN_TOKEN = "login_token";
+	private static final String PREF_CHECK_TTS = "check_tts";
 
 	private static SharePrefs instance = new SharePrefs();
 	private SharedPreferences sharedPreferences;
@@ -158,5 +159,13 @@ public class SharePrefs {
 
 	public void saveLoginToken(String token) {
 		sharedPreferences.edit().putString(PREF_LOGIN_TOKEN, token).commit();
+	}
+
+	public Boolean getCheckTTS() {
+		return sharedPreferences.getBoolean(PREF_CHECK_TTS, false);
+	}
+
+	public void saveCheckTTS(Boolean check) {
+		sharedPreferences.edit().putBoolean(PREF_CHECK_TTS, check).commit();
 	}
 }

@@ -105,8 +105,8 @@ public class WeatherActivity extends BaseActivity {
 
 	private void requestWeather(Location location) {
 		Bundle bundle = new Bundle();
-		bundle.putString(Consts.LON_PARAM, location.getLongitude() + "");
-		bundle.putString(Consts.LAT_PARAM, location.getLatitude() + "");
+		bundle.putString(Consts.PARAMS_LON, location.getLongitude() + "");
+		bundle.putString(Consts.PARAMS_LAT, location.getLatitude() + "");
 		mRequestManager.request(Actions.ACTION_GET_WEATHER, bundle, mRequestWeatherListener, null);
 	}
 }

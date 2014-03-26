@@ -29,40 +29,87 @@
             android:padding="@dimen/common_margin_layout"
             android:visibility="gone" />
 
-        <TextView
-            android:id="@+id/tvTimer"
+        <RelativeLayout
+            android:id="@+id/rlActionHome"
             android:layout_width="wrap_content"
             android:layout_height="match_parent"
-            android:layout_centerVertical="true"
-            android:layout_marginRight="@dimen/common_margin_layout"
-            android:layout_toRightOf="@id/prgLoading"
-            android:background="@drawable/item_background_click"
-            android:gravity="center"
-            android:paddingRight="@dimen/common_margin_layout_medium"
-            android:textSize="@dimen/common_textsize_larger"
-            android:textStyle="bold" />
+            android:layout_toRightOf="@id/prgLoading" >
 
-        <ImageView
-            android:id="@+id/imgAlarm"
-            android:layout_width="wrap_content"
-            android:layout_height="match_parent"
-            android:layout_toRightOf="@id/tvTimer"
-            android:background="@drawable/item_background_click"
-            android:contentDescription="@string/common_blank"
-            android:paddingLeft="@dimen/common_margin_layout_medium"
-            android:paddingRight="@dimen/common_margin_layout_medium"
-            android:src="@drawable/img_icon_alarm" />
+            <TextView
+                android:id="@+id/tvSMS"
+                android:layout_width="wrap_content"
+                android:layout_height="match_parent"
+                android:layout_marginRight="@dimen/common_margin_layout"
+                android:background="@drawable/item_background_click"
+                android:gravity="center"
+                android:paddingRight="@dimen/common_margin_layout_medium"
+                android:textSize="@dimen/common_textsize_larger"
+                android:textStyle="bold" />
 
-        <ImageView
-            android:id="@+id/imgSearch"
+            <TextView
+                android:id="@+id/tvEmail"
+                android:layout_width="wrap_content"
+                android:layout_height="match_parent"
+                android:layout_marginRight="@dimen/common_margin_layout"
+                android:layout_toRightOf="@id/tvSMS"
+                android:background="@drawable/item_background_click"
+                android:gravity="center"
+                android:paddingRight="@dimen/common_margin_layout_medium"
+                android:textSize="@dimen/common_textsize_larger"
+                android:textStyle="bold" />
+
+            <TextView
+                android:id="@+id/tvWeather"
+                android:layout_width="wrap_content"
+                android:layout_height="match_parent"
+                android:layout_marginRight="@dimen/common_margin_layout"
+                android:layout_toRightOf="@id/tvEmail"
+                android:background="@drawable/item_background_click"
+                android:gravity="center"
+                android:paddingRight="@dimen/common_margin_layout_medium"
+                android:textSize="@dimen/common_textsize_larger"
+                android:textStyle="bold" />
+        </RelativeLayout>
+
+        <RelativeLayout
+            android:id="@+id/rlActionEmail"
             android:layout_width="wrap_content"
             android:layout_height="match_parent"
-            android:layout_toRightOf="@id/imgAlarm"
-            android:background="@drawable/item_background_click"
-            android:contentDescription="@string/common_blank"
-            android:paddingLeft="@dimen/common_margin_layout_medium"
-            android:paddingRight="@dimen/common_margin_layout_medium"
-            android:src="@drawable/img_btn_search_top" />
+            android:layout_toRightOf="@id/rlActionHome"
+            android:visibility="gone" >
+
+            <ImageView
+                android:id="@+id/imgPlay"
+                android:layout_width="wrap_content"
+                android:layout_height="match_parent"
+                android:background="@drawable/item_background_click"
+                android:contentDescription="@string/common_blank"
+                android:paddingLeft="@dimen/common_margin_layout_medium"
+                android:paddingRight="@dimen/common_margin_layout_medium"
+                android:src="@drawable/ic_action_play" />
+
+            <ImageView
+                android:id="@+id/imgStop"
+                android:layout_width="wrap_content"
+                android:layout_height="match_parent"
+                android:layout_toRightOf="@id/imgPlay"
+                android:background="@drawable/item_background_click"
+                android:contentDescription="@string/common_blank"
+                android:paddingLeft="@dimen/common_margin_layout_medium"
+                android:paddingRight="@dimen/common_margin_layout_medium"
+                android:src="@drawable/ic_action_stop" />
+
+            <ImageView
+                android:id="@+id/imgNext"
+                android:layout_width="wrap_content"
+                android:layout_height="match_parent"
+                android:layout_toRightOf="@id/imgStop"
+                android:background="@drawable/item_background_click"
+                android:contentDescription="@string/common_blank"
+                android:paddingLeft="@dimen/common_margin_layout_medium"
+                android:paddingRight="@dimen/common_margin_layout_medium"
+                android:src="@drawable/ic_action_next" />
+        </RelativeLayout>
     </RelativeLayout>
 
     <TextView

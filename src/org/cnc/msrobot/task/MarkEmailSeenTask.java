@@ -12,16 +12,16 @@ import javax.mail.Session;
 import javax.mail.Store;
 import javax.mail.search.FlagTerm;
 
-import org.cnc.msrobot.fragment.HomeFragment;
+import org.cnc.msrobot.activity.MainActivity;
 
 import android.os.AsyncTask;
 import android.text.TextUtils;
 
 public class MarkEmailSeenTask extends AsyncTask<String, Void, Boolean> {
 
-	private HomeFragment mContext;
+	private MainActivity mContext;
 
-	public MarkEmailSeenTask(HomeFragment context) {
+	public MarkEmailSeenTask(MainActivity context) {
 		mContext = context;
 	}
 

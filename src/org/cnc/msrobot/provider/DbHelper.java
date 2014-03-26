@@ -1,6 +1,8 @@
 package org.cnc.msrobot.provider;
 
+import org.cnc.msrobot.provider.DbContract.TableContact;
 import org.cnc.msrobot.provider.DbContract.TableEvent;
+import org.cnc.msrobot.provider.DbContract.TableGroupContact;
 
 import android.content.Context;
 import android.database.sqlite.SQLiteDatabase;
@@ -19,6 +21,8 @@ public class DbHelper extends SQLiteOpenHelper {
 
 	public interface Tables {
 		public static final String EVENTS = "events";
+		public static final String CONTACT = "contact";
+		public static final String GROUP_CONTACT = "group_contact";
 
 	}
 
@@ -31,7 +35,7 @@ public class DbHelper extends SQLiteOpenHelper {
 		StringBuilder sqlBuilder = new StringBuilder();
 		String sql = null;
 
-		// CREATE SEED TABLE
+		// CREATE EVENTS TABLE
 		sqlBuilder = new StringBuilder();
 		sqlBuilder.append("CREATE TABLE IF NOT EXISTS " + Tables.EVENTS + " (");
 		sqlBuilder.append(TableEvent._ID + " TEXT, ");
@@ -39,6 +43,27 @@ public class DbHelper extends SQLiteOpenHelper {
 		sqlBuilder.append(TableEvent.TITLE + " TEXT, ");
 		sqlBuilder.append(TableEvent.START + " TEXT, ");
 		sqlBuilder.append(TableEvent.END + " TEXT ");
+		sqlBuilder.append(")");
+		sql = sqlBuilder.toString();
+		db.execSQL(sql);
+
+		// CREATE CONTACT TABLE
+		sqlBuilder = new StringBuilder();
+		sqlBuilder.append("CREATE TABLE IF NOT EXISTS " + Tables.CONTACT + " (");
+		sqlBuilder.append(TableContact._ID + " INTEGER PRIMARY KEY, ");
+		sqlBuilder.append(TableContact.NAME + " TEXT, ");
+		sqlBuilder.append(TableContact.EMAIL + " TEXT, ");
+		sqlBuilder.append(TableContact.MOBILE + " TEXT, ");
+		sqlBuilder.append(TableContact.GROUP_ID + " INTEGER ");
+		sqlBuilder.append(")");
+		sql = sqlBuilder.toString();
+		db.execSQL(sql);
+
+		// CREATE GROUP CONTACT TABLE
+		sqlBuilder = new StringBuilder();
+		sqlBuilder.append("CREATE TABLE IF NOT EXISTS " + Tables.GROUP_CONTACT + " (");
+		sqlBuilder.append(TableGroupContact._ID + " INTEGER PRIMARY KEY, ");
+		sqlBuilder.append(TableGroupContact.NAME + " TEXT ");
 		sqlBuilder.append(")");
 		sql = sqlBuilder.toString();
 		db.execSQL(sql);

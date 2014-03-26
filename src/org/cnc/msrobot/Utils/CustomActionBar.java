@@ -1,14 +1,11 @@
 package org.cnc.msrobot.utils;
 
-import java.util.Calendar;
-
 import org.cnc.msrobot.R;
-import org.cnc.msrobot.activity.MainActivity;
 
 import android.app.Activity;
 import android.content.Context;
 import android.os.Handler;
-import android.speech.tts.TextToSpeech;
+import android.text.TextUtils;
 import android.util.AttributeSet;
 import android.view.View;
 import android.view.View.OnClickListener;
@@ -18,27 +15,20 @@ import android.widget.RelativeLayout;
 import android.widget.TextView;
 
 public class CustomActionBar extends RelativeLayout implements OnClickListener {
-	private static final int INTERVAL_TIMER = 1000;
-	private static final int INTERVAL_REC_ANIMATION = 500;
+	private static final int INTERVAL_REC_ANIMATION = 300;
 	public static final int TYPE_DEFAULT = 0;
 	public static final int TYPE_HOME = 1;
-	private ImageView imgSearch, imgAlarm, imgRec;
-	private TextView tvTimer, tvTitle;
+	public static final int TYPE_EMAIL = 2;
+	public static final int TYPE_CLASSIC = 3;
+	private ImageView imgRec, imgPlay, imgStop, imgNext;
+	private TextView tvSMS, tvEmail, tvTitle, tvWeather;
+	private View rlActionEmail, rlActionHome;
 	private ProgressBar prgLoading;
 	private int mType = TYPE_DEFAULT;
 	private boolean mInitial = false;
 	private Handler mHandler = new Handler();
+	private OnClickListener mListener;
 
-	private Runnable mUpdateTimeTask = new Runnable() {
-		public void run() {
-			if (tvTimer != null) {
-				Calendar calendar = Calendar.getInstance();
-				String sTime = DateTimeFormater.timeFullFormater.format(calendar.getTime());
-				tvTimer.setText(sTime);
-			}
-			mHandler.postDelayed(this, INTERVAL_TIMER);
-		}
-	};
 	private Runnable mRecAnimation = new Runnable() {
 
 		@Override
@@ -69,39 +59,63 @@ public class CustomActionBar extends RelativeLayout implements OnClickListener {
 
 	protected void init() {
 		inflate(getContext(), R.layout.action_bar_common_layout, this);
-		imgSearch = (ImageView) findViewById(R.id.imgSearch);
-		imgAlarm = (ImageView) findViewById(R.id.imgAlarm);
 		imgRec = (ImageView) findViewById(R.id.imgRec);
-		tvTimer = (TextView) findViewById(R.id.tvTimer);
+		tvSMS = (TextView) findViewById(R.id.tvSMS);
+		tvEmail = (TextView) findViewById(R.id.tvEmail);
+		tvWeather = (TextView) findViewById(R.id.tvWeather);
 		tvTitle = (TextView) findViewById(R.id.tvTitle);
 		prgLoading = (ProgressBar) findViewById(R.id.prgLoading);
+		rlActionEmail = findViewById(R.id.rlActionEmail);
+		rlActionHome = findViewById(R.id.rlActionHome);
+		imgPlay = (ImageView) findViewById(R.id.imgPlay);
+		imgStop = (ImageView) findViewById(R.id.imgStop);
+		imgNext = (ImageView) findViewById(R.id.imgNext);
 
-		imgSearch.setOnClickListener(this);
-		tvTimer.setOnClickListener(this);
-		imgAlarm.setOnClickListener(this);
+		tvSMS.setOnClickListener(this);
+		tvEmail.setOnClickListener(this);
 
-		mHandler.postDelayed(mUpdateTimeTask, INTERVAL_TIMER);
+		imgPlay.setOnClickListener(this);
+		imgStop.setOnClickListener(this);
+		imgNext.setOnClickListener(this);
+
 		tvTitle.setText(((Activity) getContext()).getTitle());
 		mInitial = true;
 		setType(mType);
 	}
 
+	/*
+	 * Set action bar item click (non-Javadoc)
+	 * 
+	 * @see android.view.View#setOnClickListener(android.view.View.OnClickListener)
+	 */
+	public void setOnClickListener(OnClickListener listener) {
+		mListener = listener;
+	}
+
+	/**
+	 * set action bar type, @see CustomActionBar.TYPE_DEFAULT
+	 * 
+	 * @param type
+	 */
 	public void setType(int type) {
 		mType = type;
 		if (!mInitial) return;
+		imgRec.setVisibility(View.GONE);
 		switch (type) {
+			case TYPE_CLASSIC:
+				rlActionHome.setVisibility(View.VISIBLE);
+				rlActionEmail.setVisibility(View.GONE);
+				break;
+			case TYPE_EMAIL:
+				rlActionHome.setVisibility(View.GONE);
+				rlActionEmail.setVisibility(View.VISIBLE);
+				break;
 			case TYPE_DEFAULT:
-				imgSearch.setVisibility(View.GONE);
-				imgAlarm.setVisibility(View.GONE);
-				imgRec.setVisibility(View.GONE);
-				tvTimer.setVisibility(View.GONE);
+			default:
+				rlActionHome.setVisibility(View.GONE);
+				rlActionEmail.setVisibility(View.GONE);
 				break;
-			case TYPE_HOME:
-				imgSearch.setVisibility(View.VISIBLE);
-				imgAlarm.setVisibility(View.VISIBLE);
-				imgRec.setVisibility(View.GONE);
-				tvTimer.setVisibility(View.VISIBLE);
-				break;
+
 		}
 	}
 
@@ -135,24 +149,37 @@ public class CustomActionBar extends RelativeLayout implements OnClickListener {
 		mHandler.removeCallbacks(mRecAnimation);
 	}
 
+	public void setSMSText(String text) {
+		if (TextUtils.isEmpty(text)) {
+			tvSMS.setVisibility(View.GONE);
+		} else {
+			tvSMS.setVisibility(View.VISIBLE);
+			tvSMS.setText(text);
+		}
+	}
+
+	public void setEmailText(String text) {
+		if (TextUtils.isEmpty(text)) {
+			tvEmail.setVisibility(View.GONE);
+		} else {
+			tvEmail.setVisibility(View.VISIBLE);
+			tvEmail.setText(text);
+		}
+	}
+
+	public void setWeatherText(String text) {
+		if (TextUtils.isEmpty(text)) {
+			tvWeather.setVisibility(View.GONE);
+		} else {
+			tvWeather.setVisibility(View.VISIBLE);
+			tvWeather.setText(text);
+		}
+	}
+
 	@Override
 	public void onClick(View v) {
-		MainActivity activity = (MainActivity) getContext();
-		switch (v.getId()) {
-			case R.id.tvTimer:
-				if (activity.getTextToSpeech() != null) {
-					activity.getTextToSpeech().speak(AppUtils.getCurrentTimeForSpeech(getContext()),
-							TextToSpeech.QUEUE_FLUSH, null);
-				}
-				break;
-			case R.id.imgSearch:
-				activity.listen(MainActivity.REC_SEARCH);
-				break;
-			case R.id.imgAlarm:
-				activity.listen(MainActivity.REC_ALARM);
-				break;
-			default:
-				break;
+		if (mListener != null) {
+			mListener.onClick(v);
 		}
 	}
 }

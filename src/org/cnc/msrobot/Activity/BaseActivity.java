@@ -1,6 +1,7 @@
 package org.cnc.msrobot.activity;
 
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.List;
 import java.util.Locale;
 
@@ -11,11 +12,17 @@ import org.cnc.msrobot.utils.CustomActionBar;
 import org.cnc.msrobot.utils.Logger;
 import org.cnc.msrobot.utils.SharePrefs;
 
+import android.app.Activity;
+import android.app.AlertDialog;
+import android.app.Dialog;
 import android.app.ProgressDialog;
 import android.content.ComponentName;
+import android.content.DialogInterface;
 import android.content.Intent;
 import android.content.pm.ResolveInfo;
+import android.media.AudioManager;
 import android.media.MediaPlayer;
+import android.net.Uri;
 import android.os.Bundle;
 import android.os.Handler;
 import android.os.SystemClock;
@@ -27,18 +34,25 @@ import android.speech.tts.TextToSpeech;
 import android.speech.tts.TextToSpeech.OnInitListener;
 import android.speech.tts.TextToSpeech.OnUtteranceCompletedListener;
 import android.support.v4.app.FragmentActivity;
+import android.util.Log;
 import android.view.Gravity;
+import android.view.MenuItem;
 import android.widget.Toast;
 
 @SuppressWarnings("deprecation")
 public class BaseActivity extends FragmentActivity implements OnInitListener, OnUtteranceCompletedListener {
-	private static final int DELAY_AFTER_START_BEEP = 200;
+	/**
+	 * regconize index
+	 */
+	protected int mModuleId = 0;
+	private static final int DELAY_AFTER_START_BEEP = 100;
+	public static final int MAX_RETRY_RECOGNIZE = 3;
 
 	// Stop listening the user input after this period of milliseconds.
 	// The input sentences are short and using the app should be snappy so
 	// we don't want to spend too much on a single utterance.
 	public static final int LISTENING_TIMEOUT = 4000;
-	private final float SPEECH_RATE = 0.6f;
+	private final float SPEECH_RATE = 1f;
 	protected Toast mToastCenter;
 	protected SharePrefs mSharePrefs = SharePrefs.getInstance();
 	protected RequestManager mRequestManager = RequestManager.getInstance();
@@ -46,19 +60,23 @@ public class BaseActivity extends FragmentActivity implements OnInitListener, On
 	protected TextToSpeech mTts;
 	private final Object setTextToSpeechLock = new Object();
 	private boolean syncVariable = false;
+	public int recognizeRetry = 0;
+	protected boolean isRecording = false;
 	private FragmentRecognizeVoiceListener mRecognizeVoiceListener;
 	private SpeechRecognizer mRecognize;
 	protected CustomActionBar mActionbar;
 	final Handler handler = new Handler();
+	protected SpeakAnimationListener mSpeakAnimationListener;
 
 	@Override
 	protected void onCreate(Bundle savedInstanceState) {
 		super.onCreate(savedInstanceState);
-		checkTTS();
-
 		mActionbar = new CustomActionBar(this);
 		getActionBar().setCustomView(mActionbar);
 		getActionBar().setDisplayShowCustomEnabled(true);
+		getActionBar().setDisplayHomeAsUpEnabled(true);
+		getActionBar().setHomeButtonEnabled(true);
+		checkTTS();
 	}
 
 	@Override
@@ -75,6 +93,30 @@ public class BaseActivity extends FragmentActivity implements OnInitListener, On
 		}
 	}
 
+	// @Override
+	// protected void onStop() {
+	// super.onStop();
+	// stopSpeak();
+	// if (mRecognize != null) {
+	// mRecognize.stopListening();
+	// }
+	// if (mActionbar != null) {
+	// mActionbar.hideRecAnimation();
+	// }
+	// }
+
+	@Override
+	public boolean onMenuItemSelected(int featureId, MenuItem item) {
+		int id = item.getItemId();
+		switch (id) {
+			case android.R.id.home:
+				finish();
+				return true;
+			default:
+				return super.onMenuItemSelected(featureId, item);
+		}
+	}
+
 	protected void onActivityResult(int requestCode, int resultCode, Intent data) {
 		super.onActivityResult(requestCode, resultCode, data);
 		if (requestCode == RequestCode.REQUEST_CODE_CHECK_TTS) {
@@ -83,6 +125,7 @@ public class BaseActivity extends FragmentActivity implements OnInitListener, On
 				synchronized (setTextToSpeechLock) {
 					syncVariable = true;
 					mTts = new TextToSpeech(this, this);
+					mSharePrefs.saveCheckTTS(true);
 					setTextToSpeechLock.notifyAll();
 				}
 			} else {
@@ -94,6 +137,10 @@ public class BaseActivity extends FragmentActivity implements OnInitListener, On
 		}
 	}
 
+	public void setOnSpeakAnimationListener(SpeakAnimationListener listener) {
+		mSpeakAnimationListener = listener;
+	}
+
 	public void onRecognize(final ArrayList<String> data) {
 	}
 
@@ -101,7 +148,7 @@ public class BaseActivity extends FragmentActivity implements OnInitListener, On
 		mRecognizeVoiceListener = listener;
 	}
 
-	public TextToSpeech getTextToSpeech() {
+	protected TextToSpeech getTextToSpeech() {
 		synchronized (setTextToSpeechLock) {
 			while (!syncVariable) {
 				try {
@@ -128,55 +175,41 @@ public class BaseActivity extends FragmentActivity implements OnInitListener, On
 
 	// It's callback
 	public void onUtteranceCompleted(String utteranceId) {
+		mSpeakAnimationListener.stopSpeakingAnimation();
 	}
 
-	/**
-	 * prepare to listener for voice regconize
-	 */
-	public void listen() {
-		Logger.info("Speech", "listen");
-		// play beep sound and sleep
-		playStartSoundAndSleep();
-		Intent recognizerIntent = new Intent(RecognizerIntent.ACTION_RECOGNIZE_SPEECH);
-		recognizerIntent.putExtra(RecognizerIntent.EXTRA_LANGUAGE_MODEL, RecognizerIntent.LANGUAGE_MODEL_FREE_FORM);
-		recognizerIntent.putExtra(RecognizerIntent.EXTRA_PARTIAL_RESULTS, true);
-		recognizerIntent.putExtra(RecognizerIntent.EXTRA_CALLING_PACKAGE, getApplicationContext().getPackageName());
-		recognizerIntent.putExtra(RecognizerIntent.EXTRA_LANGUAGE, "en");
-		recognizerIntent.putExtra(RecognizerIntent.EXTRA_MAX_RESULTS, 1);
+	private final RecognitionListener mRecListener = new RecognitionListener() {
 
-		// runnable and hanlder for stop listening
-		final Runnable stopListening = new Runnable() {
-			@Override
-			public void run() {
-				mRecognize.stopListening();
-			}
-		};
+		@Override
+		public void onBeginningOfSpeech() {
+			Log.d("MsRobot", "onBeginningOfSpeech");
+		}
 
-		// set listener
-		mRecognize.setRecognitionListener(new RecognitionListener() {
+		@Override
+		public void onBufferReceived(byte[] buffer) {
+		}
 
-			@Override
-			public void onBeginningOfSpeech() {
-				Logger.info("Speech", "onBeginningOfSpeech");
-			}
+		@Override
+		public void onEndOfSpeech() {
+			Log.d("MsRobot", "onEndOfSpeech");
+			playStopSound();
+			mActionbar.hideRecAnimation();
+			isRecording = false;
+		}
 
-			@Override
-			public void onBufferReceived(byte[] buffer) {
-			}
-
-			@Override
-			public void onEndOfSpeech() {
-				handler.removeCallbacks(stopListening);
-				playStopSound();
+		@Override
+		public void onError(int error) {
+			Logger.info("Speech", "onError: " + error);
+			if (recognizeRetry < MAX_RETRY_RECOGNIZE) {
 				mActionbar.hideRecAnimation();
-			}
-
-			@Override
-			public void onError(int error) {
-				Logger.info("Speech", "onError: " + error);
-				handler.removeCallbacks(stopListening);
+				recognizeRetry++;
+				listenAgainWhenError();
+				Log.d("MsRobot", "Error, try again: " + recognizeRetry);
+			} else {
+				Log.d("MsRobot", "Error, max retry");
 				playErrorSound();
 				mActionbar.hideRecAnimation();
+				isRecording = false;
 				switch (error) {
 					case SpeechRecognizer.ERROR_AUDIO:
 						showCenterToast(R.string.errorResultAudioError);
@@ -200,7 +233,7 @@ public class BaseActivity extends FragmentActivity implements OnInitListener, On
 						showCenterToast(R.string.errorResultNoMatch);
 						break;
 					case SpeechRecognizer.ERROR_SPEECH_TIMEOUT:
-						showCenterToast(R.string.errorResultNoMatch);
+						showCenterToast(R.string.errorResultTimeout);
 						break;
 					case SpeechRecognizer.ERROR_INSUFFICIENT_PERMISSIONS:
 						// This is programmer error.
@@ -209,38 +242,74 @@ public class BaseActivity extends FragmentActivity implements OnInitListener, On
 						break;
 				}
 			}
+		}
 
-			@Override
-			public void onEvent(int eventType, Bundle params) {
-				Logger.info("Speech", "onEvent: " + eventType + " " + params);
-			}
+		@Override
+		public void onEvent(int eventType, Bundle params) {
+			Log.d("MsRobot", "onEvent: " + eventType + " " + params);
+		}
 
-			@Override
-			public void onPartialResults(Bundle partialResults) {
-			}
+		@Override
+		public void onPartialResults(Bundle partialResults) {
+		}
 
-			@Override
-			public void onReadyForSpeech(Bundle params) {
-				handler.postDelayed(stopListening, LISTENING_TIMEOUT);
-			}
+		@Override
+		public void onReadyForSpeech(Bundle params) {
+			Log.d("MsRobot", "onReadyForSpeech");
+		}
 
-			@Override
-			public void onResults(Bundle results) {
-				handler.removeCallbacks(stopListening);
-				ArrayList<String> matches = results.getStringArrayList(SpeechRecognizer.RESULTS_RECOGNITION);
-				for (int i = 0; i < matches.size(); i++) {
-					Logger.info("Speech", "text: " + matches.get(i));
-				}
-				if (mRecognizeVoiceListener != null) mRecognizeVoiceListener.onRecognize(matches);
-				onRecognize(matches);
+		@Override
+		public void onResults(Bundle results) {
+			ArrayList<String> matches = results.getStringArrayList(SpeechRecognizer.RESULTS_RECOGNITION);
+			for (int i = 0; i < matches.size(); i++) {
+				Logger.info("Speech", "text: " + matches.get(i));
 			}
+			if (mRecognizeVoiceListener != null) mRecognizeVoiceListener.onRecognize(matches);
+			onRecognize(matches);
+		}
 
-			@Override
-			public void onRmsChanged(float rmsdB) {
-			}
-		});
+		@Override
+		public void onRmsChanged(float rmsdB) {
+		}
+	};
+
+	/**
+	 * prepare to listener for voice regconize
+	 */
+	public void listen() {
+		recognizeRetry = 0;
+		// play beep sound and sleep
+		playStartSoundAndSleep();
+		listenAgainWhenError();
+	}
+
+	public void stopListening() {
+		recognizeRetry = MAX_RETRY_RECOGNIZE;
+		if (mRecognize != null) {
+			mRecognize.stopListening();
+		}
+	}
+
+	public void listenAgainWhenError() {
+		if (mRecognize == null) {
+			showCenterToast(getString(R.string.err_NoDefaultRecognizer));
+			return;
+		}
+		if (getTextToSpeech() != null) {
+			getTextToSpeech().stop();
+		}
+		Intent recognizerIntent = new Intent(RecognizerIntent.ACTION_RECOGNIZE_SPEECH);
+		recognizerIntent.putExtra(RecognizerIntent.EXTRA_LANGUAGE_MODEL, RecognizerIntent.LANGUAGE_MODEL_FREE_FORM);
+		recognizerIntent.putExtra(RecognizerIntent.EXTRA_PARTIAL_RESULTS, true);
+		recognizerIntent.putExtra(RecognizerIntent.EXTRA_CALLING_PACKAGE, getApplicationContext().getPackageName());
+		recognizerIntent.putExtra(RecognizerIntent.EXTRA_LANGUAGE, "en");
+
+		isRecording = true;
+		// set listener
+		mRecognize.setRecognitionListener(mRecListener);
 		mRecognize.startListening(recognizerIntent);
 		mActionbar.showRecAnimation();
+		Log.d("MsRobot", "listen");
 	}
 
 	/**
@@ -267,9 +336,23 @@ public class BaseActivity extends FragmentActivity implements OnInitListener, On
 	 * check for TTS exists
 	 */
 	private void checkTTS() {
-		Intent checkIntent = new Intent();
-		checkIntent.setAction(TextToSpeech.Engine.ACTION_CHECK_TTS_DATA);
-		startActivityForResult(checkIntent, RequestCode.REQUEST_CODE_CHECK_TTS);
+		if (mSharePrefs.getCheckTTS()) {
+			synchronized (setTextToSpeechLock) {
+				mTts = new TextToSpeech(this, this);
+				if (mTts == null) {
+					Intent checkIntent = new Intent();
+					checkIntent.setAction(TextToSpeech.Engine.ACTION_CHECK_TTS_DATA);
+					startActivityForResult(checkIntent, RequestCode.REQUEST_CODE_CHECK_TTS);
+				} else {
+					syncVariable = true;
+					setTextToSpeechLock.notifyAll();
+				}
+			}
+		} else {
+			Intent checkIntent = new Intent();
+			checkIntent.setAction(TextToSpeech.Engine.ACTION_CHECK_TTS_DATA);
+			startActivityForResult(checkIntent, RequestCode.REQUEST_CODE_CHECK_TTS);
+		}
 	}
 
 	/**
@@ -279,13 +362,54 @@ public class BaseActivity extends FragmentActivity implements OnInitListener, On
 
 		ComponentName serviceComponent = getServiceComponent();
 		if (serviceComponent == null) {
-			showCenterToast(getString(R.string.err_NoDefaultRecognizer));
+			installGoogleVoiceSearch(this);
 		} else {
 			mRecognize = SpeechRecognizer.createSpeechRecognizer(this, serviceComponent);
 			if (mRecognize == null) {
 				showCenterToast(getString(R.string.err_NoDefaultRecognizer));
 			}
 		}
+	}
+
+	/**
+	 * Asking the permission for installing Google Voice Search. If permission granted sent user to Google Play
+	 * 
+	 * @param callerActivity
+	 *            Activity, that initialized installing
+	 */
+	private static void installGoogleVoiceSearch(final Activity ownerActivity) {
+
+		// creating a dialog asking user if he want
+		// to install the Voice Search
+		Dialog dialog = new AlertDialog.Builder(ownerActivity)
+				.setMessage("For recognition its necessary to install \"Google Voice Search\"") // dialog message
+				.setTitle("Install Voice Search from Google Play?") // dialog header
+				.setPositiveButton("Install", new DialogInterface.OnClickListener() { // confirm button
+
+							// Install Button click handler
+							@Override
+							public void onClick(DialogInterface dialog, int which) {
+								try {
+									// creating an Intent for opening applications page in Google Play
+									// Voice Search package name: com.google.android.voicesearch
+									Intent intent = new Intent(Intent.ACTION_VIEW, Uri
+											.parse("market://details?id=com.google.android.voicesearch"));
+									// setting flags to avoid going in application history (Activity call stack)
+									intent.setFlags(Intent.FLAG_ACTIVITY_NO_HISTORY
+											| Intent.FLAG_ACTIVITY_CLEAR_WHEN_TASK_RESET);
+									// sending an Intent
+									ownerActivity.startActivity(intent);
+								} catch (Exception ex) {
+									// if something going wrong
+									// doing nothing
+								}
+							}
+						})
+
+				.setNegativeButton("Cancel", null) // cancel button
+				.create();
+
+		dialog.show(); // showing dialog
 	}
 
 	/**
@@ -321,11 +445,15 @@ public class BaseActivity extends FragmentActivity implements OnInitListener, On
 	}
 
 	public void showActionBarProgressBar() {
-		mActionbar.showProgressBar();
+		if (mActionbar != null) {
+			mActionbar.showProgressBar();
+		}
 	}
 
 	public void hideActionBarProgressBar() {
-		mActionbar.hideProgressBar();
+		if (mActionbar != null) {
+			mActionbar.hideProgressBar();
+		}
 	}
 
 	/**
@@ -362,6 +490,65 @@ public class BaseActivity extends FragmentActivity implements OnInitListener, On
 		playSound(R.raw.error);
 	}
 
+	public CustomActionBar getCusomActionBar() {
+		return mActionbar;
+	}
+
+	/**
+	 * speak before recognize
+	 * 
+	 * @param msg
+	 * @param id
+	 */
+	public void speakBeforeRecognize(String msg, int id) {
+		if (getTextToSpeech() == null || isRecording) return;
+		if (mSpeakAnimationListener != null) {
+			mSpeakAnimationListener.startSpeakingAnimation();
+		}
+		isRecording = true;
+		HashMap<String, String> myHashAlarm = new HashMap<String, String>();
+		myHashAlarm.put(TextToSpeech.Engine.KEY_PARAM_STREAM, String.valueOf(AudioManager.STREAM_MUSIC));
+		myHashAlarm.put(TextToSpeech.Engine.KEY_PARAM_UTTERANCE_ID, id + "");
+		getTextToSpeech().speak(msg, TextToSpeech.QUEUE_FLUSH, myHashAlarm);
+	}
+
+	/**
+	 * speak current again
+	 * 
+	 * @param msg
+	 */
+	public void speakBeforeRecognize(String msg) {
+		if (getTextToSpeech() == null || isRecording) return;
+		if (mSpeakAnimationListener != null) {
+			mSpeakAnimationListener.startSpeakingAnimation();
+		}
+		isRecording = true;
+		HashMap<String, String> myHashAlarm = new HashMap<String, String>();
+		myHashAlarm.put(TextToSpeech.Engine.KEY_PARAM_STREAM, String.valueOf(AudioManager.STREAM_MUSIC));
+		myHashAlarm.put(TextToSpeech.Engine.KEY_PARAM_UTTERANCE_ID, mModuleId + "");
+		getTextToSpeech().speak(msg, TextToSpeech.QUEUE_FLUSH, myHashAlarm);
+	}
+
+	/**
+	 * speak text
+	 * 
+	 * @param msg
+	 * @param queueMode
+	 */
+	public void speak(String msg, int queueMode) {
+		if (getTextToSpeech() == null || isRecording) return;
+		if (mSpeakAnimationListener != null) {
+			mSpeakAnimationListener.startSpeakingAnimation();
+		}
+		getTextToSpeech().speak(msg, queueMode, null);
+	}
+
+	public void stopSpeak() {
+		if (getTextToSpeech() == null) return;
+		isRecording = false;
+		getTextToSpeech().stop();
+	}
+
 	private void playSound(int sound) {
 		MediaPlayer mp = MediaPlayer.create(this, sound);
 		mp.setOnCompletionListener(new MediaPlayer.OnCompletionListener() {
@@ -371,5 +558,11 @@ public class BaseActivity extends FragmentActivity implements OnInitListener, On
 			}
 		});
 		mp.start();
+	}
+
+	public interface SpeakAnimationListener {
+		void startSpeakingAnimation();
+
+		void stopSpeakingAnimation();
 	}
 }

@@ -3,7 +3,9 @@ package org.cnc.msrobot.provider;
 import java.util.ArrayList;
 import java.util.Arrays;
 
+import org.cnc.msrobot.provider.DbContract.TableContact;
 import org.cnc.msrobot.provider.DbContract.TableEvent;
+import org.cnc.msrobot.provider.DbContract.TableGroupContact;
 import org.cnc.msrobot.provider.DbHelper.Tables;
 import org.cnc.msrobot.utils.Logger;
 
@@ -26,7 +28,11 @@ public class DbProvider extends ContentProvider {
 
 	public static final Uri BASE_CONTENT_URI = Uri.parse("content://" + CONTENT_AUTHORITY);
 	public static final String PATH_EVENTS = "PATH_EVENTS";
+	public static final String PATH_CONTACT = "PATH_CONTACT";
+	public static final String PATH_GROUP_CONTACT = "PATH_GROUP_CONTACT";
 	private static final int CODE_EVENTS = 1;
+	private static final int CODE_CONTACT = 2;
+	private static final int CODE_GROUP_CONTACT = 3;
 
 	private DbHelper mDbHelper;
 	private UriMatcher mUriMatcher = buildUriMatcher();
@@ -34,8 +40,9 @@ public class DbProvider extends ContentProvider {
 	private static UriMatcher buildUriMatcher() {
 		final UriMatcher matcher = new UriMatcher(UriMatcher.NO_MATCH);
 		final String authority = CONTENT_AUTHORITY;
-		/** Uri for users. */
 		matcher.addURI(authority, PATH_EVENTS, CODE_EVENTS);
+		matcher.addURI(authority, PATH_CONTACT, CODE_CONTACT);
+		matcher.addURI(authority, PATH_GROUP_CONTACT, CODE_GROUP_CONTACT);
 		return matcher;
 	}
 
@@ -65,7 +72,6 @@ public class DbProvider extends ContentProvider {
 	 * Delete database
 	 */
 	private void deleteDatabase() {
-		// TODO: wait for content provider operations to finish, then tear down
 		mDbHelper.close();
 		Context context = getContext();
 		DbHelper.deleteDatabase(context);
@@ -78,6 +84,10 @@ public class DbProvider extends ContentProvider {
 		switch (code) {
 			case CODE_EVENTS:
 				return TableEvent.CONTENT_TYPE;
+			case CODE_CONTACT:
+				return TableContact.CONTENT_TYPE;
+			case CODE_GROUP_CONTACT:
+				return TableGroupContact.CONTENT_TYPE;
 			default:
 				throw new UnsupportedOperationException("Unknown uri: " + uri);
 		}
@@ -191,6 +201,14 @@ public class DbProvider extends ContentProvider {
 				builder.setTables(Tables.EVENTS);
 				return builder;
 			}
+			case CODE_CONTACT: {
+				builder.setTables(Tables.CONTACT);
+				return builder;
+			}
+			case CODE_GROUP_CONTACT: {
+				builder.setTables(Tables.GROUP_CONTACT);
+				return builder;
+			}
 			default: {
 				throw new UnsupportedOperationException("Unknown uri: " + uri);
 			}
@@ -207,6 +225,14 @@ public class DbProvider extends ContentProvider {
 		switch (code) {
 			case CODE_EVENTS: {
 				builder.setTables(Tables.EVENTS);
+				return builder;
+			}
+			case CODE_CONTACT: {
+				builder.setTables(Tables.CONTACT);
+				return builder;
+			}
+			case CODE_GROUP_CONTACT: {
+				builder.setTables(Tables.GROUP_CONTACT);
 				return builder;
 			}
 			default: {

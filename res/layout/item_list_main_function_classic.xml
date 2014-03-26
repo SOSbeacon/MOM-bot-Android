@@ -1,0 +1,65 @@
+<?xml version="1.0" encoding="utf-8"?>
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:id="@+id/rlItemList"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:orientation="vertical"
+    android:paddingBottom="@dimen/common_margin_layout"
+    android:paddingLeft="@dimen/common_margin_layout_large"
+    android:paddingRight="@dimen/common_margin_layout_large"
+    android:paddingTop="@dimen/common_margin_layout" >
+
+    <ImageView
+        android:id="@+id/imgArrow"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="@dimen/common_margin_layout_medium"
+        android:contentDescription="@string/common_blank"
+        android:src="@drawable/img_bg_talk_left_arrow"
+        android:visibility="gone" />
+
+    <RelativeLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_toRightOf="@id/imgArrow"
+        android:background="@drawable/item_home_click"
+        android:minHeight="@dimen/main_item_min_height" >
+
+        <ImageView
+            android:id="@+id/imgIcon"
+            android:layout_width="@dimen/icon_size"
+            android:layout_height="@dimen/icon_size"
+            android:layout_centerVertical="true"
+            android:layout_margin="@dimen/common_margin_layout"
+            android:contentDescription="@string/common_blank"
+            android:src="@drawable/img_icon_sms"
+            android:visibility="gone" />
+
+        <TextView
+            android:id="@+id/tvNotifyCount"
+            style="@style/NotificationCount"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_alignRight="@id/imgIcon"
+            android:layout_centerVertical="true"
+            android:layout_marginRight="@dimen/common_margin_layout" />
+
+        <TextView
+            android:id="@+id/tvDesc"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_centerHorizontal="true"
+            android:layout_centerVertical="true"
+            android:layout_margin="@dimen/common_margin_layout"
+            android:layout_marginBottom="@dimen/common_margin_layout"
+            android:layout_marginRight="@dimen/common_margin_layout_medium"
+            android:layout_marginTop="@dimen/common_margin_layout"
+            android:layout_toRightOf="@id/imgIcon"
+            android:gravity="center_vertical"
+            android:text="@string/function_sent_text_sms"
+            android:textColor="@color/function1_color"
+            android:textSize="@dimen/common_textsize_xlarge"
+            android:textStyle="bold" />
+    </RelativeLayout>
+
+</RelativeLayout>

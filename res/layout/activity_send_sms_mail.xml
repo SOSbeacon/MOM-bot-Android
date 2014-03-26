@@ -1,0 +1,94 @@
+<?xml version="1.0" encoding="utf-8"?>
+<ScrollView xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent" >
+
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:orientation="vertical" >
+
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:orientation="horizontal" >
+
+            <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginLeft="@dimen/common_margin_layout"
+                android:layout_marginTop="@dimen/common_margin_layout"
+                android:text="@string/email_to"
+                android:textColor="@color/gray" />
+
+            <org.cnc.msrobot.utils.ContactsEditText
+                android:id="@+id/etTo"
+                android:layout_width="fill_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginLeft="@dimen/common_margin_layout_medium"
+                android:inputType="textEmailAddress" />
+        </LinearLayout>
+
+        <TextView
+            android:id="@+id/tvSubject"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginLeft="@dimen/common_margin_layout"
+            android:layout_marginTop="@dimen/common_margin_layout_medium"
+            android:text="@string/email_subject"
+            android:textColor="@color/gray" />
+
+        <EditText
+            android:id="@+id/etSubject"
+            android:layout_width="fill_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginBottom="5dp"
+            android:layout_marginTop="5dp"
+            android:inputType="textEmailSubject" />
+
+        <TextView
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginLeft="@dimen/common_margin_layout"
+            android:layout_marginTop="@dimen/common_margin_layout_medium"
+            android:text="@string/email_body"
+            android:textColor="@color/gray" />
+
+        <EditText
+            android:id="@+id/etBody"
+            android:layout_width="fill_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginBottom="5dp"
+            android:inputType="textMultiLine"
+            android:lines="3" />
+
+        <ImageView
+            android:id="@+id/imgAttachment"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:contentDescription="@string/common_blank"
+            android:visibility="gone" />
+
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:gravity="center_horizontal"
+            android:orientation="horizontal" >
+
+            <Button
+                android:id="@+id/btnSend"
+                style="@android:attr/buttonBarButtonStyle"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="@string/common_send" />
+
+            <Button
+                android:id="@+id/btnClose"
+                style="@android:attr/buttonBarButtonStyle"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="@string/common_close" />
+        </LinearLayout>
+    </LinearLayout>
+
+</ScrollView>

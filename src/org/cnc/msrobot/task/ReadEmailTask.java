@@ -13,23 +13,25 @@ import javax.mail.Multipart;
 import javax.mail.NoSuchProviderException;
 import javax.mail.Session;
 import javax.mail.Store;
+import javax.mail.internet.MimeMultipart;
 import javax.mail.search.FlagTerm;
 
 import org.cnc.msrobot.R;
-import org.cnc.msrobot.fragment.HomeFragment;
+import org.cnc.msrobot.activity.MainActivity;
 import org.cnc.msrobot.resource.Email;
 
 import android.os.AsyncTask;
 import android.speech.tts.TextToSpeech;
+import android.text.Html;
 import android.text.TextUtils;
 
 public class ReadEmailTask extends AsyncTask<String, Void, Boolean> {
 	public static ArrayList<Email> emails;
-	private HomeFragment mContext;
+	private MainActivity mContext;
 	private String email;
 	private String pass;
 
-	public ReadEmailTask(HomeFragment context) {
+	public ReadEmailTask(MainActivity context) {
 		mContext = context;
 	}
 
@@ -60,19 +62,19 @@ public class ReadEmailTask extends AsyncTask<String, Void, Boolean> {
 
 	@Override
 	protected void onPostExecute(Boolean result) {
-		if (mContext.getBaseActivity() == null) return;
-		if (result && emails != null && mContext.getTextToSpeech() != null) {
+		if (mContext == null) return;
+		if (result && emails != null) {
 			int unReadCount = emails.size();
 			String unReadString;
 			if (unReadCount == 0) {
-				unReadString = mContext.getBaseActivity().getString(R.string.email_no_message);
+				unReadString = mContext.getString(R.string.email_no_message);
 			} else if (unReadCount > 1) {
-				unReadString = mContext.getBaseActivity().getString(R.string.email_unreads, unReadCount);
+				unReadString = mContext.getString(R.string.email_unreads, unReadCount);
 			} else {
-				unReadString = mContext.getBaseActivity().getString(R.string.email_unread, unReadCount);
+				unReadString = mContext.getString(R.string.email_unread, unReadCount);
 			}
 			// speech
-			mContext.getTextToSpeech().speak(unReadString, TextToSpeech.QUEUE_ADD, null);
+			mContext.speak(unReadString, TextToSpeech.QUEUE_ADD);
 			mContext.changeEmailItem(unReadCount, false);
 		} else if (result == false) {
 			mContext.changeEmailItem(0, true);
@@ -105,12 +107,24 @@ public class ReadEmailTask extends AsyncTask<String, Void, Boolean> {
 
 					// get text content
 					BodyPart bodyPart = multipart.getBodyPart(0);
-					e.content = bodyPart.getContent().toString();
-
-					// get html content
-					if (multipart.getCount() > 1) {
-						bodyPart = multipart.getBodyPart(1);
-						e.htmlContent = bodyPart.getContent().toString();
+					if (bodyPart.getContent() instanceof MimeMultipart) {
+						MimeMultipart minePart = (MimeMultipart) bodyPart.getContent();
+						bodyPart = minePart.getBodyPart(0);
+						if (minePart.getCount() == 1) {
+							e.htmlContent = bodyPart.getContent().toString();
+							e.content = Html.fromHtml(e.htmlContent).toString();
+						} else {
+							e.content = bodyPart.getContent().toString();
+							e.htmlContent = minePart.getBodyPart(1).getContent().toString();
+						}
+					} else {
+						if (multipart.getCount() == 1) {
+							e.htmlContent = bodyPart.getContent().toString();
+							e.content = Html.fromHtml(e.htmlContent).toString();
+						} else {
+							e.content = bodyPart.getContent().toString();
+							e.htmlContent = multipart.getBodyPart(1).getContent().toString();
+						}
 					}
 				}
 
@@ -125,35 +139,6 @@ public class ReadEmailTask extends AsyncTask<String, Void, Boolean> {
 			throw e;
 		} catch (IOException e) {
 			throw e;
-		}
-	}
-
-	/**
-	 * return unread sms count
-	 * 
-	 * @return
-	 */
-	public static int getEmailCount() {
-		if (emails != null) {
-			return emails.size();
-		} else {
-			return 0;
-		}
-	}
-
-	public void speakEmailDetail() {
-		if (mContext.getTextToSpeech() == null) return;
-		if (emails != null && emails.size() > 0) {
-			new MarkEmailSeenTask(mContext).execute(email, pass);
-			for (int i = 0; i < emails.size(); i++) {
-				Email email = emails.get(i);
-				// get string for speech sms
-				String readMessage;
-				readMessage = mContext.getBaseActivity().getString(R.string.email_read_message, email.from,
-						email.content);
-				// speech
-				mContext.getTextToSpeech().speak(readMessage, TextToSpeech.QUEUE_ADD, null);
-			}
 		}
 	}
 }

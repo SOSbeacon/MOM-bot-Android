@@ -26,9 +26,9 @@ public class GetWeatherRequest extends RequestBase<WeatherResource> {
 
 	@Override
 	protected String buildRequestUrl() {
-		String id = getExtra().getString(Consts.ID_PARAM);
-		String lat = getExtra().getString(Consts.LAT_PARAM);
-		String lon = getExtra().getString(Consts.LON_PARAM);
+		String id = getExtra().getString(Consts.PARAMS_ID);
+		String lat = getExtra().getString(Consts.PARAMS_LAT);
+		String lon = getExtra().getString(Consts.PARAMS_LON);
 		String url;
 		if (TextUtils.isEmpty(id)) {
 			url = URLConsts.GET_WEATHER_BY_LOCAITON_INFO.replace(Consts.HOLDER_LAT_PARAM, lat).replace(

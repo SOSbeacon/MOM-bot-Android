@@ -1,0 +1,66 @@
+<?xml version="1.0" encoding="utf-8"?>
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:background="@color/black" >
+
+    <EditText
+        android:id="@+id/etRecognize"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_margin="@dimen/common_margin_layout"
+        android:inputType="textMultiLine"
+        android:lines="5"
+        android:textColor="@color/white" />
+
+    <ImageButton
+        android:id="@+id/btnMic"
+        android:layout_width="@dimen/heightMainMic"
+        android:layout_height="@dimen/heightMainMic"
+        android:layout_below="@id/etRecognize"
+        android:layout_centerHorizontal="true"
+        android:layout_gravity="center"
+        android:layout_margin="4dp"
+        android:layout_marginTop="@dimen/common_margin_layout_large"
+        android:background="@drawable/button_mic"
+        android:contentDescription="@string/common_blank"
+        android:gravity="center"
+        android:padding="20dp"
+        android:src="@drawable/speak_now_level0" />
+
+    <Button
+        android:id="@+id/btnComma"
+        android:layout_width="@dimen/buttonCommaSize"
+        android:layout_height="@dimen/buttonCommaSize"
+        android:layout_alignBottom="@id/btnMic"
+        android:layout_marginLeft="@dimen/common_margin_layout_medium"
+        android:clickable="true"
+        android:text="@string/common_comma"
+        android:textColor="@color/white"
+        android:textSize="@dimen/common_textsize_xlarge2" />
+
+    <Button
+        android:id="@+id/btnDot"
+        android:layout_width="@dimen/buttonCommaSize"
+        android:layout_height="@dimen/buttonCommaSize"
+        android:layout_alignBottom="@id/btnMic"
+        android:layout_marginLeft="@dimen/common_margin_layout_medium"
+        android:layout_toRightOf="@id/btnComma"
+        android:clickable="true"
+        android:text="@string/common_dot"
+        android:textColor="@color/white"
+        android:textSize="@dimen/common_textsize_xlarge2" />
+
+    <Button
+        android:id="@+id/btnDelete"
+        android:layout_width="wrap_content"
+        android:layout_height="@dimen/buttonCommaSize"
+        android:layout_alignBottom="@id/btnMic"
+        android:layout_alignParentRight="true"
+        android:layout_marginRight="@dimen/common_margin_layout_medium"
+        android:clickable="true"
+        android:text="@string/common_delete"
+        android:textColor="@color/white"
+        android:textSize="@dimen/common_textsize_xlarge2" />
+
+</RelativeLayout>

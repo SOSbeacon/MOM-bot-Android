@@ -33,8 +33,10 @@ public class CreateEventRequest extends RequestBase<EventResource[]> {
 		params.put(Consts.PARAMS_EVENT_TYPE, getExtra().getString(Consts.PARAMS_EVENT_TYPE));
 		params.put(Consts.PARAMS_AUTH_TOKEN, SharePrefs.getInstance().getLoginToken());
 		String[] dayOfWeeks = getExtra().getStringArray(Consts.PARAMS_EVENT_DAY_WEEK);
-		for (String key : dayOfWeeks) {
-			params.put(Consts.PARAMS_EVENT_DAY_WEEK, key);
+		if (dayOfWeeks != null) {
+			for (String key : dayOfWeeks) {
+				params.put(Consts.PARAMS_EVENT_DAY_WEEK, key);
+			}
 		}
 		return params;
 	}

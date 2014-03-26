@@ -9,11 +9,8 @@ import android.content.DialogInterface;
 import android.content.DialogInterface.OnClickListener;
 import android.view.Display;
 import android.view.WindowManager;
-import android.widget.TextView;
 
 public class DialogUtils {
-	private static final String TAG = DialogUtils.class.getSimpleName();
-
 	private Context mContext;
 	private AlertDialog alertDialog;
 
@@ -86,11 +83,7 @@ public class DialogUtils {
 		final AlertDialog dialog;
 		AlertDialog.Builder dialogBuilder = new AlertDialog.Builder(mContext);
 		if (title != null) dialogBuilder.setTitle(title);
-		final TextView myView = new TextView(mContext);
-		myView.setText(message);
-		int padding = mContext.getResources().getDimensionPixelSize(R.dimen.common_margin_layout);
-		myView.setPadding(padding, padding, padding, padding);
-		dialogBuilder.setView(myView);
+		dialogBuilder.setMessage(message);
 		dialogBuilder.setPositiveButton(R.string.common_yes, new OnClickListener() {
 			@Override
 			public void onClick(DialogInterface dialog, int which) {

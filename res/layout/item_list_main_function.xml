@@ -9,78 +9,53 @@
     android:paddingTop="@dimen/common_margin_layout" >
 
     <ImageView
-        android:id="@+id/imgIcon"
-        android:layout_width="@dimen/icon_size"
-        android:layout_height="@dimen/icon_size"
-        android:layout_centerVertical="true"
-        android:layout_margin="@dimen/common_margin_layout"
-        android:src="@drawable/img_icon_sms" />
-
-    <TextView
-        android:id="@+id/tvNotifyCount"
-        style="@style/NotificationCount"
+        android:id="@+id/imgArrow"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:layout_alignRight="@id/imgIcon"
-        android:layout_alignTop="@id/imgIcon"
-        android:layout_marginRight="@dimen/common_margin_layout" />
+        android:layout_marginTop="@dimen/common_margin_layout_medium"
+        android:contentDescription="@string/common_blank"
+        android:src="@drawable/img_bg_talk_left_arrow" />
 
     <RelativeLayout
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:layout_centerVertical="true"
-        android:layout_toRightOf="@id/imgIcon"
-        android:paddingBottom="@dimen/common_margin_layout" >
+        android:layout_toRightOf="@id/imgArrow"
+        android:background="@drawable/img_bg_talk_left"
+        android:minHeight="@dimen/main_item_min_height" >
+
+        <ImageView
+            android:id="@+id/imgIcon"
+            android:layout_width="@dimen/icon_size"
+            android:layout_height="@dimen/icon_size"
+            android:layout_centerVertical="true"
+            android:layout_margin="@dimen/common_margin_layout"
+            android:contentDescription="@string/common_blank"
+            android:src="@drawable/img_icon_sms" />
+
+        <TextView
+            android:id="@+id/tvNotifyCount"
+            style="@style/NotificationCount"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_alignRight="@id/imgIcon"
+            android:layout_centerVertical="true"
+            android:layout_marginRight="@dimen/common_margin_layout" />
 
         <TextView
             android:id="@+id/tvDesc"
-            android:layout_width="match_parent"
+            android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:text="@string/function_desc_no_sms"
-            android:textSize="@dimen/common_textsize_large" />
-
-        <RelativeLayout
-            android:id="@+id/llFunc"
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:layout_below="@id/tvDesc" >
-
-            <TextView
-                android:id="@+id/tvFunc1"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:layout_margin="@dimen/common_margin_layout"
-                android:background="@drawable/item_background_click"
-                android:text="@string/function_sent_text_sms"
-                android:textColor="@color/function1_color"
-                android:textSize="@dimen/common_textsize_large"
-                android:textStyle="bold" />
-
-            <TextView
-                android:id="@+id/tvFunc2"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:layout_marginBottom="@dimen/common_margin_layout"
-                android:layout_marginLeft="@dimen/common_margin_layout_medium"
-                android:layout_marginTop="@dimen/common_margin_layout"
-                android:layout_toRightOf="@id/tvFunc1"
-                android:background="@drawable/item_background_click"
-                android:text="@string/function_sent_picture_mms"
-                android:textColor="@color/function2_color"
-                android:textSize="@dimen/common_textsize_large"
-                android:textStyle="bold" />
-        </RelativeLayout>
+            android:layout_centerVertical="true"
+            android:layout_margin="@dimen/common_margin_layout"
+            android:layout_marginBottom="@dimen/common_margin_layout"
+            android:layout_marginRight="@dimen/common_margin_layout_medium"
+            android:layout_marginTop="@dimen/common_margin_layout"
+            android:layout_toRightOf="@id/imgIcon"
+            android:gravity="center_vertical"
+            android:text="@string/function_sent_text_sms"
+            android:textColor="@color/function1_color"
+            android:textSize="@dimen/common_textsize_xlarge"
+            android:textStyle="bold" />
     </RelativeLayout>
-
-    <View
-        android:id="@+id/viewLine"
-        android:layout_width="match_parent"
-        android:layout_height="@dimen/border"
-        android:layout_alignParentBottom="true"
-        android:layout_marginBottom="@dimen/common_margin_layout"
-        android:layout_marginLeft="@dimen/common_margin_layout"
-        android:layout_marginRight="@dimen/common_margin_layout"
-        android:layout_toRightOf="@id/imgIcon"
-        android:background="@color/gray" />
 
 </RelativeLayout>

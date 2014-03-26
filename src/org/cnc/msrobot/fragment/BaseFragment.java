@@ -4,13 +4,13 @@ import java.util.ArrayList;
 
 import org.cnc.msrobot.activity.BaseActivity;
 import org.cnc.msrobot.activity.BaseActivity.FragmentRecognizeVoiceListener;
+import org.cnc.msrobot.activity.BaseActivity.SpeakAnimationListener;
 import org.cnc.msrobot.requestmanager.RequestManager;
 import org.cnc.msrobot.utils.SharePrefs;
 
 import android.app.Activity;
 import android.content.ContentResolver;
 import android.os.Bundle;
-import android.speech.tts.TextToSpeech;
 import android.support.v4.app.Fragment;
 
 /**
@@ -72,7 +72,9 @@ public class BaseFragment extends Fragment implements FragmentRecognizeVoiceList
 	 *            message to be shown
 	 */
 	public void showCenterToast(String message) {
-		((BaseActivity) getBaseActivity()).showCenterToast(message);
+		if (getBaseActivity() != null) {
+			getBaseActivity().showCenterToast(message);
+		}
 	}
 
 	/**
@@ -83,7 +85,9 @@ public class BaseFragment extends Fragment implements FragmentRecognizeVoiceList
 	 *            Resource string Id
 	 */
 	public void showCenterToast(int resId) {
-		((BaseActivity) getBaseActivity()).showCenterToast(resId);
+		if (getBaseActivity() != null) {
+			getBaseActivity().showCenterToast(resId);
+		}
 	}
 
 	public void showProgress() {
@@ -91,15 +95,25 @@ public class BaseFragment extends Fragment implements FragmentRecognizeVoiceList
 	}
 
 	public void dismissProgress() {
-		((BaseActivity) getBaseActivity()).dismissProgress();
+		if (getBaseActivity() != null) {
+			getBaseActivity().dismissProgress();
+		}
 	}
 
 	public ContentResolver getContentResolver() {
 		return getBaseActivity().getContentResolver();
 	}
 
-	public TextToSpeech getTextToSpeech() {
-		return getBaseActivity().getTextToSpeech();
+	public void speak(String msg, int queueMode) {
+		if (getBaseActivity() != null) {
+			getBaseActivity().speak(msg, queueMode);
+		}
+	}
+
+	public void stopSpeak() {
+		if (getBaseActivity() != null) {
+			getBaseActivity().stopSpeak();
+		}
 	}
 
 	@Override
@@ -107,6 +121,17 @@ public class BaseFragment extends Fragment implements FragmentRecognizeVoiceList
 	}
 
 	public void listen() {
-		getBaseActivity().listen();
+		if (getBaseActivity() != null) {
+			getBaseActivity().listen();
+		}
+	}
+
+	public void refresh() {
+	}
+
+	public void setOnSpeakAnimationListener(SpeakAnimationListener listener) {
+		if (getBaseActivity() != null) {
+			getBaseActivity().setOnSpeakAnimationListener(listener);
+		}
 	}
 }

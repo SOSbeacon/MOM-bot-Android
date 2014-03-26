@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
 
-    <string name="app_name">MsRobot</string>
+    <string name="app_name">Mom-bot</string>
     <string name="google_api_key">AIzaSyDsfNv2LCu5fr3iHoTT7NyBHaP2M1Q6jbs</string>
     <string name="common_blank"></string>
     <string name="common_ok">OK</string>
@@ -11,20 +11,37 @@
     <string name="common_login">Login</string>
     <string name="common_read_all">Read all</string>
     <string name="common_stop">Stop</string>
+    <string name="common_answer">Your answer: %1$s</string>
+    <string name="common_send">Send</string>
+    <string name="common_close">Close</string>
+    <string name="common_comma">,</string>
+    <string name="common_dot">.</string>
+    <string name="common_delete">Delete</string>
+    <string name="common_camera">Camera</string>
+    <string name="common_gallery">Gallery</string>
     <string name="dialog_sent_select_title">Choose type</string>
     <string name="dialog_choose_message_title">Choose message</string>
     <string name="dialog_choose_search_title">Choose search</string>
+    <string name="dialog_choose_action">Choose actions</string>
+    <string name="dialog_confirm_exit">Do you want to exit?</string>
     <string name="drawer_open">Open</string>
     <string name="drawer_close">Close</string>
 
     <!-- Function list main string -->
+    <string name="function_desc_back">Back</string>
     <string name="function_desc_getting_data">Getting data\.\.\.</string>
-    <string name="function_desc_no_sms">You have no unread SMS.</string>
-    <string name="function_desc_no_email">You have no unread Email.</string>
-    <string name="function_desc_unread_sms">You have %1$s unread SMS. Click here to read</string>
-    <string name="function_desc_unread_email">You have %1$s unread Email. Click here to read</string>
-    <string name="function_desc_read_email_fail">Can not read email.</string>
-    <string name="function_desc_news">You have %1$s unread news.</string>
+    <string name="function_desc_no_sms">0 SMS</string>
+    <string name="function_desc_no_email">0 Email</string>
+    <string name="function_desc_unread_sms">%1$s SMS</string>
+    <string name="function_desc_unread_email">%1$s Email</string>
+    <string name="function_desc_command">COMMAND</string>
+    <string name="function_desc_communication">Communications</string>
+    <string name="function_desc_information">Information</string>
+    <string name="function_desc_emergency">Emergency Help</string>
+    <string name="function_desc_admin">Administration</string>
+    <string name="function_desc_read_email_fail">Can\'t read email.</string>
+    <string name="function_desc_news">News</string>
+    <string name="function_desc_weather">Weather</string>
     <string name="function_sent_text_sms">Sent text SMS</string>
     <string name="function_sent_picture_mms">Sent picture MMS</string>
     <string name="function_sent_text_email">Sent text Email</string>
@@ -32,12 +49,14 @@
     <string name="function_setup_email_account">Setup email account.</string>
 
     <string-array name="array_list_drawer">
-        <item>Home</item>
+        <item>Home classic</item>
+        <item>Home with voice</item>
         <item>Month Calendar</item>
         <item>Weekly Calendar</item>
         <item>Daily Calendar</item>
         <item>Setting</item>
         <item>Logout</item>
+        <item>Exit</item>
     </string-array>
     <string-array name="array_dialog_sent_selection">
         <item>SMS</item>
@@ -47,6 +66,12 @@
         <item>SMS</item>
         <item>Email</item>
         <item>Reminder</item>
+    </string-array>
+    <string-array name="array_email_address_test">
+        <item>Alex;dexter@gmail.com;841638664689</item>
+        <item>Harry;harry@gmail.com;84946824809</item>
+        <item>Rita;rita@gmail.com;841638664689</item>
+        <item>Debra;debra@gmail.com;841638664689</item>
     </string-array>
 
     <!-- Toast message -->
@@ -59,16 +84,38 @@
     <string name="errorResultNetworkError">Something is wrong with the network</string>
     <string name="errorResultClientError">General client error</string>
     <string name="errorResultServerError">Recognizer server error</string>
-    <string name="errorResultNoMatch">No natural language phrase was heard. Please try again!</string>
+    <string name="errorResultNoMatch">We don\'t understand.</string>
+    <string name="errorResultTimeout">Stop listening</string>
     <string name="msg_warn_location_cannot_determine">Can\'t determine your location. Do you want to adjust your setting now?</string>
     <string name="msg_err_cannot_open_setting">Can not open setting</string>
+    <string name="msg_warn_no_people_recognize">This name doesn\'t exist. Please try again (%1$s).</string>
+    <string name="msg_err_dont_recognize">Sorry, we don\'t recognize your answer.</string>
+    <string name="msg_err_create_event">Create event fail</string>
+    <string name="msg_info_create_event">Create event success</string>
+    <string name="msg_info_send_email_success">Send email success</string>
+    <string name="msg_err_send_email_fail">Send email fail</string>
+    <string name="msg_err_camera_not_sdcard">Insert sdcard in order to take picture</string>
 
     <!-- Regconize speech -->
-    <string name="recognize_sms">Please speech message content after beep sound.</string>
-    <string name="recognize_email">Please speech email content after beep sound.</string>
-    <string name="recognize_search">Please speech search content after beep sound.</string>
-    <string name="recognize_alarm">Please speech time alarm after beep sound.</string>
+    <string name="recognize_sms_to">Please speak people should be sent message after beep sound.</string>
+    <string name="recognize_sms_body">Please speak message content after beep sound.</string>
+    <string name="recognize_search">Please speak search content after beep sound.</string>
+    <string name="recognize_alarm">Please speak time alarm after beep sound.</string>
+    <string name="recognize_email_to">Please speak people should be sent email after beep sound.</string>
+    <string name="recognize_email_subject">Please speak email subject after beep sound.</string>
+    <string name="recognize_email_body">Please speak email body content after beep sound.</string>
+    <string name="recognize_ask_send_message">Do you want to send this message?</string>
+    <string name="recognize_ask_send_email">Do you want to send this email?</string>
 
+    <!-- Command -->
+    <string name="command_example">Your command, for example: send text message, send image message, send text email, send image email, set alarm 13 o\'clock 10 minute today/tomorrow, what time is it</string>
+	<string name="command_send_text_message">send text message</string>
+	<string name="command_send_image_message">send image message</string>
+	<string name="command_send_text_email">send text email</string>
+	<string name="command_send_image_email">send image email</string>
+	<string name="command_send_set_alarm">set alarm</string>
+	<string name="command_send_what_time">what time</string>
+    
     <!-- Speak time string -->
     <string name="Verbose_Time_Hour">It\'s %1$s o\'clock %3$s.</string>
     <string name="Verbose_Time">It\'s %2$s past %1$s %3$s.</string>
@@ -83,12 +130,13 @@
     <string name="sms_unread">\.\.\. You have %1$s unread message.</string>
     <string name="sms_unreads">\.\.\. You have %1$s unread messages.</string>
     <string name="sms_read_message">\.\.\. Message from %1$s: %2$s.</string>
+    <string name="sms_ask_read_message">\.\.\. Message from %1$s. Do you want to read it?</string>
 
     <!-- Speak SMS string -->
     <string name="email_no_message">\.\.\. You have no Email.</string>
     <string name="email_unread">\.\.\. You have %1$s unread Email.</string>
     <string name="email_unreads">\.\.\. You have %1$s unread Emails.</string>
-    <string name="email_read_message">\.\.\. Email from %1$s: %2$s.</string>
+    <string name="email_ask_read_message">\.\.\. Email from: %1$s, subject: %2$s. Do you want to read it?</string>
 
     <!-- Speak Weather string -->
     <string name="weather_location">\.\.\. Your current location is %1$s.</string>
@@ -111,8 +159,8 @@
     <string name="refresh">Refresh</string>
     <string name="batchadd">Copy Calendar x3 (Batch)</string>
     <string name="edit_calendar">Edit Calendar</string>
-    <string name="edit_event">Edit Event</string>
-    <string name="delete">Delete Calendar</string>
+    <string name="edit_event">Edit</string>
+    <string name="delete">Delete</string>
     <string name="delete_title">Delete Calendar?</string>
     <string name="yes">Yes</string>
     <string name="no">No</string>
@@ -120,14 +168,21 @@
     <string name="error_format">[Error] %s</string>
     <string name="calendar_all_day">All day</string>
 
-    <!-- Email setup -->
+    <!-- Email -->
     <string name="email_instructions">Please enter your correct email and password and click on login button to proceed. We will use this email account for receiver and send mail.</string>
     <string name="email_name_hint">Enter your Gmail email</string>
     <string name="email_pass_hint">Enter your password</string>
+    <string name="email_to">To:</string>
+    <string name="email_subject">Subject:</string>
+    <string name="email_body">Content:</string>
 
     <!-- Login -->
     <string name="login_instructions">Please enter your correct email and password and click on login button. Account for test: tester1@cnc.vn. Pass: Admin123</string>
     <string name="login_name_hint">Enter your email</string>
     <string name="login_pass_hint">Enter your password</string>
+
+    <!-- Alarm -->
+    <string name="alarm_speak_hour">Please speak hour after beep sound.</string>
+    <string name="alarm_speak_minute">Please speak hour after beep sound.</string>
 
 </resources>

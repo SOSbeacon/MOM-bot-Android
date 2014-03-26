@@ -17,6 +17,8 @@ import java.util.Calendar;
 import java.util.Date;
 
 import org.cnc.msrobot.R;
+import org.cnc.msrobot.utils.Consts;
+import org.cnc.msrobot.utils.Consts.EventType;
 import org.cnc.msrobot.utils.DateTimeFormater;
 
 import android.app.Activity;
@@ -39,11 +41,6 @@ import android.widget.TimePicker;
  * @author Yaniv Inbar
  */
 public class AddOrEditEventActivity extends Activity implements OnClickListener {
-	public static final String EXTRA_ID = "EXTRA_ID";
-	public static final String EXTRA_SUMMARY = "EXTRA_SUMMARY";
-	public static final String EXTRA_DESC = "EXTRA_DESC";
-	public static final String EXTRA_START_TIME = "EXTRA_START_TIME";
-	public static final String EXTRA_END_TIME = "EXTRA_END_TIME";
 	private EditText summaryEditText, tvDesc;
 	private TextView tvStartDate, tvStartTime, tvEndDate, tvEndTime;
 	private String id;
@@ -91,12 +88,13 @@ public class AddOrEditEventActivity extends Activity implements OnClickListener 
 		if (summary.length() > 0) {
 			Intent t = new Intent();
 			if (id != null) {
-				t.putExtra(EXTRA_ID, id);
+				t.putExtra(Consts.PARAMS_ID, id);
 			}
-			t.putExtra(EXTRA_SUMMARY, summary);
-			t.putExtra(EXTRA_DESC, desc);
-			t.putExtra(EXTRA_START_TIME, startTime.getTime());
-			t.putExtra(EXTRA_END_TIME, startTime.getTime());
+			t.putExtra(Consts.PARAMS_EVENT_TITLE, summary);
+			t.putExtra(Consts.PARAMS_EVENT_CONTENT, desc);
+			t.putExtra(Consts.PARAMS_EVENT_START_TIME, DateTimeFormater.timeServerFormat.format(startTime));
+			t.putExtra(Consts.PARAMS_EVENT_END_TIME, DateTimeFormater.timeServerFormat.format(endTime));
+			t.putExtra(Consts.PARAMS_EVENT_TYPE, EventType.TYPE_NOREPEAT);
 			setResult(Activity.RESULT_OK, t);
 		} else {
 			setResult(Activity.RESULT_CANCELED);

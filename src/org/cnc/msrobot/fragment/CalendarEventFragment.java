@@ -9,6 +9,8 @@ import java.util.logging.Logger;
 import org.cnc.msrobot.R;
 import org.cnc.msrobot.provider.DbContract.TableEvent;
 import org.cnc.msrobot.resource.EventResource;
+import org.cnc.msrobot.utils.Actions;
+import org.cnc.msrobot.utils.Consts;
 import org.cnc.msrobot.utils.DateTimeFormater;
 
 import android.database.Cursor;
@@ -30,6 +32,9 @@ import android.widget.ArrayAdapter;
 import android.widget.ListView;
 import android.widget.TextView;
 
+import com.android.volley.Response.ErrorListener;
+import com.android.volley.Response.Listener;
+import com.android.volley.VolleyError;
 import com.antonyt.infiniteviewpager.InfinitePagerAdapter;
 import com.roomorama.caldroid.CaldroidFragment;
 import com.roomorama.caldroid.CaldroidListener;
@@ -63,6 +68,26 @@ public final class CalendarEventFragment extends BaseFragment implements LoaderC
 	private ViewPager pagerWeek;
 	private ViewPager pagerDay;
 	private View mLayout;
+	private Listener<EventResource[]> mRequestEventListener = new Listener<EventResource[]>() {
+
+		@Override
+		public void onResponse(EventResource[] response) {
+			// hide action bar progress loading
+			if (getBaseActivity() != null) {
+				getBaseActivity().hideActionBarProgressBar();
+			}
+		}
+	};
+	private ErrorListener mErrorListener = new ErrorListener() {
+
+		@Override
+		public void onErrorResponse(VolleyError error) {
+			// hide action bar progress loading
+			if (getBaseActivity() != null) {
+				getBaseActivity().hideActionBarProgressBar();
+			}
+		}
+	};
 
 	@Override
 	public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
@@ -218,6 +243,13 @@ public final class CalendarEventFragment extends BaseFragment implements LoaderC
 
 			@Override
 			public void onChangeMonth(int month, int year) {
+				Calendar calendar = Calendar.getInstance();
+				int maxDayOfMonth = calendar.getActualMaximum(Calendar.DAY_OF_MONTH);
+				calendar.set(Calendar.DATE, 1);
+				Date start = calendar.getTime();
+				calendar.add(Calendar.DATE, maxDayOfMonth - 1);
+				Date end = calendar.getTime();
+				requestListEvent(start, end);
 			}
 
 			@Override
@@ -230,6 +262,15 @@ public final class CalendarEventFragment extends BaseFragment implements LoaderC
 		};
 		// Setup Caldroid
 		caldroidFragment.setCaldroidListener(listener);
+	}
+
+	private void requestListEvent(Date start, Date end) {
+		Bundle bundle = new Bundle();
+		// show action bar progress loading
+		getBaseActivity().showActionBarProgressBar();
+		bundle.putLong(Consts.PARAMS_QUERY_START, start.getTime());
+		bundle.putLong(Consts.PARAMS_QUERY_END, end.getTime());
+		mRequestManager.request(Actions.ACTION_GET_LIST_EVENT, bundle, mRequestEventListener, mErrorListener);
 	}
 
 	private void initAdapter() {
@@ -381,7 +422,7 @@ public final class CalendarEventFragment extends BaseFragment implements LoaderC
 					do {
 						EventResource event = new EventResource(cursor);
 						listEvent.add(event);
-						caldroidFragment.setBackgroundResourceForDate(R.color.blue, event.start());
+						caldroidFragment.setBackgroundResourceForDate(R.color.green, event.start());
 						caldroidFragment.setTextColorForDate(R.color.white, event.start());
 						caldroidFragment.refreshView();
 					} while (cursor.moveToNext());

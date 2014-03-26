@@ -1,5 +1,7 @@
 package org.cnc.msrobot.requestmanager;
 
+import org.cnc.msrobot.requestmanager.request.CreateEventRequest;
+import org.cnc.msrobot.requestmanager.request.GetListContactRequest;
 import org.cnc.msrobot.requestmanager.request.GetListEventRequest;
 import org.cnc.msrobot.requestmanager.request.GetWeatherRequest;
 import org.cnc.msrobot.requestmanager.request.LoginRequest;
@@ -20,6 +22,10 @@ public class RequestFactory {
 				return new LogoutRequest(context);
 			case Actions.ACTION_GET_LIST_EVENT:
 				return new GetListEventRequest(context);
+			case Actions.ACTION_CREATE_EVENT:
+				return new CreateEventRequest(context);
+			case Actions.ACTION_GET_LIST_CONTACT:
+				return new GetListContactRequest(context);
 			default:
 				return null;
 		}

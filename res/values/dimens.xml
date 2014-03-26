@@ -14,7 +14,6 @@
     <dimen name="common_margin_layout_xlarge2">40dp</dimen>
     <dimen name="common_margin_layout_xxlarge">50dp</dimen>
     <dimen name="common_margin_layout_xxlarge2">60dp</dimen>
-    <dimen name="_common_margin_layout_small">-4dp</dimen>
 
     <!-- Text size -->
     <dimen name="common_textsize_smaller">8sp</dimen>
@@ -34,6 +33,12 @@
     <dimen name="text_size_small">14sp</dimen>
     <dimen name="text_size_medium">18sp</dimen>
     <dimen name="icon_size">40sp</dimen>
-    <dimen name="icon_event_size">30sp</dimen>
+    <dimen name="main_item_min_height">50sp</dimen>
+    <dimen name="icon_event_size">20sp</dimen>
+    <dimen name="notification_margin_top">-10dp</dimen>
+    <dimen name="heightMainMic">100dp</dimen>
+    <dimen name="buttonCommaSize">40dp</dimen>
 
+    <dimen name="dropdown_item_padding">10dp</dimen>
+    <dimen name="dropdown_item_height">48dp</dimen>
 </resources>

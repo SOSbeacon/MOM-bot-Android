@@ -1,61 +1,72 @@
 package org.cnc.msrobot.activity;
 
 import java.util.ArrayList;
-import java.util.Date;
-import java.util.HashMap;
 
 import org.cnc.msrobot.R;
 import org.cnc.msrobot.fragment.BaseFragment;
 import org.cnc.msrobot.fragment.CalendarEventFragment;
+import org.cnc.msrobot.fragment.ClassicFragment;
 import org.cnc.msrobot.fragment.HomeFragment;
+import org.cnc.msrobot.provider.DbContract.TableContact;
+import org.cnc.msrobot.recognizemodule.RecoginizeIds;
+import org.cnc.msrobot.recognizemodule.RecognizeBase;
+import org.cnc.msrobot.recognizemodule.RecognizeCommand;
+import org.cnc.msrobot.recognizemodule.RecognizeEmailBody;
+import org.cnc.msrobot.recognizemodule.RecognizeEmailSubject;
+import org.cnc.msrobot.recognizemodule.RecognizeEmailTo;
+import org.cnc.msrobot.recognizemodule.RecognizeSmsBody;
+import org.cnc.msrobot.recognizemodule.RecognizeSmsTo;
+import org.cnc.msrobot.resource.ContactResource;
 import org.cnc.msrobot.resource.EmptyResource;
 import org.cnc.msrobot.resource.EventResource;
 import org.cnc.msrobot.utils.Actions;
-import org.cnc.msrobot.utils.AppUtils;
+import org.cnc.msrobot.utils.Consts;
 import org.cnc.msrobot.utils.Consts.RequestCode;
-import org.cnc.msrobot.utils.CustomActionBar;
 import org.cnc.msrobot.utils.DialogUtils;
+import org.cnc.msrobot.utils.DialogUtils.OnConfirmClickListener;
 
 import android.app.Activity;
-import android.content.DialogInterface;
 import android.content.Intent;
 import android.content.res.Configuration;
-import android.media.AudioManager;
+import android.database.Cursor;
 import android.os.Bundle;
-import android.speech.tts.TextToSpeech;
 import android.support.v4.app.ActionBarDrawerToggle;
 import android.support.v4.app.FragmentManager;
+import android.support.v4.app.LoaderManager.LoaderCallbacks;
+import android.support.v4.content.CursorLoader;
+import android.support.v4.content.Loader;
 import android.support.v4.view.GravityCompat;
 import android.support.v4.widget.DrawerLayout;
+import android.util.SparseArray;
 import android.view.Menu;
-import android.view.MenuInflater;
 import android.view.MenuItem;
 import android.view.View;
+import android.view.View.OnClickListener;
 import android.widget.AdapterView;
 import android.widget.ArrayAdapter;
+import android.widget.FrameLayout;
 import android.widget.ListView;
 
 import com.android.volley.Response.ErrorListener;
 import com.android.volley.Response.Listener;
 import com.android.volley.VolleyError;
 
-public class MainActivity extends BaseActivity {
-	public static final int REC_SMS = 0;
-	public static final int REC_EMAIL = 1;
-	public static final int REC_SEARCH = 2;
-	public static final int REC_ALARM = 3;
-	/**
-	 * regconize index
-	 */
-	private int mRecIndex = 0;
+public class MainActivity extends BaseActivity implements LoaderCallbacks<Cursor>, OnClickListener {
+	private static final int LOADER_GET_LIST_CONTACT = 1;
 	private String[] mPlanetTitles;
 	private DrawerLayout mDrawerLayout;
 	private ActionBarDrawerToggle mDrawerToggle;
 	private ListView mDrawerList;
 	private CharSequence mDrawerTitle;
 	private CharSequence mTitle;
+	public static ContactResource contactRecognize = new ContactResource();
+	public static String subjectRecognize;
 	protected DialogUtils mDialog;
-
+	protected BaseFragment fragment;
+	public static ArrayList<ContactResource> listContact = new ArrayList<ContactResource>();
+	SparseArray<RecognizeBase> mRecModule = new SparseArray<RecognizeBase>();
+	private FrameLayout touchInterceptor;
+	private FrameLayout rootViewGroup;
 	Listener<EmptyResource> mRequestLogoutlistener = new Listener<EmptyResource>() {
 
 		@Override
@@ -70,14 +81,32 @@ public class MainActivity extends BaseActivity {
 		@Override
 		public void onErrorResponse(VolleyError error) {
 			showCenterToast(R.string.err_logout_fail);
+		}
+	};
 
+	Listener<EventResource[]> mRequestCreateEventListener = new Listener<EventResource[]>() {
+
+		@Override
+		public void onResponse(EventResource[] response) {
+			showCenterToast(R.string.msg_info_create_event);
+		}
+	};
+
+	ErrorListener mRequestCreateEventError = new ErrorListener() {
+		@Override
+		public void onErrorResponse(VolleyError error) {
+			showCenterToast(R.string.msg_err_create_event);
 		}
 	};
 
 	@Override
 	protected void onCreate(Bundle savedInstanceState) {
 		super.onCreate(savedInstanceState);
+		mActionbar.setOnClickListener(this);
 		setContentView(R.layout.activity_main);
+		touchInterceptor = new FrameLayout(this);
+		touchInterceptor.setClickable(true); // otherwise clicks will fall through
+		rootViewGroup = (FrameLayout) findViewById(R.id.content_frame);
 		mDialog = new DialogUtils(this);
 
 		mTitle = mDrawerTitle = getTitle();
@@ -95,7 +124,6 @@ public class MainActivity extends BaseActivity {
 		// enable ActionBar app icon to behave as action to toggle nav drawer
 		getActionBar().setDisplayHomeAsUpEnabled(true);
 		getActionBar().setHomeButtonEnabled(true);
-		mActionbar.setType(CustomActionBar.TYPE_HOME);
 
 		// ActionBarDrawerToggle ties together the the proper interactions
 		// between the sliding drawer and the action bar app icon
@@ -120,14 +148,22 @@ public class MainActivity extends BaseActivity {
 		if (savedInstanceState == null) {
 			selectItem(0);
 		}
+
+		// init cursor loader
+		initLoader();
+
+		// get contact list
+		getContactList();
+
+		initRecognizeModule();
 	}
 
-	@Override
-	public boolean onCreateOptionsMenu(Menu menu) {
-		MenuInflater inflater = getMenuInflater();
-		inflater.inflate(R.menu.main_menu, menu);
-		return super.onCreateOptionsMenu(menu);
-	}
+	// @Override
+	// public boolean onCreateOptionsMenu(Menu menu) {
+	// MenuInflater inflater = getMenuInflater();
+	// inflater.inflate(R.menu.main_menu, menu);
+	// return super.onCreateOptionsMenu(menu);
+	// }
 
 	/* Called whenever we call invalidateOptionsMenu() */
 	@Override
@@ -143,19 +179,35 @@ public class MainActivity extends BaseActivity {
 	}
 
 	@Override
-	public boolean onOptionsItemSelected(MenuItem item) {
+	public boolean onMenuItemSelected(int featureId, MenuItem item) {
 		// The action bar home/up action should open or close the drawer.
 		// ActionBarDrawerToggle will take care of this.
 		if (mDrawerToggle.onOptionsItemSelected(item)) { return true; }
 		switch (item.getItemId()) {
 			case R.id.menu_refresh:
-				// TODO refresh calendar
-				break;
+				if (fragment != null) {
+					fragment.refresh();
+				}
+				return true;
 			case R.id.menu_add:
 				startAddOrEditEventActivity(null);
 				return true;
 		}
 		return super.onOptionsItemSelected(item);
+	}
+
+	@Override
+	protected void onPause() {
+		super.onPause();
+		if (touchInterceptor.getParent() == null) {
+			rootViewGroup.addView(touchInterceptor);
+		}
+	}
+
+	@Override
+	protected void onResume() {
+		super.onResume();
+		rootViewGroup.removeView(touchInterceptor);
 	}
 
 	private class DrawerItemClickListener implements ListView.OnItemClickListener {
@@ -169,35 +221,51 @@ public class MainActivity extends BaseActivity {
 	private void selectItem(int position) {
 
 		// Create a new fragment and specify the planet to show based on position
-		BaseFragment fragment;
 		Bundle bundle = new Bundle();
 		switch (position) {
 			case 0:
-				fragment = new HomeFragment();
+				fragment = new ClassicFragment();
 				break;
 			case 1:
-				fragment = new CalendarEventFragment();
-				bundle.putInt(CalendarEventFragment.EXTRA_TYPE, CalendarEventFragment.TYPE_MONTH);
+				fragment = new HomeFragment();
 				break;
 			case 2:
 				fragment = new CalendarEventFragment();
-				bundle.putInt(CalendarEventFragment.EXTRA_TYPE, CalendarEventFragment.TYPE_WEEK);
+				bundle.putInt(CalendarEventFragment.EXTRA_TYPE, CalendarEventFragment.TYPE_MONTH);
 				break;
 			case 3:
 				fragment = new CalendarEventFragment();
-				bundle.putInt(CalendarEventFragment.EXTRA_TYPE, CalendarEventFragment.TYPE_DAY);
+				bundle.putInt(CalendarEventFragment.EXTRA_TYPE, CalendarEventFragment.TYPE_WEEK);
 				break;
 			case 4:
+				fragment = new CalendarEventFragment();
+				bundle.putInt(CalendarEventFragment.EXTRA_TYPE, CalendarEventFragment.TYPE_DAY);
+				break;
+			case 5:
 				// setting
 				startActivityForResult(new Intent(this, EmailSetupActivity.class), RequestCode.REQUEST_EMAIL_SETUP);
 				return;
-			case 5:
+			case 6:
 				// Logout
 				showProgress();
 				mRequestManager.request(Actions.ACTION_LOGOUT, null, mRequestLogoutlistener, mRequestLogoutError);
 				return;
+			case 7:
+				// Exit
+				mDialog.showConfirmDialog(R.string.dialog_confirm_exit, new OnConfirmClickListener() {
+
+					@Override
+					public void onConfirmOkClick() {
+						finish();
+					}
+
+					@Override
+					public void onConfirmCancelClick() {
+					}
+				});
+				return;
 			default:
-				fragment = new HomeFragment();
+				fragment = new ClassicFragment();
 				break;
 		}
 		fragment.setArguments(bundle);
@@ -236,40 +304,49 @@ public class MainActivity extends BaseActivity {
 		mDrawerToggle.onConfigurationChanged(newConfig);
 	}
 
-	public void listen(int id) {
-		String msg = "";
-		HashMap<String, String> myHashAlarm = new HashMap<String, String>();
-		myHashAlarm.put(TextToSpeech.Engine.KEY_PARAM_STREAM, String.valueOf(AudioManager.STREAM_MUSIC));
-		switch (id) {
-			case REC_ALARM:
-				msg = getString(R.string.recognize_alarm);
-				break;
-			case REC_EMAIL:
-				msg = getString(R.string.recognize_email);
-				break;
-			case REC_SEARCH:
-				msg = getString(R.string.recognize_search);
-				break;
-			case REC_SMS:
-				msg = getString(R.string.recognize_sms);
-				break;
+	private void initRecognizeModule() {
+		mRecModule.put(RecoginizeIds.MODULE_COMMAND, new RecognizeCommand(this));
+		mRecModule.put(RecoginizeIds.MODULE_SMS_TO, new RecognizeSmsTo(this));
+		mRecModule.put(RecoginizeIds.MODULE_SMS_BODY, new RecognizeSmsBody(this));
+		mRecModule.put(RecoginizeIds.MODULE_EMAIL_TO, new RecognizeEmailTo(this));
+		mRecModule.put(RecoginizeIds.MODULE_EMAIL_SUBJECT, new RecognizeEmailSubject(this));
+		mRecModule.put(RecoginizeIds.MODULE_EMAIL_BODY, new RecognizeEmailBody(this));
+	}
 
+	public void doRecognizeModule(int id) {
+		RecognizeBase recModule = mRecModule.get(id);
+		if (recModule != null) {
+			recognizeRetry = 0;
+			// message will speak before listen
+			String msg = recModule.getSpeakMessageBeforeListen();
+			if (msg != null) {
+				addChatListView(recModule.getMessageShowInChatList(), 0);
+				speakBeforeRecognize(msg, id);
+			} else {
+				mModuleId = id;
+				listen();
+			}
 		}
-		myHashAlarm.put(TextToSpeech.Engine.KEY_PARAM_UTTERANCE_ID, id + "");
-		mTts.speak(msg, TextToSpeech.QUEUE_FLUSH, myHashAlarm);
 	}
 
 	@Override
 	public void onUtteranceCompleted(String utteranceId) {
+		super.onUtteranceCompleted(utteranceId);
 		try {
-			mRecIndex = Integer.parseInt(utteranceId);
-			// run listener for 200 ms delay
-			handler.postDelayed(new Runnable() {
-				@Override
-				public void run() {
-					listen();
-				}
-			}, 200);
+			mModuleId = Integer.parseInt(utteranceId);
+			RecognizeBase recModule = mRecModule.get(mModuleId);
+			if (recModule == null) return;
+			if (recModule.isShowRecognizeDialog()) {
+				startActivityForResult(new Intent(this, RecognizeActivity.class), RequestCode.REQUEST_RECOGNIZE);
+			} else {
+				// run listener for 200 ms delay
+				handler.postDelayed(new Runnable() {
+					@Override
+					public void run() {
+						listen();
+					}
+				}, 200);
+			}
 		} catch (Exception e) {
 		}
 	}
@@ -277,54 +354,16 @@ public class MainActivity extends BaseActivity {
 	@Override
 	public void onRecognize(final ArrayList<String> data) {
 		if (data == null || data.size() == 0) return;
-		switch (mRecIndex) {
-			case REC_SMS:
-				if (data.size() >= 1) {
-					AppUtils.showSentSmsIntent(this, data.get(0));
-				} else {
-					mDialog.showSelectionDialog(R.string.dialog_choose_message_title,
-							data.toArray(new String[data.size()]), new DialogInterface.OnClickListener() {
-								@Override
-								public void onClick(DialogInterface dialog, int which) {
-									AppUtils.showSentSmsIntent(MainActivity.this, data.get(which));
-								}
-							});
-				}
-				break;
-			case REC_EMAIL:
-				if (data.size() >= 1) {
-					AppUtils.showSentEmailIntent(MainActivity.this, "", data.get(0));
-				} else {
-					mDialog.showSelectionDialog(R.string.dialog_choose_message_title,
-							data.toArray(new String[data.size()]), new DialogInterface.OnClickListener() {
-								@Override
-								public void onClick(DialogInterface dialog, int which) {
-									AppUtils.showSentEmailIntent(MainActivity.this, "", data.get(which));
-								}
-							});
-				}
-				break;
-			case REC_SEARCH:
-				if (data.size() >= 1) {
-					AppUtils.showGoogleSearchIntent(MainActivity.this, data.get(0));
-				} else {
-					mDialog.showSelectionDialog(R.string.dialog_choose_search_title,
-							data.toArray(new String[data.size()]), new DialogInterface.OnClickListener() {
-								@Override
-								public void onClick(DialogInterface dialog, int which) {
-									AppUtils.showGoogleSearchIntent(MainActivity.this, data.get(which));
-								}
-							});
-				}
-				break;
-			case REC_ALARM:
-				String alarmString = data.get(0);
-				// hh:45
-
-				break;
-		}
+		RecognizeBase recModule = mRecModule.get(mModuleId);
+		if (recModule == null) return;
+		recModule.getListener().onRecoginze(data);
 	}
 
+	/**
+	 * start new or edit event activity
+	 * 
+	 * @param event
+	 */
 	private void startAddOrEditEventActivity(EventResource event) {
 		Intent intent = new Intent(this, AddOrEditEventActivity.class);
 		if (event != null) {
@@ -334,26 +373,141 @@ public class MainActivity extends BaseActivity {
 		startActivityForResult(intent, RequestCode.REQUEST_ADD_OR_EDIT_EVENT);
 	}
 
+	/**
+	 * Get contact list
+	 */
+	private void getContactList() {
+		mRequestManager.request(Actions.ACTION_GET_LIST_CONTACT, null, null, null);
+	}
+
 	@Override
 	public void onActivityResult(int requestCode, int resultCode, Intent data) {
 		super.onActivityResult(requestCode, resultCode, data);
 		switch (requestCode) {
 			case RequestCode.REQUEST_ADD_OR_EDIT_EVENT:
 				if (resultCode == Activity.RESULT_OK) {
-					EventResource event = new EventResource();
-					event.title = data.getStringExtra(AddOrEditEventActivity.EXTRA_SUMMARY);
-					event.content = data.getStringExtra(AddOrEditEventActivity.EXTRA_DESC);
-					event.setStart(new Date(data.getLongExtra(AddOrEditEventActivity.EXTRA_START_TIME, 0)));
-					event.setEnd(new Date(data.getLongExtra(AddOrEditEventActivity.EXTRA_END_TIME, 0)));
-					String id = data.getStringExtra(AddOrEditEventActivity.EXTRA_ID);
+					Bundle bundle = data.getExtras();
+					String id = data.getStringExtra(Consts.PARAMS_ID);
 					if (id == null) {
-						// TODO add new event
+						mRequestManager.request(Actions.ACTION_CREATE_EVENT, bundle, mRequestCreateEventListener,
+								mRequestCreateEventError);
 					} else {
-						event.id = id;
 						// TODO update event
 					}
 				}
 				break;
+			case RequestCode.REQUEST_RECOGNIZE:
+				if (resultCode == Activity.RESULT_OK) {
+					ArrayList<String> lstData = new ArrayList<String>();
+					lstData.add(data.getStringExtra(RecognizeActivity.EXTRA_TEXT));
+					RecognizeBase recModule = mRecModule.get(mModuleId);
+					if (recModule == null) return;
+					recModule.getListener().onRecoginze(lstData);
+				}
+				break;
+		}
+	}
+
+	@Override
+	public void onBackPressed() {
+		if (fragment instanceof HomeFragment) {
+			if (((HomeFragment) fragment).checkBackPress()) {
+				mDrawerLayout.openDrawer(mDrawerList);
+			}
+		} else if (fragment instanceof ClassicFragment) {
+			if (((ClassicFragment) fragment).checkBackPress()) {
+				mDrawerLayout.openDrawer(mDrawerList);
+			}
+		} else {
+			mDrawerLayout.openDrawer(mDrawerList);
+		}
+	}
+
+	private void initLoader() {
+		getSupportLoaderManager().initLoader(LOADER_GET_LIST_CONTACT, null, this);
+	}
+
+	@Override
+	public Loader<Cursor> onCreateLoader(int id, Bundle bundle) {
+		switch (id) {
+			case LOADER_GET_LIST_CONTACT:
+				return new CursorLoader(this, TableContact.CONTENT_URI, null, null, null, null);
+			default:
+				break;
+		}
+		return null;
+	}
+
+	@Override
+	public void onLoadFinished(Loader<Cursor> loader, Cursor cursor) {
+		switch (loader.getId()) {
+			case LOADER_GET_LIST_CONTACT:
+				if (cursor != null) {
+					if (cursor.moveToFirst()) {
+						listContact.clear();
+						do {
+							ContactResource contact = new ContactResource(cursor);
+							listContact.add(contact);
+						} while (cursor.moveToNext());
+					}
+				}
+				break;
+			default:
+				break;
+		}
+	}
+
+	@Override
+	public void onLoaderReset(Loader<Cursor> loader) {
+	}
+
+	@Override
+	public void onClick(View v) {
+		switch (v.getId()) {
+			case R.id.tvSMS: {
+				Intent intent = new Intent(this, ReadEmailSmsActivity.class);
+				intent.putExtra(SendSmsEmailActivity.EXTRA_TYPE, SendSmsEmailActivity.TYPE_SENT_SMS);
+				startActivity(intent);
+				break;
+			}
+			case R.id.tvEmail: {
+				Intent intent = new Intent(this, ReadEmailSmsActivity.class);
+				intent.putExtra(SendSmsEmailActivity.EXTRA_TYPE, SendSmsEmailActivity.TYPE_SENT_EMAIL);
+				startActivity(intent);
+				break;
+			}
+			default:
+				break;
+		}
+	}
+
+	public void addChatListView(String text, int pos) {
+		if (fragment != null && fragment instanceof HomeFragment && fragment.isAdded()) {
+			((HomeFragment) fragment).addChatListView(text, pos);
+		}
+	}
+
+	public void changeSmsItem(int count) {
+		if (fragment != null && fragment instanceof HomeFragment && fragment.isAdded()) {
+			((HomeFragment) fragment).changeSmsItem(count);
+		} else if (fragment != null && fragment instanceof ClassicFragment && fragment.isAdded()) {
+			((ClassicFragment) fragment).changeSmsItem(count);
+		}
+	}
+
+	public void changeEmailLoading() {
+		if (fragment != null && fragment instanceof HomeFragment && fragment.isAdded()) {
+			((HomeFragment) fragment).changeEmailLoading();
+		} else if (fragment != null && fragment instanceof ClassicFragment && fragment.isAdded()) {
+			((ClassicFragment) fragment).changeEmailLoading();
+		}
+	}
+
+	public void changeEmailItem(int count, boolean readFail) {
+		if (fragment != null && fragment instanceof HomeFragment && fragment.isAdded()) {
+			((HomeFragment) fragment).changeEmailItem(count, readFail);
+		} else if (fragment != null && fragment instanceof ClassicFragment && fragment.isAdded()) {
+			((ClassicFragment) fragment).changeEmailItem(count, readFail);
 		}
 	}
 }

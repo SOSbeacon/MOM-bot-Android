@@ -10,6 +10,7 @@ import org.cnc.msrobot.utils.Consts.URLConsts;
 import org.cnc.msrobot.utils.SharePrefs;
 
 import android.content.Context;
+import android.util.Log;
 
 import com.android.volley.Request.Method;
 
@@ -22,6 +23,7 @@ public class LoginRequest extends RequestBase<UserResource> {
 	@Override
 	public void postAfterRequest(UserResource result) {
 		if (result != null) {
+			Log.d("MsRobot", "result.auth_token: " + result.auth_token);
 			SharePrefs.getInstance().saveLoginToken(result.auth_token);
 		}
 	}

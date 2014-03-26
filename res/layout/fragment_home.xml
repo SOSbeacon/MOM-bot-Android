@@ -2,13 +2,38 @@
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
+    android:background="@color/main_bg_color"
     tools:context=".MainActivity" >
 
-    
-    <ListView
-        android:id="@+id/lvMain"
+    <LinearLayout
+        android:id="@+id/llMain"
         android:layout_width="match_parent"
         android:layout_height="match_parent"
+        android:weightSum="2" >
+
+        <ImageView
+            android:id="@+id/imgSecretary"
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:layout_gravity="top"
+            android:layout_weight="1"
+            android:contentDescription="@string/common_blank"
+            android:src="@drawable/img_secretary_close" />
+
+        <ListView
+            android:id="@+id/lvMain"
+            android:layout_width="0dp"
+            android:layout_height="match_parent"
+            android:layout_marginTop="@dimen/common_margin_layout_medium"
+            android:layout_weight="1"
+            android:divider="@null" />
+    </LinearLayout>
+
+    <ListView
+        android:id="@+id/lvChat"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:layout_below="@id/llMain"
         android:divider="@null" />
 
 </RelativeLayout>
