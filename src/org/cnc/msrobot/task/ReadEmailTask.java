@@ -126,6 +126,8 @@ public class ReadEmailTask extends AsyncTask<String, Void, Boolean> {
 							e.htmlContent = multipart.getBodyPart(1).getContent().toString();
 						}
 					}
+				} else {
+					e.content = e.htmlContent = s;
 				}
 
 				emails.add(e);

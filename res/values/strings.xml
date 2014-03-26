@@ -47,6 +47,8 @@
     <string name="function_sent_text_email">Sent text Email</string>
     <string name="function_sent_picture_email">Sent picture Email</string>
     <string name="function_setup_email_account">Setup email account.</string>
+    <string name="function_desc_set_alarm">Set alarm</string>
+    <string name="function_desc_set_reminder">Add reminder</string>
 
     <string-array name="array_list_drawer">
         <item>Home classic</item>
@@ -108,14 +110,14 @@
     <string name="recognize_ask_send_email">Do you want to send this email?</string>
 
     <!-- Command -->
-    <string name="command_example">Your command, for example: send text message, send image message, send text email, send image email, set alarm 13 o\'clock 10 minute today/tomorrow, what time is it</string>
-	<string name="command_send_text_message">send text message</string>
-	<string name="command_send_image_message">send image message</string>
-	<string name="command_send_text_email">send text email</string>
-	<string name="command_send_image_email">send image email</string>
-	<string name="command_send_set_alarm">set alarm</string>
-	<string name="command_send_what_time">what time</string>
-    
+    <string name="command_example">Your command, for example: send message, send email, set alarm 13 o\'clock 10 minute, what time is it, search xxx</string>
+    <string name="command_send">send</string>
+    <string name="command_email">email</string>
+    <string name="command_message">message</string>
+    <string name="command_set_alarm">set alarm</string>
+    <string name="command_what_time">what time</string>
+    <string name="command_search">search</string>
+
     <!-- Speak time string -->
     <string name="Verbose_Time_Hour">It\'s %1$s o\'clock %3$s.</string>
     <string name="Verbose_Time">It\'s %2$s past %1$s %3$s.</string>
@@ -129,13 +131,14 @@
     <string name="sms_no_message">\.\.\. You have no message.</string>
     <string name="sms_unread">\.\.\. You have %1$s unread message.</string>
     <string name="sms_unreads">\.\.\. You have %1$s unread messages.</string>
-    <string name="sms_read_message">\.\.\. Message from %1$s: %2$s.</string>
+    <string name="sms_read_message">\.\.\. Message from %1$s:\.\.\. %2$s</string>
     <string name="sms_ask_read_message">\.\.\. Message from %1$s. Do you want to read it?</string>
 
     <!-- Speak SMS string -->
     <string name="email_no_message">\.\.\. You have no Email.</string>
     <string name="email_unread">\.\.\. You have %1$s unread Email.</string>
     <string name="email_unreads">\.\.\. You have %1$s unread Emails.</string>
+    <string name="email_read_message">\.\.\. Email from: %1$s, subject: %2$s\.\.\.  %3$s</string>
     <string name="email_ask_read_message">\.\.\. Email from: %1$s, subject: %2$s. Do you want to read it?</string>
 
     <!-- Speak Weather string -->

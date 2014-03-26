@@ -3,7 +3,6 @@ package org.cnc.msrobot.activity;
 import java.util.ArrayList;
 import java.util.Locale;
 import java.util.regex.Matcher;
-import java.util.regex.Pattern;
 
 import org.cnc.msrobot.R;
 import org.cnc.msrobot.task.SendEmailTask;
@@ -116,13 +115,12 @@ public class SendSmsEmailActivity extends BaseActivity implements OnClickListene
 
 	@Override
 	public void onClick(View v) {
-
-		if (TextUtils.isEmpty(mEtTo.getText())) return;
 		switch (v.getId()) {
 			case R.id.btnClose:
 				finish();
 				break;
 			case R.id.btnSend:
+				if (TextUtils.isEmpty(mEtTo.getText())) return;
 				if (mType == TYPE_SENT_SMS) {
 					SmsManager smsManager = SmsManager.getDefault();
 					// Pattern patternNumber = Pattern.compile("(^(\\+)?\\d{2}-\\d{8,16})|(0\\d{8,18})|(\\d{8,18})");

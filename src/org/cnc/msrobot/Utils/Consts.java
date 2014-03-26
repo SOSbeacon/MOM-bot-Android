@@ -73,10 +73,10 @@ public class Consts {
 	}
 
 	public class RequestCode {
-		public final static int REQUEST_ADD_OR_EDIT_EVENT = 102;
-		public static final int REQUEST_CODE_CHECK_TTS = 100;
-		public static final int REQUEST_EMAIL_SETUP = 101;
-		public static final int REQUEST_RECOGNIZE = 103;
+		public final static int REQUEST_ADD_OR_EDIT_EVENT = 1;
+		public static final int REQUEST_CODE_CHECK_TTS = 2;
+		public static final int REQUEST_EMAIL_SETUP = 3;
+		public static final int REQUEST_RECOGNIZE = 4;
 
 	}
 }

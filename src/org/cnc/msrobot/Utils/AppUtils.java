@@ -1,11 +1,10 @@
 package org.cnc.msrobot.utils;
 
 import java.util.Calendar;
-import java.util.Date;
-import java.util.Locale;
-import java.util.regex.Matcher;
-import java.util.regex.Pattern;
+
 import org.cnc.msrobot.R;
+import org.cnc.msrobot.activity.BaseActivity;
+
 import android.annotation.TargetApi;
 import android.app.SearchManager;
 import android.content.ContentUris;
@@ -17,6 +16,7 @@ import android.net.NetworkInfo;
 import android.net.Uri;
 import android.os.Build;
 import android.os.Environment;
+import android.provider.AlarmClock;
 import android.provider.DocumentsContract;
 import android.provider.MediaStore;
 import android.util.DisplayMetrics;
@@ -24,6 +24,14 @@ import android.view.View;
 import android.view.WindowManager;
 import android.view.inputmethod.InputMethodManager;
 
+/**
+ * @author cnc
+ *
+ */
+/**
+ * @author cnc
+ * 
+ */
 public class AppUtils {
 	public static int TYPE_WIFI = 1;
 	public static int TYPE_MOBILE = 2;
@@ -132,94 +140,6 @@ public class AppUtils {
 		Intent intent = new Intent(Intent.ACTION_WEB_SEARCH);
 		intent.putExtra(SearchManager.QUERY, query); // query contains search string
 		context.startActivity(intent);
-	}
-
-	private static final String TIME_QUARTER_TO = "QUARTER TO";
-	private static final String TIME_QUARTER_PAST = "QUARTER PAST";
-	private static final String TIME_HALF_PAST = "HALF PAST";
-	private static final String TIME_OCLOCK = "O'CLOCK";
-	private static final String TIME_PAST = "PAST";
-	private static final String TIME_TO = "TO";
-
-	public static Date recognizeTime(String timeString) {
-		Pattern patternNumber = Pattern.compile("-?\\d+");
-		// get hour, minute and set second
-		Calendar calendar = Calendar.getInstance();
-		int hour = calendar.get(Calendar.HOUR_OF_DAY);
-		int minute = calendar.get(Calendar.MINUTE);
-		calendar.set(Calendar.SECOND, 0);
-		// hh:45
-		timeString = timeString.toUpperCase(Locale.US);
-		Matcher m = patternNumber.matcher(timeString);
-		if (timeString.contains(TIME_QUARTER_TO)) {
-			// find first number
-			if (m.find()) {
-				hour = Integer.parseInt(m.group());
-				minute = 45;
-			} else {
-				// not found any number, return null
-				return null;
-			}
-		} else if (timeString.contains(TIME_QUARTER_PAST)) {
-			// find first number
-			if (m.find()) {
-				hour = Integer.parseInt(m.group());
-				minute = 15;
-			} else {
-				// not found any number, return null
-				return null;
-			}
-		} else if (timeString.contains(TIME_HALF_PAST)) {
-			// find first number
-			if (m.find()) {
-				hour = Integer.parseInt(m.group());
-				minute = 30;
-			} else {
-				// not found any number, return null
-				return null;
-			}
-		} else if (timeString.contains(TIME_OCLOCK)) {
-			// find first number
-			if (m.find()) {
-				hour = Integer.parseInt(m.group());
-				minute = 0;
-			} else {
-				// not found any number, return null
-				return null;
-			}
-		} else if (timeString.contains(TIME_PAST)) {
-			// find first number
-			if (m.find()) {
-				minute = Integer.parseInt(m.group());
-				// find second number
-				if (m.find()) {
-					hour = Integer.parseInt(m.group());
-				} else {
-					return null;
-				}
-			} else {
-				// not found any number, return null
-				return null;
-			}
-		} else if (timeString.contains(TIME_TO)) {
-			// find first number
-			if (m.find()) {
-				minute = 60 - Integer.parseInt(m.group());
-				// find second number
-				if (m.find()) {
-					hour = Integer.parseInt(m.group());
-				} else {
-					return null;
-				}
-			} else {
-				// not found any number, return null
-				return null;
-			}
-		}
-		calendar.set(Calendar.HOUR_OF_DAY, hour);
-		calendar.set(Calendar.MINUTE, minute);
-		Date date = calendar.getTime();
-		return date;
 	}
 
 	/**
@@ -381,5 +301,19 @@ public class AppUtils {
 	 */
 	public static boolean isMediaDocument(Uri uri) {
 		return "com.android.providers.media.documents".equals(uri.getAuthority());
+	}
+
+	/**
+	 * set alarm
+	 * 
+	 * @param targetCal
+	 */
+	public static void setAlarm(BaseActivity context, Calendar targetCal) {
+		context.showCenterToast("\n\n***\n" + "Alarm is set " + targetCal.getTime() + "\n" + "***\n");
+		Intent openNewAlarm = new Intent(AlarmClock.ACTION_SET_ALARM);
+		openNewAlarm.putExtra(AlarmClock.EXTRA_HOUR, targetCal.get(Calendar.HOUR_OF_DAY));
+		openNewAlarm.putExtra(AlarmClock.EXTRA_MINUTES, targetCal.get(Calendar.MINUTE));
+		openNewAlarm.putExtra(AlarmClock.EXTRA_SKIP_UI, true);
+		context.startActivity(openNewAlarm);
 	}
 }

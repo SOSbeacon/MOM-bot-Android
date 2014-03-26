@@ -1,8 +1,10 @@
 package org.cnc.msrobot.fragment;
 
 import java.util.ArrayList;
+import java.util.Calendar;
 
 import org.cnc.msrobot.R;
+import org.cnc.msrobot.activity.AddOrEditEventActivity;
 import org.cnc.msrobot.activity.EmailSetupActivity;
 import org.cnc.msrobot.activity.MainActivity;
 import org.cnc.msrobot.adapter.MainAdapter;
@@ -12,6 +14,7 @@ import org.cnc.msrobot.resource.WeatherResource;
 import org.cnc.msrobot.task.ReadEmailTask;
 import org.cnc.msrobot.task.ReadSMSTask;
 import org.cnc.msrobot.utils.Actions;
+import org.cnc.msrobot.utils.AppUtils;
 import org.cnc.msrobot.utils.Consts;
 import org.cnc.msrobot.utils.Consts.RequestCode;
 import org.cnc.msrobot.utils.CustomActionBar;
@@ -19,6 +22,8 @@ import org.cnc.msrobot.utils.LocationUtils;
 import org.cnc.msrobot.utils.LocationUtils.LocationUtilsListener;
 
 import android.app.Activity;
+import android.app.TimePickerDialog;
+import android.app.TimePickerDialog.OnTimeSetListener;
 import android.content.Intent;
 import android.location.Location;
 import android.os.Bundle;
@@ -27,6 +32,7 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.ListView;
+import android.widget.TimePicker;
 
 import com.android.volley.Response.Listener;
 
@@ -165,12 +171,12 @@ public class ClassicFragment extends BaseFragment implements OnFunctionDoListene
 	}
 
 	private void showWeather(WeatherResource response) {
+		if (getBaseActivity() == null) return;
 		CustomActionBar actionBar = getBaseActivity().getCusomActionBar();
 		if (actionBar == null) return;
-		String condition = response.condition.get(0).main;
 		String degress = getString(R.string.common_degress);
-		String tempp = Math.round(response.temperature.temp) + " " + degress + "C";
-		// actionBar.setWeatherText(condition + " (" + tempp + ")");
+		String tempp = Math.round(response.temperature.temp) + degress + "C";
+		actionBar.setWeatherText(tempp);
 	}
 
 	private void requestLocation() {
@@ -225,10 +231,6 @@ public class ClassicFragment extends BaseFragment implements OnFunctionDoListene
 	private void showCommunicationMenu() {
 		mMenuIndex = 1;
 		adapterMain.clear();
-		// add back item
-		adapterMain.add(new ItemListFunction.Builder(getBaseActivity()).setType(ItemListFunction.TYPE_FUNCTION_CLASSIC)
-				.setDescResId(R.string.function_desc_back).setItemClickId(ItemListFunction.FUNCTION_BACK_TO_COMMAND)
-				.setColorResId(R.color.white).build());
 		// add sent text message
 		adapterMain.add(new ItemListFunction.Builder(getBaseActivity()).setType(ItemListFunction.TYPE_FUNCTION_CLASSIC)
 				.setDescResId(R.string.function_sent_text_sms).setItemClickId(ItemListFunction.FUNCTION_SENT_TEXT_SMS)
@@ -245,16 +247,16 @@ public class ClassicFragment extends BaseFragment implements OnFunctionDoListene
 		adapterMain.add(new ItemListFunction.Builder(getBaseActivity()).setType(ItemListFunction.TYPE_FUNCTION_CLASSIC)
 				.setDescResId(R.string.function_sent_picture_email)
 				.setItemClickId(ItemListFunction.FUNCTION_SENT_PICTURE_EMAIL).setColorResId(R.color.white).build());
+		// add back item
+		adapterMain.add(new ItemListFunction.Builder(getBaseActivity()).setType(ItemListFunction.TYPE_FUNCTION_CLASSIC)
+				.setDescResId(R.string.function_desc_back).setItemClickId(ItemListFunction.FUNCTION_BACK_TO_COMMAND)
+				.setColorResId(R.color.buttonFocused1).build());
 		adapterMain.notifyDataSetChanged();
 	}
 
 	private void showInformationMenu() {
 		mMenuIndex = 2;
 		adapterMain.clear();
-		// add back item
-		adapterMain.add(new ItemListFunction.Builder(getBaseActivity()).setType(ItemListFunction.TYPE_FUNCTION_CLASSIC)
-				.setDescResId(R.string.function_desc_back).setItemClickId(ItemListFunction.FUNCTION_BACK_TO_COMMAND)
-				.setColorResId(R.color.white).build());
 		// add sent text message
 		adapterMain.add(new ItemListFunction.Builder(getBaseActivity()).setType(ItemListFunction.TYPE_FUNCTION_CLASSIC)
 				.setDescResId(R.string.function_desc_news).setItemClickId(ItemListFunction.FUNCTION_CHECK_NEWS)
@@ -263,6 +265,28 @@ public class ClassicFragment extends BaseFragment implements OnFunctionDoListene
 		adapterMain.add(new ItemListFunction.Builder(getBaseActivity()).setType(ItemListFunction.TYPE_FUNCTION_CLASSIC)
 				.setDescResId(R.string.function_desc_weather).setItemClickId(ItemListFunction.FUNCTION_CHECK_WEATHER)
 				.setColorResId(R.color.white).build());
+		// add back item
+		adapterMain.add(new ItemListFunction.Builder(getBaseActivity()).setType(ItemListFunction.TYPE_FUNCTION_CLASSIC)
+				.setDescResId(R.string.function_desc_back).setItemClickId(ItemListFunction.FUNCTION_BACK_TO_COMMAND)
+				.setColorResId(R.color.buttonFocused1).build());
+		adapterMain.notifyDataSetChanged();
+	}
+
+	private void showAdminMenu() {
+		mMenuIndex = 3;
+		adapterMain.clear();
+		// add sent text message
+		adapterMain.add(new ItemListFunction.Builder(getBaseActivity()).setType(ItemListFunction.TYPE_FUNCTION_CLASSIC)
+				.setDescResId(R.string.function_desc_set_alarm).setItemClickId(ItemListFunction.FUNCTION_SET_ALARM)
+				.setColorResId(R.color.white).build());
+		// add image message
+		adapterMain.add(new ItemListFunction.Builder(getBaseActivity()).setType(ItemListFunction.TYPE_FUNCTION_CLASSIC)
+				.setDescResId(R.string.function_desc_set_reminder)
+				.setItemClickId(ItemListFunction.FUNCTION_SET_REMINDER).setColorResId(R.color.white).build());
+		// add back item
+		adapterMain.add(new ItemListFunction.Builder(getBaseActivity()).setType(ItemListFunction.TYPE_FUNCTION_CLASSIC)
+				.setDescResId(R.string.function_desc_back).setItemClickId(ItemListFunction.FUNCTION_BACK_TO_COMMAND)
+				.setColorResId(R.color.buttonFocused1).build());
 		adapterMain.notifyDataSetChanged();
 	}
 
@@ -278,6 +302,51 @@ public class ClassicFragment extends BaseFragment implements OnFunctionDoListene
 			case ItemListFunction.FUNCTION_GROUP_INFORMATION:
 				showInformationMenu();
 				break;
+			case ItemListFunction.FUNCTION_GROUP_ADMIN:
+				showAdminMenu();
+				break;
+			case ItemListFunction.FUNCTION_SET_ALARM:
+				openTimePickerDialog(true);
+				break;
+			case ItemListFunction.FUNCTION_SET_REMINDER:
+				getBaseActivity().startActivityForResult(new Intent(getBaseActivity(), AddOrEditEventActivity.class),
+						RequestCode.REQUEST_ADD_OR_EDIT_EVENT);
+				break;
 		}
 	}
+
+	TimePickerDialog timePickerDialog;
+
+	private void openTimePickerDialog(boolean is24r) {
+		Calendar calendar = Calendar.getInstance();
+
+		timePickerDialog = new TimePickerDialog(getBaseActivity(), onTimeSetListener,
+				calendar.get(Calendar.HOUR_OF_DAY), calendar.get(Calendar.MINUTE), is24r);
+		timePickerDialog.setTitle("Set Alarm Time");
+
+		timePickerDialog.show();
+
+	}
+
+	OnTimeSetListener onTimeSetListener = new OnTimeSetListener() {
+
+		@Override
+		public void onTimeSet(TimePicker view, int hourOfDay, int minute) {
+
+			Calendar calNow = Calendar.getInstance();
+			Calendar calSet = (Calendar) calNow.clone();
+
+			calSet.set(Calendar.HOUR_OF_DAY, hourOfDay);
+			calSet.set(Calendar.MINUTE, minute);
+			calSet.set(Calendar.SECOND, 0);
+			calSet.set(Calendar.MILLISECOND, 0);
+
+			if (calSet.compareTo(calNow) <= 0) {
+				// Today Set time passed, count to tomorrow
+				calSet.add(Calendar.DATE, 1);
+			}
+
+			AppUtils.setAlarm(getBaseActivity(), calSet);
+		}
+	};
 }

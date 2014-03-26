@@ -38,7 +38,8 @@
     <dimen name="notification_margin_top">-10dp</dimen>
     <dimen name="heightMainMic">100dp</dimen>
     <dimen name="buttonCommaSize">40dp</dimen>
-
     <dimen name="dropdown_item_padding">10dp</dimen>
     <dimen name="dropdown_item_height">48dp</dimen>
+    <dimen name="weather_width">50dp</dimen>
+
 </resources>

@@ -26,6 +26,7 @@ public final class ItemListFunction {
 	public static final int FUNCTION_SETUP_EMAIL_ACCOUNT = 16;
 	public static final int FUNCTION_BACK_TO_MAIN = 17;
 	public static final int FUNCTION_BACK_TO_COMMAND= 18;
+	public static final int FUNCTION_SET_REMINDER = 19;
 	public static final int FUNCTION_GROUP_COMUNICATION = 22;
 	public static final int FUNCTION_GROUP_INFORMATION = 23;
 	public static final int FUNCTION_GROUP_EMERGENCY = 24;

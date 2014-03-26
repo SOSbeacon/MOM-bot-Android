@@ -60,13 +60,12 @@
 
             <TextView
                 android:id="@+id/tvWeather"
-                android:layout_width="wrap_content"
+                android:layout_width="@dimen/weather_width"
                 android:layout_height="match_parent"
                 android:layout_marginRight="@dimen/common_margin_layout"
                 android:layout_toRightOf="@id/tvEmail"
                 android:background="@drawable/item_background_click"
                 android:gravity="center"
-                android:paddingRight="@dimen/common_margin_layout_medium"
                 android:textSize="@dimen/common_textsize_larger"
                 android:textStyle="bold" />
         </RelativeLayout>

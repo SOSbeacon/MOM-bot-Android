@@ -14,6 +14,7 @@ import org.cnc.msrobot.recognizemodule.RecognizeCommand;
 import org.cnc.msrobot.recognizemodule.RecognizeEmailBody;
 import org.cnc.msrobot.recognizemodule.RecognizeEmailSubject;
 import org.cnc.msrobot.recognizemodule.RecognizeEmailTo;
+import org.cnc.msrobot.recognizemodule.RecognizeSearch;
 import org.cnc.msrobot.recognizemodule.RecognizeSmsBody;
 import org.cnc.msrobot.recognizemodule.RecognizeSmsTo;
 import org.cnc.msrobot.resource.ContactResource;
@@ -183,16 +184,6 @@ public class MainActivity extends BaseActivity implements LoaderCallbacks<Cursor
 		// The action bar home/up action should open or close the drawer.
 		// ActionBarDrawerToggle will take care of this.
 		if (mDrawerToggle.onOptionsItemSelected(item)) { return true; }
-		switch (item.getItemId()) {
-			case R.id.menu_refresh:
-				if (fragment != null) {
-					fragment.refresh();
-				}
-				return true;
-			case R.id.menu_add:
-				startAddOrEditEventActivity(null);
-				return true;
-		}
 		return super.onOptionsItemSelected(item);
 	}
 
@@ -311,20 +302,26 @@ public class MainActivity extends BaseActivity implements LoaderCallbacks<Cursor
 		mRecModule.put(RecoginizeIds.MODULE_EMAIL_TO, new RecognizeEmailTo(this));
 		mRecModule.put(RecoginizeIds.MODULE_EMAIL_SUBJECT, new RecognizeEmailSubject(this));
 		mRecModule.put(RecoginizeIds.MODULE_EMAIL_BODY, new RecognizeEmailBody(this));
+		mRecModule.put(RecoginizeIds.MODULE_SEARCH, new RecognizeSearch(this));
 	}
 
 	public void doRecognizeModule(int id) {
 		RecognizeBase recModule = mRecModule.get(id);
-		if (recModule != null) {
-			recognizeRetry = 0;
-			// message will speak before listen
-			String msg = recModule.getSpeakMessageBeforeListen();
-			if (msg != null) {
-				addChatListView(recModule.getMessageShowInChatList(), 0);
-				speakBeforeRecognize(msg, id);
-			} else {
-				mModuleId = id;
-				listen();
+		if (isRecording) {
+			stopListening();
+			stopSpeak();
+		} else {
+			if (recModule != null) {
+				recognizeRetry = 0;
+				// message will speak before listen
+				String msg = recModule.getSpeakMessageBeforeListen();
+				if (msg != null) {
+					addChatListView(recModule.getMessageShowInChatList(), 0);
+					speakBeforeRecognize(msg, id);
+				} else {
+					mModuleId = id;
+					listen();
+				}
 			}
 		}
 	}
@@ -332,6 +329,7 @@ public class MainActivity extends BaseActivity implements LoaderCallbacks<Cursor
 	@Override
 	public void onUtteranceCompleted(String utteranceId) {
 		super.onUtteranceCompleted(utteranceId);
+		if (utteranceId.equals("0")) return;
 		try {
 			mModuleId = Integer.parseInt(utteranceId);
 			RecognizeBase recModule = mRecModule.get(mModuleId);
@@ -357,20 +355,6 @@ public class MainActivity extends BaseActivity implements LoaderCallbacks<Cursor
 		RecognizeBase recModule = mRecModule.get(mModuleId);
 		if (recModule == null) return;
 		recModule.getListener().onRecoginze(data);
-	}
-
-	/**
-	 * start new or edit event activity
-	 * 
-	 * @param event
-	 */
-	private void startAddOrEditEventActivity(EventResource event) {
-		Intent intent = new Intent(this, AddOrEditEventActivity.class);
-		if (event != null) {
-			intent.putExtra("id", event.id);
-			intent.putExtra("summary", event.title);
-		}
-		startActivityForResult(intent, RequestCode.REQUEST_ADD_OR_EDIT_EVENT);
 	}
 
 	/**
@@ -467,12 +451,14 @@ public class MainActivity extends BaseActivity implements LoaderCallbacks<Cursor
 			case R.id.tvSMS: {
 				Intent intent = new Intent(this, ReadEmailSmsActivity.class);
 				intent.putExtra(SendSmsEmailActivity.EXTRA_TYPE, SendSmsEmailActivity.TYPE_SENT_SMS);
+				intent.putExtra(ReadEmailSmsActivity.EXTRA_REC, false);
 				startActivity(intent);
 				break;
 			}
 			case R.id.tvEmail: {
 				Intent intent = new Intent(this, ReadEmailSmsActivity.class);
 				intent.putExtra(SendSmsEmailActivity.EXTRA_TYPE, SendSmsEmailActivity.TYPE_SENT_EMAIL);
+				intent.putExtra(ReadEmailSmsActivity.EXTRA_REC, false);
 				startActivity(intent);
 				break;
 			}

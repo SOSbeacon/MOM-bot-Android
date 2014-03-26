@@ -28,6 +28,7 @@ import android.widget.TextView;
 public class ReadEmailSmsActivity extends BaseActivity implements OnClickListener {
 	private static final String VERB_ASK = "ask";
 	private static final String VERB_READ = "read";
+	public static final String EXTRA_REC = "extra_rec";
 
 	private ListView mListView;
 	private WebView mWebView;
@@ -35,12 +36,16 @@ public class ReadEmailSmsActivity extends BaseActivity implements OnClickListene
 	private int mPosition = 0;
 	private boolean mStop = false;
 	private int mType = SendSmsEmailActivity.TYPE_SENT_SMS;
+	private boolean isRec = true;
 
 	@Override
 	protected void onCreate(Bundle savedInstanceState) {
 		super.onCreate(savedInstanceState);
 		// set action bar
-		mActionbar.setType(CustomActionBar.TYPE_EMAIL);
+		isRec = getIntent().getExtras().getBoolean(EXTRA_REC, true);
+		if (isRec) {
+			mActionbar.setType(CustomActionBar.TYPE_EMAIL);
+		}
 		mActionbar.setOnClickListener(this);
 		setContentView(R.layout.activity_read_email_sms);
 
@@ -84,6 +89,8 @@ public class ReadEmailSmsActivity extends BaseActivity implements OnClickListene
 					mWebView.loadData(item.subject, "text/html", "UTF-8");
 				}
 				mPosition = position;
+				stopSpeak();
+				readEmail(mPosition);
 			}
 		});
 
@@ -106,20 +113,31 @@ public class ReadEmailSmsActivity extends BaseActivity implements OnClickListene
 	private void readEmail(int position) {
 		if (position >= mAdapter.getCount()) return;
 		mPosition = position;
-		mListView.setSelection(mPosition);
-		mListView.requestFocus();
 		mListView.setItemChecked(mPosition, true);
+
 		String msg = "";
 		if (mType == SendSmsEmailActivity.TYPE_SENT_EMAIL) {
 			Email email = ReadEmailTask.emails.get(position);
 			mWebView.loadData(email.htmlContent, "text/html", "UTF-8");
-			msg = getString(R.string.email_ask_read_message, email.from, email.subject);
+			if (isRec) {
+				msg = getString(R.string.email_ask_read_message, email.from, email.subject);
+			} else {
+				msg = getString(R.string.email_read_message, email.from, email.subject, email.content);
+			}
 		} else {
 			EmailSmsItem item = mAdapter.getItem(position);
 			mWebView.loadData(item.subject, "text/html", "UTF-8");
-			msg = getString(R.string.sms_ask_read_message, item.from);
+			if (isRec) {
+				msg = getString(R.string.sms_ask_read_message, item.from);
+			} else {
+				msg = getString(R.string.sms_read_message, item.from, item.subject);
+			}
 		}
-		speak(msg, VERB_ASK);
+		if (isRec) {
+			speak(msg, VERB_ASK);
+		} else {
+			speak(msg, VERB_READ);
+		}
 	}
 
 	@Override

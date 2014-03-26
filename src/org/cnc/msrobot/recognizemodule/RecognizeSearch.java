@@ -11,8 +11,8 @@ public class RecognizeSearch extends RecognizeBase implements RecognizeModuleLis
 	private MainActivity activity;
 
 	public RecognizeSearch(MainActivity activity) {
-		super(activity, RecoginizeIds.MODULE_EMAIL_SUBJECT, activity.getString(R.string.recognize_email_subject),
-				activity.getString(R.string.recognize_email_subject), null, true);
+		super(activity, RecoginizeIds.MODULE_SEARCH, activity.getString(R.string.recognize_search),
+				activity.getString(R.string.recognize_search), null, true);
 		this.activity = activity;
 		setListener(this);
 	}

@@ -137,10 +137,21 @@ public class BaseActivity extends FragmentActivity implements OnInitListener, On
 		}
 	}
 
+	/**
+	 * set speak animation listener
+	 * 
+	 * @param listener
+	 */
 	public void setOnSpeakAnimationListener(SpeakAnimationListener listener) {
 		mSpeakAnimationListener = listener;
 	}
 
+	/**
+	 * recognize voice
+	 * 
+	 * @param data
+	 *            array list string
+	 */
 	public void onRecognize(final ArrayList<String> data) {
 	}
 
@@ -175,7 +186,9 @@ public class BaseActivity extends FragmentActivity implements OnInitListener, On
 
 	// It's callback
 	public void onUtteranceCompleted(String utteranceId) {
-		mSpeakAnimationListener.stopSpeakingAnimation();
+		if (mSpeakAnimationListener != null) {
+			mSpeakAnimationListener.stopSpeakingAnimation();
+		}
 	}
 
 	private final RecognitionListener mRecListener = new RecognitionListener() {
@@ -540,7 +553,10 @@ public class BaseActivity extends FragmentActivity implements OnInitListener, On
 		if (mSpeakAnimationListener != null) {
 			mSpeakAnimationListener.startSpeakingAnimation();
 		}
-		getTextToSpeech().speak(msg, queueMode, null);
+		HashMap<String, String> myHashAlarm = new HashMap<String, String>();
+		myHashAlarm.put(TextToSpeech.Engine.KEY_PARAM_STREAM, String.valueOf(AudioManager.STREAM_MUSIC));
+		myHashAlarm.put(TextToSpeech.Engine.KEY_PARAM_UTTERANCE_ID, "0");
+		getTextToSpeech().speak(msg, queueMode, myHashAlarm);
 	}
 
 	public void stopSpeak() {

@@ -5,6 +5,7 @@ import java.util.Calendar;
 import java.util.Random;
 
 import org.cnc.msrobot.R;
+import org.cnc.msrobot.activity.AddOrEditEventActivity;
 import org.cnc.msrobot.activity.BaseActivity.SpeakAnimationListener;
 import org.cnc.msrobot.activity.EmailSetupActivity;
 import org.cnc.msrobot.activity.MainActivity;
@@ -20,6 +21,7 @@ import org.cnc.msrobot.resource.WeatherResource;
 import org.cnc.msrobot.task.ReadEmailTask;
 import org.cnc.msrobot.task.ReadSMSTask;
 import org.cnc.msrobot.utils.Actions;
+import org.cnc.msrobot.utils.AppUtils;
 import org.cnc.msrobot.utils.Consts;
 import org.cnc.msrobot.utils.Consts.RequestCode;
 import org.cnc.msrobot.utils.Consts.URLConsts;
@@ -29,6 +31,8 @@ import org.cnc.msrobot.utils.LocationUtils;
 import org.cnc.msrobot.utils.LocationUtils.LocationUtilsListener;
 
 import android.app.Activity;
+import android.app.TimePickerDialog;
+import android.app.TimePickerDialog.OnTimeSetListener;
 import android.content.Intent;
 import android.database.Cursor;
 import android.location.Location;
@@ -44,6 +48,7 @@ import android.view.View.OnClickListener;
 import android.view.ViewGroup;
 import android.widget.ImageView;
 import android.widget.ListView;
+import android.widget.TimePicker;
 
 import com.android.volley.Response.ErrorListener;
 import com.android.volley.Response.Listener;
@@ -306,11 +311,10 @@ public class HomeFragment extends BaseFragment implements LoaderCallbacks<Cursor
 	 * @return
 	 */
 	public boolean checkBackPress() {
-		// if (mMenuIndex == 0) {
-		// return true;
-		// } else
-		if (mMenuIndex == 1) {
+		if (mMenuIndex == 0) {
 			return true;
+		} else if (mMenuIndex == 1) {
+			showMainMenu();
 		} else if (mMenuIndex >= 2 && mMenuIndex <= 4) {
 			showCommandMenu();
 		}
@@ -417,6 +421,24 @@ public class HomeFragment extends BaseFragment implements LoaderCallbacks<Cursor
 		adapterMain.add(new ItemListFunction.Builder(getBaseActivity()).setType(ItemListFunction.TYPE_FUNCTION)
 				.setDescResId(R.string.function_desc_weather).setItemClickId(ItemListFunction.FUNCTION_CHECK_WEATHER)
 				.setColorResId(R.color.black).build());
+		adapterMain.notifyDataSetChanged();
+	}
+
+	private void showAdminMenu() {
+		mMenuIndex = 4;
+		adapterMain.clear();
+		// add back item
+		adapterMain.add(new ItemListFunction.Builder(getBaseActivity()).setType(ItemListFunction.TYPE_FUNCTION)
+				.setDescResId(R.string.function_desc_back).setItemClickId(ItemListFunction.FUNCTION_BACK_TO_COMMAND)
+				.setColorResId(R.color.black).build());
+		// add sent text message
+		adapterMain.add(new ItemListFunction.Builder(getBaseActivity()).setType(ItemListFunction.TYPE_FUNCTION)
+				.setDescResId(R.string.function_desc_set_alarm).setItemClickId(ItemListFunction.FUNCTION_SET_ALARM)
+				.setColorResId(R.color.black).build());
+		// add image message
+		adapterMain.add(new ItemListFunction.Builder(getBaseActivity()).setType(ItemListFunction.TYPE_FUNCTION)
+				.setDescResId(R.string.function_desc_set_reminder)
+				.setItemClickId(ItemListFunction.FUNCTION_SET_REMINDER).setColorResId(R.color.black).build());
 		adapterMain.notifyDataSetChanged();
 	}
 
@@ -560,6 +582,51 @@ public class HomeFragment extends BaseFragment implements LoaderCallbacks<Cursor
 			case ItemListFunction.FUNCTION_GROUP_INFORMATION:
 				showInformationMenu();
 				break;
+			case ItemListFunction.FUNCTION_GROUP_ADMIN:
+				showAdminMenu();
+				break;
+			case ItemListFunction.FUNCTION_SET_ALARM:
+				openTimePickerDialog(true);
+				break;
+			case ItemListFunction.FUNCTION_SET_REMINDER:
+				getBaseActivity().startActivityForResult(new Intent(getBaseActivity(), AddOrEditEventActivity.class),
+						RequestCode.REQUEST_ADD_OR_EDIT_EVENT);
+				break;
 		}
 	}
+
+	TimePickerDialog timePickerDialog;
+
+	private void openTimePickerDialog(boolean is24r) {
+		Calendar calendar = Calendar.getInstance();
+
+		timePickerDialog = new TimePickerDialog(getBaseActivity(), onTimeSetListener,
+				calendar.get(Calendar.HOUR_OF_DAY), calendar.get(Calendar.MINUTE), is24r);
+		timePickerDialog.setTitle("Set Alarm Time");
+
+		timePickerDialog.show();
+
+	}
+
+	OnTimeSetListener onTimeSetListener = new OnTimeSetListener() {
+
+		@Override
+		public void onTimeSet(TimePicker view, int hourOfDay, int minute) {
+
+			Calendar calNow = Calendar.getInstance();
+			Calendar calSet = (Calendar) calNow.clone();
+
+			calSet.set(Calendar.HOUR_OF_DAY, hourOfDay);
+			calSet.set(Calendar.MINUTE, minute);
+			calSet.set(Calendar.SECOND, 0);
+			calSet.set(Calendar.MILLISECOND, 0);
+
+			if (calSet.compareTo(calNow) <= 0) {
+				// Today Set time passed, count to tomorrow
+				calSet.add(Calendar.DATE, 1);
+			}
+
+			AppUtils.setAlarm(getBaseActivity(), calSet);
+		}
+	};
 }
