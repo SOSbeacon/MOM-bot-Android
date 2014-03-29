@@ -283,6 +283,10 @@ public class ClassicFragment extends BaseFragment implements OnFunctionDoListene
 		adapterMain.add(new ItemListFunction.Builder(getBaseActivity()).setType(ItemListFunction.TYPE_FUNCTION_CLASSIC)
 				.setDescResId(R.string.function_desc_set_reminder)
 				.setItemClickId(ItemListFunction.FUNCTION_SET_REMINDER).setColorResId(R.color.white).build());
+		// add setup email
+		adapterMain.add(new ItemListFunction.Builder(getBaseActivity()).setType(ItemListFunction.TYPE_FUNCTION_CLASSIC)
+				.setDescResId(R.string.function_setup_email_account)
+				.setItemClickId(ItemListFunction.FUNCTION_SETUP_EMAIL_ACCOUNT).setColorResId(R.color.white).build());
 		// add back item
 		adapterMain.add(new ItemListFunction.Builder(getBaseActivity()).setType(ItemListFunction.TYPE_FUNCTION_CLASSIC)
 				.setDescResId(R.string.function_desc_back).setItemClickId(ItemListFunction.FUNCTION_BACK_TO_COMMAND)

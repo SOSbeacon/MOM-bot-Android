@@ -68,27 +68,6 @@
             android:layout_height="wrap_content"
             android:contentDescription="@string/common_blank"
             android:visibility="gone" />
-
-        <LinearLayout
-            android:layout_width="match_parent"
-            android:layout_height="match_parent"
-            android:gravity="center_horizontal"
-            android:orientation="horizontal" >
-
-            <Button
-                android:id="@+id/btnSend"
-                style="@android:attr/buttonBarButtonStyle"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:text="@string/common_send" />
-
-            <Button
-                android:id="@+id/btnClose"
-                style="@android:attr/buttonBarButtonStyle"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:text="@string/common_close" />
-        </LinearLayout>
     </LinearLayout>
 
 </ScrollView>

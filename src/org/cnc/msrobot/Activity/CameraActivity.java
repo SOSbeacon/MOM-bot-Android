@@ -4,7 +4,6 @@ import java.io.File;
 import java.util.ArrayList;
 import java.util.List;
 
-import org.acra.ACRA;
 import org.cnc.msrobot.R;
 import org.cnc.msrobot.utils.AppUtils;
 import org.cnc.msrobot.utils.Consts;
@@ -185,7 +184,6 @@ public class CameraActivity extends BaseActivity {
 					startActivityForResult(crop.appIntent, crop.requestCode);
 				} catch (Exception ex) {
 					// ko tao duoc file t???m th?? show toast th??ng b??o ng?????i d??ng
-					ACRA.getErrorReporter().handleSilentException(ex);
 					showCenterToast(R.string.msg_err_camera_not_sdcard);
 				}
 			}

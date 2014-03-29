@@ -38,7 +38,7 @@ public class DbHelper extends SQLiteOpenHelper {
 		// CREATE EVENTS TABLE
 		sqlBuilder = new StringBuilder();
 		sqlBuilder.append("CREATE TABLE IF NOT EXISTS " + Tables.EVENTS + " (");
-		sqlBuilder.append(TableEvent._ID + " TEXT, ");
+		sqlBuilder.append(TableEvent._ID + " INTEGER, ");
 		sqlBuilder.append(TableEvent.CONTENT + " TEXT, ");
 		sqlBuilder.append(TableEvent.TITLE + " TEXT, ");
 		sqlBuilder.append(TableEvent.START + " TEXT, ");

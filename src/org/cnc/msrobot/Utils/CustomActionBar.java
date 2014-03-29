@@ -20,9 +20,10 @@ public class CustomActionBar extends RelativeLayout implements OnClickListener {
 	public static final int TYPE_HOME = 1;
 	public static final int TYPE_EMAIL = 2;
 	public static final int TYPE_CLASSIC = 3;
+	public static final int TYPE_SEND = 4;
 	private ImageView imgRec, imgPlay, imgStop, imgNext;
-	private TextView tvSMS, tvEmail, tvTitle, tvWeather;
-	private View rlActionEmail, rlActionHome;
+	private TextView tvSMS, tvEmail, tvTitle, tvWeather, tvSend;
+	private View rlActionEmail, rlActionHome, rlActionSend;
 	private ProgressBar prgLoading;
 	private int mType = TYPE_DEFAULT;
 	private boolean mInitial = false;
@@ -67,12 +68,15 @@ public class CustomActionBar extends RelativeLayout implements OnClickListener {
 		prgLoading = (ProgressBar) findViewById(R.id.prgLoading);
 		rlActionEmail = findViewById(R.id.rlActionEmail);
 		rlActionHome = findViewById(R.id.rlActionHome);
+		rlActionSend = findViewById(R.id.rlActionSend);
+		tvSend = (TextView) rlActionSend.findViewById(R.id.tvSend);
 		imgPlay = (ImageView) findViewById(R.id.imgPlay);
 		imgStop = (ImageView) findViewById(R.id.imgStop);
 		imgNext = (ImageView) findViewById(R.id.imgNext);
 
 		tvSMS.setOnClickListener(this);
 		tvEmail.setOnClickListener(this);
+		tvSend.setOnClickListener(this);
 
 		imgPlay.setOnClickListener(this);
 		imgStop.setOnClickListener(this);
@@ -105,15 +109,23 @@ public class CustomActionBar extends RelativeLayout implements OnClickListener {
 			case TYPE_CLASSIC:
 				rlActionHome.setVisibility(View.VISIBLE);
 				rlActionEmail.setVisibility(View.GONE);
+				rlActionSend.setVisibility(View.GONE);
 				break;
 			case TYPE_EMAIL:
 				rlActionHome.setVisibility(View.GONE);
 				rlActionEmail.setVisibility(View.VISIBLE);
+				rlActionSend.setVisibility(View.GONE);
+				break;
+			case TYPE_SEND:
+				rlActionHome.setVisibility(View.GONE);
+				rlActionEmail.setVisibility(View.GONE);
+				rlActionSend.setVisibility(View.VISIBLE);
 				break;
 			case TYPE_DEFAULT:
 			default:
 				rlActionHome.setVisibility(View.GONE);
 				rlActionEmail.setVisibility(View.GONE);
+				rlActionSend.setVisibility(View.GONE);
 				break;
 
 		}

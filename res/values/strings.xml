@@ -24,6 +24,7 @@
     <string name="dialog_choose_search_title">Choose search</string>
     <string name="dialog_choose_action">Choose actions</string>
     <string name="dialog_confirm_exit">Do you want to exit?</string>
+    <string name="dialog_confirm_setup_email">Email account isn\'t setup. Setup it now?</string>
     <string name="drawer_open">Open</string>
     <string name="drawer_close">Close</string>
 
@@ -42,11 +43,11 @@
     <string name="function_desc_read_email_fail">Can\'t read email.</string>
     <string name="function_desc_news">News</string>
     <string name="function_desc_weather">Weather</string>
-    <string name="function_sent_text_sms">Sent text SMS</string>
-    <string name="function_sent_picture_mms">Sent picture MMS</string>
-    <string name="function_sent_text_email">Sent text Email</string>
-    <string name="function_sent_picture_email">Sent picture Email</string>
-    <string name="function_setup_email_account">Setup email account.</string>
+    <string name="function_sent_text_sms">Send text SMS</string>
+    <string name="function_sent_picture_mms">Send picture MMS</string>
+    <string name="function_sent_text_email">Send text Email</string>
+    <string name="function_sent_picture_email">Send picture Email</string>
+    <string name="function_setup_email_account">Setup email account</string>
     <string name="function_desc_set_alarm">Set alarm</string>
     <string name="function_desc_set_reminder">Add reminder</string>
 
@@ -92,11 +93,12 @@
     <string name="msg_err_cannot_open_setting">Can not open setting</string>
     <string name="msg_warn_no_people_recognize">This name doesn\'t exist. Please try again (%1$s).</string>
     <string name="msg_err_dont_recognize">Sorry, we don\'t recognize your answer.</string>
-    <string name="msg_err_create_event">Create event fail</string>
-    <string name="msg_info_create_event">Create event success</string>
-    <string name="msg_info_send_email_success">Send email success</string>
-    <string name="msg_err_send_email_fail">Send email fail</string>
+    <string name="msg_err_create_event">Create event failed</string>
+    <string name="msg_info_create_event">Create event successfully</string>
+    <string name="msg_info_send_email_success">Send email successfully</string>
+    <string name="msg_err_send_email_fail">Send email failed</string>
     <string name="msg_err_camera_not_sdcard">Insert sdcard in order to take picture</string>
+    <string name="msg_info_setup_email">You must setup email account. Go to Administration \> Setup email account</string>
 
     <!-- Regconize speech -->
     <string name="recognize_sms_to">Please speak people should be sent message after beep sound.</string>
@@ -187,5 +189,10 @@
     <!-- Alarm -->
     <string name="alarm_speak_hour">Please speak hour after beep sound.</string>
     <string name="alarm_speak_minute">Please speak hour after beep sound.</string>
+    <string name="title_activity_notification">NotificationActivity</string>
+    <string name="hello_world">Hello world!</string>
+    <string name="action_settings">Settings</string>
 
+    <!-- Notification -->
+    <string name="notification_title">MOM-Bot reminder </string>
 </resources>

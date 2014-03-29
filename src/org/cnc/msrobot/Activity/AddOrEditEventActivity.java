@@ -72,6 +72,7 @@ public class AddOrEditEventActivity extends Activity implements OnClickListener 
 		}
 
 		Calendar calendar = Calendar.getInstance();
+		calendar.set(Calendar.SECOND, 0);
 		startTime = calendar.getTime();
 		tvStartDate.setText(DateTimeFormater.dateFullFormater.format(startTime));
 		tvStartTime.setText(DateTimeFormater.timeFormater.format(startTime));

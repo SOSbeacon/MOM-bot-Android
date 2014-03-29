@@ -6,7 +6,7 @@ import android.os.Environment;
 
 public class Consts {
 
-    public static final String APP_FOLDER_CACHE = "MsRobot/Cache";
+	public static final String APP_FOLDER_CACHE = "MsRobot/Cache";
 	public static final String PHOTO_JPG_EXTENSION = ".jpg";
 	public static final String BASE_PATH = Environment.getExternalStorageDirectory().toString() + File.separator
 			+ "org.cnc.seedforminecraft" + File.separator;
@@ -14,8 +14,8 @@ public class Consts {
 	public static final String TEMP_IMAGE_NAME = "temp_image";
 	public static final String TEMP_SELECTED_IMAGE_NAME = "temp_selected_image" + PHOTO_JPG_EXTENSION;
 	private static final String ROOT_URL = "http://ms-robot.herokuapp.com/";
-
 	public static final String BASE_URL = "";
+	public static final int TIME_CHECK_REMINDER = 1000 * 60 * 30; // 30 minute
 
 	public class EventType {
 		public static final String TYPE_NOREPEAT = "norepeat";
@@ -23,7 +23,7 @@ public class Consts {
 		public static final String TYPE_WEEKLY = "weekly";
 		public static final String TYPE_MONTHLY = "monthly";
 	}
-	
+
 	public static final int REQUEST_GALLERY = 0;
 	public static final int REQUEST_CAPTURE = 1;
 	public static final int REQUEST_CROP_AFTER_CAPTURE = 2;

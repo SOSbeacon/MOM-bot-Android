@@ -6,6 +6,7 @@ import android.app.Activity;
 import android.app.AlertDialog;
 import android.content.Context;
 import android.content.DialogInterface;
+import android.content.DialogInterface.OnCancelListener;
 import android.content.DialogInterface.OnClickListener;
 import android.view.Display;
 import android.view.WindowManager;
@@ -94,6 +95,11 @@ public class DialogUtils {
 			@Override
 			public void onClick(DialogInterface dialog, int which) {
 				dialog.cancel();
+			}
+		});
+		dialogBuilder.setOnCancelListener(new OnCancelListener() {
+			@Override
+			public void onCancel(DialogInterface arg0) {
 				if (listener != null) listener.onConfirmCancelClick();
 			}
 		});

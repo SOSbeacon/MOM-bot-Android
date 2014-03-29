@@ -1,0 +1,79 @@
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:id="@+id/rlNotify"
+    android:layout_width="fill_parent"
+    android:layout_height="match_parent"
+    android:background="@color/transparent" >
+
+    <RelativeLayout
+        android:id="@+id/rlContent"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_centerInParent="true"
+        android:background="@drawable/img_bg_cell"
+        android:paddingBottom="@dimen/common_margin_layout_large"
+        android:paddingTop="2px" >
+
+        <TextView
+            android:id="@+id/tvNotifyTitle"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:background="@drawable/img_btn_login_on"
+            android:padding="@dimen/common_margin_layout_medium"
+            android:text="@string/notification_title"
+            android:textColor="@color/white"
+            android:textSize="@dimen/common_textsize_large"
+            android:textStyle="bold" />
+
+        <TextView
+            android:id="@+id/tvTitle"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_below="@id/tvNotifyTitle"
+            android:layout_centerHorizontal="true"
+            android:layout_marginLeft="@dimen/common_margin_layout_large"
+            android:layout_marginRight="@dimen/common_margin_layout_large"
+            android:layout_marginTop="@dimen/common_margin_layout_large"
+            android:gravity="center"
+            android:text="@string/notification_title"
+            android:textSize="@dimen/common_textsize_xlarge"
+            android:textStyle="bold" />
+
+        <TextView
+            android:id="@+id/tvTime"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_below="@id/tvTitle"
+            android:layout_centerHorizontal="true"
+            android:layout_marginLeft="@dimen/common_margin_layout_large"
+            android:layout_marginTop="@dimen/common_margin_layout_medium"
+            android:text="@string/notification_title"
+            android:textSize="@dimen/common_textsize_large"
+            android:textStyle="bold" />
+
+        <TextView
+            android:id="@+id/tvDesc"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_below="@id/tvTime"
+            android:layout_centerHorizontal="true"
+            android:layout_marginLeft="@dimen/common_margin_layout_large"
+            android:layout_marginTop="@dimen/common_margin_layout_medium"
+            android:gravity="center"
+            android:text="@string/notification_title" />
+
+        <TextView
+            android:id="@+id/btnClose"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_below="@id/tvDesc"
+            android:layout_centerHorizontal="true"
+            android:layout_marginTop="@dimen/common_margin_layout_larger"
+            android:background="@drawable/item_button_click"
+            android:paddingBottom="@dimen/common_margin_layout_medium"
+            android:paddingLeft="@dimen/common_margin_layout_larger"
+            android:paddingRight="@dimen/common_margin_layout_larger"
+            android:paddingTop="@dimen/common_margin_layout_medium"
+            android:text="@string/common_close" />
+    </RelativeLayout>
+
+</RelativeLayout>

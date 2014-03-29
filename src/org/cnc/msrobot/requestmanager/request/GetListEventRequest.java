@@ -13,6 +13,7 @@ import org.cnc.msrobot.utils.SharePrefs;
 
 import android.content.ContentValues;
 import android.content.Context;
+import android.util.Log;
 
 import com.android.volley.Request.Method;
 
@@ -25,8 +26,8 @@ public class GetListEventRequest extends RequestBase<EventResource[]> {
 
 	@Override
 	public void postAfterRequest(EventResource[] result) {
-		String where = TableEvent.START + ">=datetime('" + DateTimeFormater.compareFormater.format(start) + "') AND "
-				+ TableEvent.START + "<=datetime('" + DateTimeFormater.compareFormater.format(end) + "')";
+		String where = TableEvent.START + ">=datetime('" + DateTimeFormater.timeServerFormat.format(start) + "') AND "
+				+ TableEvent.START + "<=datetime('" + DateTimeFormater.timeServerFormat.format(end) + "')";
 		// delete all event in range
 		mContext.getContentResolver().delete(TableEvent.CONTENT_URI, where, null);
 		// insert events
@@ -51,6 +52,7 @@ public class GetListEventRequest extends RequestBase<EventResource[]> {
 				.replace(Consts.HOLDER_QUERY_START, DateTimeFormater.timeServerFormat.format(start))
 				.replace(Consts.HOLDER_QUERY_END, DateTimeFormater.timeServerFormat.format(end))
 				.replace(Consts.HOLDER_AUTH_TOKEN, token);
+		Log.d("GetListEventRequest",url);
 		return url;
 	}
 

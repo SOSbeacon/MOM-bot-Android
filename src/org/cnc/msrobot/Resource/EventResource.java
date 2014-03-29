@@ -6,17 +6,28 @@ import java.util.Date;
 import org.cnc.msrobot.provider.DbContract.TableEvent;
 import org.cnc.msrobot.utils.DateTimeFormater;
 
-import com.google.gson.annotations.SerializedName;
-
 import android.content.ContentValues;
 import android.database.Cursor;
 
+import com.google.gson.Gson;
+import com.google.gson.annotations.SerializedName;
+
 public class EventResource implements BaseResource {
 	@SerializedName("_id")
-	public String id;
+	public int id;
 	public String title, content;
 	private Date startTime, endTime;
 	public String start, end;
+
+	public EventResource(String json) {
+		Gson gson = new Gson();
+		EventResource r = gson.fromJson(json, EventResource.class);
+		this.id = r.id;
+		this.title = r.title;
+		this.content = r.content;
+		this.start = r.start;
+		this.end = r.end;
+	}
 
 	@Override
 	public ContentValues prepareContentValue() {
@@ -71,7 +82,7 @@ public class EventResource implements BaseResource {
 		int indexStart = cursor.getColumnIndex(TableEvent.START);
 		int indexEnd = cursor.getColumnIndex(TableEvent.END);
 
-		if (indexId > -1) id = cursor.getString(indexId);
+		if (indexId > -1) id = cursor.getInt(indexId);
 		if (indexSummary > -1) title = cursor.getString(indexSummary);
 		if (indexDesc > -1) content = cursor.getString(indexDesc);
 		if (indexStart > -1) start = cursor.getString(indexStart);
@@ -83,5 +94,10 @@ public class EventResource implements BaseResource {
 			// TODO Auto-generated catch block
 			e.printStackTrace();
 		}
+	}
+
+	public String toJsonString() {
+		Gson gson = new Gson();
+		return gson.toJson(this);
 	}
 }

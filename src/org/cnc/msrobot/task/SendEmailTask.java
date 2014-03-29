@@ -23,11 +23,15 @@ public class SendEmailTask extends AsyncTask<Void, Void, Boolean> {
 	}
 
 	@Override
-	protected Boolean doInBackground(Void... params) {
+	protected void onPreExecute() {
 		if (TextUtils.isEmpty(username)) {
-			activity.showCenterToast("You must setup email");
-			return false;
+			activity.showCenterToast(R.string.msg_info_setup_email);
 		}
+	}
+
+	@Override
+	protected Boolean doInBackground(Void... params) {
+		if (TextUtils.isEmpty(username)) { return false; }
 		GMailSender sender = new GMailSender(username, password);
 		try {
 			sender.sendMail(subject, body, username, to, image);

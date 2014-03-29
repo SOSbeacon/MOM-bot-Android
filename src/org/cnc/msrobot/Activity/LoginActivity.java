@@ -1,5 +1,6 @@
 package org.cnc.msrobot.activity;
 
+import org.cnc.msrobot.MainApplication;
 import org.cnc.msrobot.R;
 import org.cnc.msrobot.resource.UserResource;
 import org.cnc.msrobot.utils.Actions;
@@ -37,6 +38,9 @@ public class LoginActivity extends BaseActivity {
 		public void onResponse(UserResource response) {
 			if (response != null && !TextUtils.isEmpty(response.auth_token)) {
 				dismissProgress();
+				// start reminder service
+				MainApplication.alarm.setAlarmCheckServer(getApplicationContext());
+				// start home activity
 				startActivity(new Intent(LoginActivity.this, MainActivity.class));
 				finish();
 			}

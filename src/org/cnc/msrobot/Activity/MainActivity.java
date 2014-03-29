@@ -2,6 +2,7 @@ package org.cnc.msrobot.activity;
 
 import java.util.ArrayList;
 
+import org.cnc.msrobot.MainApplication;
 import org.cnc.msrobot.R;
 import org.cnc.msrobot.fragment.BaseFragment;
 import org.cnc.msrobot.fragment.CalendarEventFragment;
@@ -23,7 +24,6 @@ import org.cnc.msrobot.resource.EventResource;
 import org.cnc.msrobot.utils.Actions;
 import org.cnc.msrobot.utils.Consts;
 import org.cnc.msrobot.utils.Consts.RequestCode;
-import org.cnc.msrobot.utils.DialogUtils;
 import org.cnc.msrobot.utils.DialogUtils.OnConfirmClickListener;
 
 import android.app.Activity;
@@ -38,6 +38,7 @@ import android.support.v4.content.CursorLoader;
 import android.support.v4.content.Loader;
 import android.support.v4.view.GravityCompat;
 import android.support.v4.widget.DrawerLayout;
+import android.text.TextUtils;
 import android.util.SparseArray;
 import android.view.Menu;
 import android.view.MenuItem;
@@ -62,12 +63,12 @@ public class MainActivity extends BaseActivity implements LoaderCallbacks<Cursor
 	private CharSequence mTitle;
 	public static ContactResource contactRecognize = new ContactResource();
 	public static String subjectRecognize;
-	protected DialogUtils mDialog;
 	protected BaseFragment fragment;
 	public static ArrayList<ContactResource> listContact = new ArrayList<ContactResource>();
 	SparseArray<RecognizeBase> mRecModule = new SparseArray<RecognizeBase>();
 	private FrameLayout touchInterceptor;
 	private FrameLayout rootViewGroup;
+
 	Listener<EmptyResource> mRequestLogoutlistener = new Listener<EmptyResource>() {
 
 		@Override
@@ -89,7 +90,15 @@ public class MainActivity extends BaseActivity implements LoaderCallbacks<Cursor
 
 		@Override
 		public void onResponse(EventResource[] response) {
-			showCenterToast(R.string.msg_info_create_event);
+			if (response == null) {
+				showCenterToast(R.string.msg_err_create_event);
+			} else {
+				showCenterToast(R.string.msg_info_create_event);
+				// set reminder for alarm
+				for (int i = 0; i < response.length; i++) {
+					MainApplication.alarm.setReminder(getApplicationContext(), response[i]);
+				}
+			}
 		}
 	};
 
@@ -108,7 +117,6 @@ public class MainActivity extends BaseActivity implements LoaderCallbacks<Cursor
 		touchInterceptor = new FrameLayout(this);
 		touchInterceptor.setClickable(true); // otherwise clicks will fall through
 		rootViewGroup = (FrameLayout) findViewById(R.id.content_frame);
-		mDialog = new DialogUtils(this);
 
 		mTitle = mDrawerTitle = getTitle();
 		mPlanetTitles = getResources().getStringArray(R.array.array_list_drawer);
@@ -157,6 +165,24 @@ public class MainActivity extends BaseActivity implements LoaderCallbacks<Cursor
 		getContactList();
 
 		initRecognizeModule();
+
+		// check email config
+		if (TextUtils.isEmpty(mSharePrefs.getGmailUsername())) {
+			// show dialog to confirm setup email
+			mDialog.showConfirmDialog(R.string.dialog_confirm_setup_email, new OnConfirmClickListener() {
+
+				@Override
+				public void onConfirmOkClick() {
+					startActivityForResult(new Intent(MainActivity.this, EmailSetupActivity.class),
+							RequestCode.REQUEST_EMAIL_SETUP);
+				}
+
+				@Override
+				public void onConfirmCancelClick() {
+					showCenterToast(R.string.msg_info_setup_email);
+				}
+			});
+		}
 	}
 
 	// @Override

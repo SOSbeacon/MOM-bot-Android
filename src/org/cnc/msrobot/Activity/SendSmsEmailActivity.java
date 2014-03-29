@@ -7,7 +7,10 @@ import java.util.regex.Matcher;
 import org.cnc.msrobot.R;
 import org.cnc.msrobot.task.SendEmailTask;
 import org.cnc.msrobot.utils.ContactsEditText;
+import org.cnc.msrobot.utils.CustomActionBar;
+import org.cnc.msrobot.utils.DialogUtils.OnConfirmClickListener;
 
+import android.content.Intent;
 import android.os.Bundle;
 import android.telephony.SmsManager;
 import android.text.TextUtils;
@@ -15,7 +18,6 @@ import android.util.Log;
 import android.util.Patterns;
 import android.view.View;
 import android.view.View.OnClickListener;
-import android.widget.Button;
 import android.widget.EditText;
 import android.widget.ImageView;
 
@@ -29,7 +31,6 @@ public class SendSmsEmailActivity extends BaseActivity implements OnClickListene
 	public static final String EXTRA_SUBJECT = "extra_subject";
 	public static final String EXTRA_BODY = "extra_body";
 	public static final String EXTRA_IMAGE = "extra_image";
-	private Button mBtnSend, mBtnClose;
 	private EditText mEtSubject, mEtBody;
 	private ContactsEditText mEtTo;
 	private ImageView mImgAttachment;
@@ -40,11 +41,8 @@ public class SendSmsEmailActivity extends BaseActivity implements OnClickListene
 	public void onCreate(Bundle savedInstanceState) {
 		super.onCreate(savedInstanceState);
 		setContentView(R.layout.activity_send_sms_mail);
-
-		mBtnSend = (Button) findViewById(R.id.btnSend);
-		mBtnClose = (Button) findViewById(R.id.btnClose);
-		mBtnSend.setOnClickListener(this);
-		mBtnClose.setOnClickListener(this);
+		getCusomActionBar().setType(CustomActionBar.TYPE_SEND);
+		getCusomActionBar().setOnClickListener(this);
 
 		mEtTo = (ContactsEditText) findViewById(R.id.etTo);
 		mEtSubject = (EditText) findViewById(R.id.etSubject);
@@ -88,6 +86,30 @@ public class SendSmsEmailActivity extends BaseActivity implements OnClickListene
 	}
 
 	@Override
+	protected void onResume() {
+		super.onResume();
+		if (mType == TYPE_SENT_EMAIL) {
+			// check email config
+			if (TextUtils.isEmpty(mSharePrefs.getGmailUsername())) {
+				// show dialog to confirm setup email
+				mDialog.showConfirmDialog(R.string.dialog_confirm_setup_email, new OnConfirmClickListener() {
+
+					@Override
+					public void onConfirmOkClick() {
+						startActivity(new Intent(SendSmsEmailActivity.this, EmailSetupActivity.class));
+					}
+
+					@Override
+					public void onConfirmCancelClick() {
+						showCenterToast(R.string.msg_info_setup_email);
+						finish();
+					}
+				});
+			}
+		}
+	}
+
+	@Override
 	public void onUtteranceCompleted(String utteranceId) {
 		handler.postDelayed(new Runnable() {
 			@Override
@@ -103,7 +125,7 @@ public class SendSmsEmailActivity extends BaseActivity implements OnClickListene
 		String yes = getString(R.string.common_yes).toLowerCase(Locale.US);
 		showCenterToast(getString(R.string.common_answer, answer));
 		if (yes.equals(answer.toLowerCase(Locale.US))) {
-			onClick(mBtnSend);
+			send();
 		}
 	}
 
@@ -113,42 +135,42 @@ public class SendSmsEmailActivity extends BaseActivity implements OnClickListene
 		return valid;
 	}
 
+	private void send() {
+		if (TextUtils.isEmpty(mEtTo.getText())) return;
+		if (mType == TYPE_SENT_SMS) {
+			SmsManager smsManager = SmsManager.getDefault();
+			// Pattern patternNumber = Pattern.compile("(^(\\+)?\\d{2}-\\d{8,16})|(0\\d{8,18})|(\\d{8,18})");
+			Matcher m = Patterns.PHONE.matcher(mEtTo.getText().toString());
+			while (m.find()) { // Find each match in turn; String can't do this.
+				String number = m.group(); // Access a submatch group; String can't do this.
+				smsManager.sendTextMessage(number, null, mEtBody.getText().toString(), null, null);
+			}
+			showCenterToast("Send SMS success!");
+		} else {
+			try {
+				String emailTo = "";
+				Matcher m = Patterns.EMAIL_ADDRESS.matcher(mEtTo.getText().toString());
+				while (m.find()) { // Find each match in turn; String can't do this.
+					emailTo += "," + m.group();
+				}
+				if (!TextUtils.isEmpty(emailTo)) {
+					emailTo = emailTo.substring(1);
+				}
+				new SendEmailTask(this, emailTo, mEtSubject.getText().toString(), mEtBody.getText().toString(), image)
+						.execute();
+			} catch (Exception e) {
+				showCenterToast(e.getMessage());
+				e.printStackTrace();
+			}
+		}
+		finish();
+	}
+
 	@Override
 	public void onClick(View v) {
 		switch (v.getId()) {
-			case R.id.btnClose:
-				finish();
-				break;
-			case R.id.btnSend:
-				if (TextUtils.isEmpty(mEtTo.getText())) return;
-				if (mType == TYPE_SENT_SMS) {
-					SmsManager smsManager = SmsManager.getDefault();
-					// Pattern patternNumber = Pattern.compile("(^(\\+)?\\d{2}-\\d{8,16})|(0\\d{8,18})|(\\d{8,18})");
-					Matcher m = Patterns.PHONE.matcher(mEtTo.getText().toString());
-					while (m.find()) { // Find each match in turn; String can't do this.
-						String number = m.group(); // Access a submatch group; String can't do this.
-						smsManager.sendTextMessage(number, null, mEtBody.getText().toString(), null, null);
-					}
-					showCenterToast("Send SMS success!");
-				} else {
-					try {
-						String emailTo = "";
-						Matcher m = Patterns.EMAIL_ADDRESS.matcher(mEtTo.getText().toString());
-						while (m.find()) { // Find each match in turn; String can't do this.
-							emailTo += "," + m.group();
-						}
-						if (!TextUtils.isEmpty(emailTo)) {
-							emailTo = emailTo.substring(1);
-						}
-						new SendEmailTask(this, emailTo, mEtSubject.getText().toString(), mEtBody.getText().toString(),
-								image).execute();
-						showCenterToast("Send Email success!");
-					} catch (Exception e) {
-						showCenterToast(e.getMessage());
-						e.printStackTrace();
-					}
-				}
-				finish();
+			case R.id.tvSend:
+				send();
 			default:
 				break;
 		}

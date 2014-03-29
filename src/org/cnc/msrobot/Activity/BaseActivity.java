@@ -9,6 +9,7 @@ import org.cnc.msrobot.R;
 import org.cnc.msrobot.requestmanager.RequestManager;
 import org.cnc.msrobot.utils.Consts.RequestCode;
 import org.cnc.msrobot.utils.CustomActionBar;
+import org.cnc.msrobot.utils.DialogUtils;
 import org.cnc.msrobot.utils.Logger;
 import org.cnc.msrobot.utils.SharePrefs;
 
@@ -39,6 +40,8 @@ import android.view.Gravity;
 import android.view.MenuItem;
 import android.widget.Toast;
 
+import com.bugsense.trace.BugSenseHandler;
+
 @SuppressWarnings("deprecation")
 public class BaseActivity extends FragmentActivity implements OnInitListener, OnUtteranceCompletedListener {
 	/**
@@ -67,16 +70,19 @@ public class BaseActivity extends FragmentActivity implements OnInitListener, On
 	protected CustomActionBar mActionbar;
 	final Handler handler = new Handler();
 	protected SpeakAnimationListener mSpeakAnimationListener;
+	protected DialogUtils mDialog;
 
 	@Override
 	protected void onCreate(Bundle savedInstanceState) {
 		super.onCreate(savedInstanceState);
 		mActionbar = new CustomActionBar(this);
+		mDialog = new DialogUtils(this);
 		getActionBar().setCustomView(mActionbar);
 		getActionBar().setDisplayShowCustomEnabled(true);
 		getActionBar().setDisplayHomeAsUpEnabled(true);
 		getActionBar().setHomeButtonEnabled(true);
 		checkTTS();
+		BugSenseHandler.initAndStartSession(this, "f3f143ec");
 	}
 
 	@Override

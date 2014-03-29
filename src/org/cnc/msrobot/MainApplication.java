@@ -2,9 +2,8 @@ package org.cnc.msrobot;
 
 import java.io.File;
 
-import org.acra.ACRA;
-import org.acra.annotation.ReportsCrashes;
 import org.cnc.msrobot.requestmanager.RequestManager;
+import org.cnc.msrobot.utils.AlarmReceiver;
 import org.cnc.msrobot.utils.AppUtils;
 import org.cnc.msrobot.utils.Consts;
 import org.cnc.msrobot.utils.LruBitmapCache;
@@ -17,17 +16,18 @@ import com.nostra13.universalimageloader.core.ImageLoader;
 import com.nostra13.universalimageloader.core.ImageLoaderConfiguration;
 import com.nostra13.universalimageloader.core.assist.QueueProcessingType;
 
-@ReportsCrashes(formKey = "dC1nYlNuN2RQX1REUS0tZEY5SEhzYWc6MA")
+//@ReportsCrashes(formKey = "dC1nYlNuN2RQX1REUS0tZEY5SEhzYWc6MA")
 public class MainApplication extends Application {
-	private static final int	DISK_CACHE_SIZE	= 200 * 1024 * 1024;	// 200 MB
+	private static final int DISK_CACHE_SIZE = 200 * 1024 * 1024; // 200 MB
+	public static AlarmReceiver alarm;
 
 	@Override
 	public void onCreate() {
 		super.onCreate();
 
 		// init crash report
-		ACRA.init(this);
-		
+//		ACRA.init(this);
+
 		// Init Request Manager
 		RequestManager.getInstance().init(getApplicationContext());
 
@@ -42,6 +42,9 @@ public class MainApplication extends Application {
 		if (!file.exists()) {
 			file.mkdirs();
 		}
+
+		// start service
+		setAlarmService();
 	}
 
 	private void InitImageLoaderConfiguration() {
@@ -69,5 +72,10 @@ public class MainApplication extends Application {
 		} else {
 			ImageLoader.getInstance().handleSlowNetwork(false);
 		}
+	}
+
+	private void setAlarmService() {
+		alarm = new AlarmReceiver();
+		alarm.setAlarmCheckServer(getApplicationContext());
 	}
 }

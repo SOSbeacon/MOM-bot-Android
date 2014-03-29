@@ -109,6 +109,24 @@
                 android:paddingRight="@dimen/common_margin_layout_medium"
                 android:src="@drawable/ic_action_next" />
         </RelativeLayout>
+
+        <RelativeLayout
+            android:id="@+id/rlActionSend"
+            android:layout_width="wrap_content"
+            android:layout_height="match_parent"
+            android:layout_toRightOf="@id/rlActionEmail" >
+
+            <TextView
+                android:id="@+id/tvSend"
+                android:layout_width="wrap_content"
+                android:layout_height="match_parent"
+                android:background="@drawable/item_background_click"
+                android:gravity="center"
+                android:paddingLeft="@dimen/common_margin_layout_medium"
+                android:paddingRight="@dimen/common_margin_layout_large"
+                android:text="@string/common_send"
+                android:textStyle="bold" />
+        </RelativeLayout>
     </RelativeLayout>
 
     <TextView

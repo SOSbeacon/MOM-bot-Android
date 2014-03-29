@@ -41,5 +41,7 @@
     <dimen name="dropdown_item_padding">10dp</dimen>
     <dimen name="dropdown_item_height">48dp</dimen>
     <dimen name="weather_width">50dp</dimen>
+    <dimen name="activity_horizontal_margin">16dp</dimen>
+    <dimen name="activity_vertical_margin">16dp</dimen>
 
 </resources>
