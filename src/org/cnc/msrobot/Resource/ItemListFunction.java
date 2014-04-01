@@ -12,10 +12,7 @@ public final class ItemListFunction {
 	public static final int FUNCTION_READ_SMS = 1;
 	public static final int FUNCTION_READ_EMAIL = 2;
 	public static final int FUNCTION_READ_REMINDER = 3;
-	public static final int FUNCTION_SENT_TEXT_SMS = 4;
-	public static final int FUNCTION_SENT_PICTURE_MMS = 5;
-	public static final int FUNCTION_SENT_TEXT_EMAIL = 6;
-	public static final int FUNCTION_SENT_PICTURE_EMAIL = 7;
+	public static final int FUNCTION_SENT_MESSAGE = 4;
 	public static final int FUNCTION_CHECK_WEATHER = 9;
 	public static final int FUNCTION_CHECK_NEWS = 10;
 	public static final int FUNCTION_SPEAK_TIME = 11;

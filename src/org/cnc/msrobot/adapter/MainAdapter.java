@@ -4,7 +4,6 @@ import java.util.ArrayList;
 
 import org.cnc.msrobot.R;
 import org.cnc.msrobot.activity.BaseActivity;
-import org.cnc.msrobot.activity.CameraActivity;
 import org.cnc.msrobot.activity.EmailSetupActivity;
 import org.cnc.msrobot.activity.MainActivity;
 import org.cnc.msrobot.activity.ReadEmailSmsActivity;
@@ -147,37 +146,18 @@ public class MainAdapter extends ArrayAdapter<ItemListFunction> implements OnCli
 		switch (funcId) {
 			case ItemListFunction.FUNCTION_READ_SMS: {
 				Intent intent = new Intent(activity, ReadEmailSmsActivity.class);
-				intent.putExtra(SendSmsEmailActivity.EXTRA_TYPE, SendSmsEmailActivity.TYPE_SENT_SMS);
+				intent.putExtra(ReadEmailSmsActivity.EXTRA_TYPE, ReadEmailSmsActivity.TYPE_SENT_SMS);
 				activity.startActivity(intent);
 				break;
 			}
 			case ItemListFunction.FUNCTION_READ_EMAIL: {
 				Intent intent = new Intent(activity, ReadEmailSmsActivity.class);
-				intent.putExtra(SendSmsEmailActivity.EXTRA_TYPE, SendSmsEmailActivity.TYPE_SENT_EMAIL);
+				intent.putExtra(ReadEmailSmsActivity.EXTRA_TYPE, ReadEmailSmsActivity.TYPE_SENT_EMAIL);
 				activity.startActivity(intent);
 				break;
 			}
-			case ItemListFunction.FUNCTION_SENT_TEXT_SMS: {
+			case ItemListFunction.FUNCTION_SENT_MESSAGE: {
 				Intent intent = new Intent(activity, SendSmsEmailActivity.class);
-				intent.putExtra(SendSmsEmailActivity.EXTRA_TYPE, SendSmsEmailActivity.TYPE_SENT_SMS);
-				activity.startActivity(intent);
-				break;
-			}
-			case ItemListFunction.FUNCTION_SENT_PICTURE_MMS: {
-				Intent intent = new Intent(activity, CameraActivity.class);
-				intent.putExtra(SendSmsEmailActivity.EXTRA_TYPE, SendSmsEmailActivity.TYPE_SENT_SMS);
-				activity.startActivity(intent);
-				break;
-			}
-			case ItemListFunction.FUNCTION_SENT_TEXT_EMAIL: {
-				Intent intent = new Intent(activity, SendSmsEmailActivity.class);
-				intent.putExtra(SendSmsEmailActivity.EXTRA_TYPE, SendSmsEmailActivity.TYPE_SENT_EMAIL);
-				activity.startActivity(intent);
-				break;
-			}
-			case ItemListFunction.FUNCTION_SENT_PICTURE_EMAIL: {
-				Intent intent = new Intent(activity, CameraActivity.class);
-				intent.putExtra(SendSmsEmailActivity.EXTRA_TYPE, SendSmsEmailActivity.TYPE_SENT_EMAIL);
 				activity.startActivity(intent);
 				break;
 			}

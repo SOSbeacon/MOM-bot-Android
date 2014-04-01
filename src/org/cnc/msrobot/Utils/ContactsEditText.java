@@ -17,6 +17,10 @@
 package org.cnc.msrobot.utils;
 
 import java.io.FileDescriptor;
+import java.util.ArrayList;
+import java.util.List;
+import java.util.regex.Matcher;
+import java.util.regex.Pattern;
 
 import org.cnc.msrobot.R;
 import org.cnc.msrobot.provider.DbContract.TableContact;
@@ -26,24 +30,32 @@ import android.content.Context;
 import android.database.Cursor;
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
+import android.graphics.Canvas;
+import android.graphics.drawable.BitmapDrawable;
 import android.net.Uri;
 import android.os.Build;
 import android.support.v4.widget.CursorAdapter;
+import android.text.Spannable;
+import android.text.SpannableStringBuilder;
+import android.text.style.ImageSpan;
 import android.util.AttributeSet;
+import android.util.TypedValue;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.AdapterView;
+import android.widget.AdapterView.OnItemClickListener;
 import android.widget.ImageView;
 import android.widget.MultiAutoCompleteTextView;
 import android.widget.TextView;
 
 public class ContactsEditText extends MultiAutoCompleteTextView {
 
+	public static Pattern mPatternTagFriend = Pattern.compile("@\\{name: (.*?), email: (.*?), mobile: (.*?)\\}",
+			Pattern.CASE_INSENSITIVE);
 	private ContactsAdapter mAdapter;
 	private Bitmap mLoadingImage;
 	private int mDropdownItemHeight;
-	private boolean mShowPhone = false;
-	private boolean mShowEmail = false;
 
 	public ContactsEditText(Context context) {
 		super(context);
@@ -58,14 +70,6 @@ public class ContactsEditText extends MultiAutoCompleteTextView {
 	public ContactsEditText(Context context, AttributeSet attrs, int defStyle) {
 		super(context, attrs, defStyle);
 		init(context);
-	}
-
-	public void setShowNumber(boolean show) {
-		mShowPhone = show;
-	}
-
-	public void setShowEmail(boolean show) {
-		mShowEmail = show;
 	}
 
 	private void init(Context context) {
@@ -90,18 +94,80 @@ public class ContactsEditText extends MultiAutoCompleteTextView {
 
 		// Pop up suggestions after 1 character is typed.
 		setThreshold(1);
+
+		setOnItemClickListener(new OnItemClickListener() {
+			@Override
+			public void onItemClick(AdapterView<?> adapter, View view, int pos, long id) {
+				String edittext = getText().toString();
+				setText(addPeopleToGroupChat(new SpannableStringBuilder(edittext)));
+				setSelection(edittext.length());
+			}
+		});
 	}
 
 	@Override
 	protected CharSequence convertSelectionToString(Object selectedItem) {
-		Contact c = ((Contact) selectedItem);
-		if (mShowPhone) {
-			return c.name + "(" + c.mobile + ")";
-		} else if (mShowEmail) {
-			return c.name + "(" + c.email + ")";
-		} else {
-			return c.name;
+		Contact contact = (Contact) selectedItem;
+		String friendName = "@{name: " + contact.name + ", email: " + contact.email + ", mobile:  " + contact.mobile
+				+ " }";
+		return friendName;
+	}
+
+	private SpannableStringBuilder addPeopleToGroupChat(SpannableStringBuilder spannable) {
+		// For tag friends.
+		final Matcher matcherTag = mPatternTagFriend.matcher(spannable);
+		while (matcherTag.find()) {
+			// Set span. group 1 is name
+			View view = createContactTextView(matcherTag.group(1));
+			BitmapDrawable bd = (BitmapDrawable) convertViewToDrawable(view);
+			spannable.setSpan(new ImageSpan(bd), matcherTag.start(), matcherTag.end(),
+					Spannable.SPAN_EXCLUSIVE_EXCLUSIVE);
 		}
+		return spannable;
+	}
+
+	private Object convertViewToDrawable(View view) {
+		BitmapDrawable bd = null;
+		try {
+			int spec = MeasureSpec.makeMeasureSpec(0, MeasureSpec.UNSPECIFIED);
+			view.measure(spec, spec);
+			view.layout(0, 0, view.getMeasuredWidth(), view.getMeasuredHeight());
+			Bitmap bitmap = Bitmap.createBitmap(view.getMeasuredWidth(), view.getMeasuredHeight(),
+					Bitmap.Config.ARGB_8888);
+			Canvas canvas = new Canvas(bitmap);
+			canvas.translate(-view.getScrollX(), -view.getScrollY());
+			view.draw(canvas);
+			bd = new BitmapDrawable(getContext().getResources(), bitmap);
+			bd.setBounds(0, 0, view.getMeasuredWidth(), view.getMeasuredHeight());
+		} catch (Exception ex) {
+		}
+		return bd;
+	}
+
+	private View createContactTextView(String text) {
+		TextView tv = new TextView(getContext());
+		tv.setTextSize(TypedValue.COMPLEX_UNIT_PX,
+				getContext().getResources().getDimension(R.dimen.common_textsize_large));
+		tv.setText(text);
+		tv.setTextColor(getResources().getColor(R.color.event4_color));
+		return tv;
+	}
+
+	/**
+	 * get selected contact
+	 */
+	public List<Contact> getSelectedContact() {
+		String text = getText().toString();
+		final Matcher matcherTag = mPatternTagFriend.matcher(text);
+		ArrayList<Contact> result = new ArrayList<Contact>();
+		while (matcherTag.find()) {
+			Contact c = new Contact();
+			c.name = matcherTag.group(1);
+			c.email = matcherTag.group(2);
+			c.mobile = matcherTag.group(3);
+			result.add(c);
+		}
+		return result;
 	}
 
 	/**
@@ -218,10 +284,12 @@ public class ContactsEditText extends MultiAutoCompleteTextView {
 		/**
 		 * Uses static final constants to detect if the device's platform version is Honeycomb or later.
 		 */
+		@SuppressWarnings("unused")
 		public static boolean hasHoneycomb() {
 			return Build.VERSION.SDK_INT >= Build.VERSION_CODES.HONEYCOMB;
 		}
 
+		@SuppressWarnings("unused")
 		public static Bitmap decodeSampledBitmapFromDescriptor(FileDescriptor fileDescriptor, int reqWidth,
 				int reqHeight) {
 

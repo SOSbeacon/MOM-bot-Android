@@ -138,31 +138,46 @@ public class ClassicFragment extends BaseFragment implements OnFunctionDoListene
 	}
 
 	public void changeSmsItem(int count) {
-		CustomActionBar actionBar = getBaseActivity().getCusomActionBar();
-		if (actionBar == null) return;
-		if (count > 0) {
-			actionBar.setSMSText(getString(R.string.function_desc_unread_sms, count));
+		if (mMenuIndex != 1) return; // not communication menu
+		ItemListFunction item = adapterMain.getItem(2);
+		if (item.itemClickId != ItemListFunction.FUNCTION_READ_SMS) return;
+		if (item.notifyCount > 0) {
+			item.desc = getString(R.string.function_desc_unread_sms, item.notifyCount);
 		} else {
-			actionBar.setSMSText(getString(R.string.function_desc_no_sms));
+			item.desc = getString(R.string.function_desc_no_sms);
 		}
+		adapterMain.notifyDataSetChanged();
 	}
 
 	public void changeEmailLoading() {
+		if (mMenuIndex != 1) return; // not communication menu
+		if (adapterMain.getCount() <= 1) return;
+		ItemListFunction item = adapterMain.getItem(3);
+		if (item.itemClickId != ItemListFunction.FUNCTION_READ_EMAIL
+				&& item.itemClickId != ItemListFunction.FUNCTION_SETUP_EMAIL_ACCOUNT) return;
+		item.desc = getString(R.string.function_desc_getting_data);
+		adapterMain.notifyDataSetChanged();
 	}
 
 	public void changeEmailItem(int count, boolean readFail) {
+		if (mMenuIndex != 1) return; // not communication menu
 		this.readFail = readFail;
-		CustomActionBar actionBar = getBaseActivity().getCusomActionBar();
-		if (actionBar == null) return;
+		if (adapterMain.getCount() <= 1) return;
+		ItemListFunction item = adapterMain.getItem(3);
+		if (item.itemClickId != ItemListFunction.FUNCTION_READ_EMAIL
+				&& item.itemClickId != ItemListFunction.FUNCTION_SETUP_EMAIL_ACCOUNT) return;
 		if (!readFail) {
-			if (count > 0) {
-				actionBar.setEmailText(getString(R.string.function_desc_unread_email, count));
+			if (item.notifyCount > 0) {
+				item.desc = getString(R.string.function_desc_unread_email, item.notifyCount);
 			} else {
-				actionBar.setEmailText(getString(R.string.function_desc_no_email));
+				item.desc = getString(R.string.function_desc_no_email);
 			}
+			item.itemClickId = ItemListFunction.FUNCTION_READ_EMAIL;
 		} else {
-			actionBar.setEmailText(getString(R.string.function_desc_no_email));
+			item.desc = getString(R.string.function_desc_read_email_fail);
+			item.itemClickId = ItemListFunction.FUNCTION_SETUP_EMAIL_ACCOUNT;
 		}
+		adapterMain.notifyDataSetChanged();
 	}
 
 	private void initWeahter() {
@@ -233,25 +248,42 @@ public class ClassicFragment extends BaseFragment implements OnFunctionDoListene
 		adapterMain.clear();
 		// add sent text message
 		adapterMain.add(new ItemListFunction.Builder(getBaseActivity()).setType(ItemListFunction.TYPE_FUNCTION_CLASSIC)
-				.setDescResId(R.string.function_sent_text_sms).setItemClickId(ItemListFunction.FUNCTION_SENT_TEXT_SMS)
+				.setDescResId(R.string.function_sent_text_sms).setItemClickId(ItemListFunction.FUNCTION_SENT_MESSAGE)
 				.setColorResId(R.color.white).build());
 		// add image message
 		adapterMain.add(new ItemListFunction.Builder(getBaseActivity()).setType(ItemListFunction.TYPE_FUNCTION_CLASSIC)
-				.setDescResId(R.string.function_sent_picture_mms)
-				.setItemClickId(ItemListFunction.FUNCTION_SENT_PICTURE_MMS).setColorResId(R.color.white).build());
+				.setDescResId(R.string.function_calendar).setItemClickId(ItemListFunction.FUNCTION_CHECK_MY_CALENDAR)
+				.setColorResId(R.color.white).build());
+		// add sms status
+		adapterMain.add(new ItemListFunction.Builder(getBaseActivity()).setType(ItemListFunction.TYPE_FUNCTION_CLASSIC)
+				.setDescResId(R.string.function_desc_getting_data).setItemClickId(ItemListFunction.FUNCTION_READ_SMS)
+				.setColorResId(R.color.event1_color).build());
+		// add email status
+		adapterMain.add(new ItemListFunction.Builder(getBaseActivity()).setType(ItemListFunction.TYPE_FUNCTION_CLASSIC)
+				.setDescResId(R.string.function_desc_getting_data).setItemClickId(ItemListFunction.FUNCTION_READ_EMAIL)
+				.setColorResId(R.color.event2_color).build());
 		// add information item
 		adapterMain.add(new ItemListFunction.Builder(getBaseActivity()).setType(ItemListFunction.TYPE_FUNCTION_CLASSIC)
-				.setDescResId(R.string.function_sent_text_email)
-				.setItemClickId(ItemListFunction.FUNCTION_SENT_TEXT_EMAIL).setColorResId(R.color.white).build());
+				.setDescResId(R.string.function_desc_set_reminder)
+				.setItemClickId(ItemListFunction.FUNCTION_SET_REMINDER).setColorResId(R.color.white).build());
 		// add emergency item
 		adapterMain.add(new ItemListFunction.Builder(getBaseActivity()).setType(ItemListFunction.TYPE_FUNCTION_CLASSIC)
-				.setDescResId(R.string.function_sent_picture_email)
-				.setItemClickId(ItemListFunction.FUNCTION_SENT_PICTURE_EMAIL).setColorResId(R.color.white).build());
+				.setDescResId(R.string.function_desc_set_alarm).setItemClickId(ItemListFunction.FUNCTION_SET_ALARM)
+				.setColorResId(R.color.white).build());
 		// add back item
 		adapterMain.add(new ItemListFunction.Builder(getBaseActivity()).setType(ItemListFunction.TYPE_FUNCTION_CLASSIC)
 				.setDescResId(R.string.function_desc_back).setItemClickId(ItemListFunction.FUNCTION_BACK_TO_COMMAND)
 				.setColorResId(R.color.buttonFocused1).build());
-		adapterMain.notifyDataSetChanged();
+		if (ReadSMSTask.mListSMS != null) {
+			changeSmsItem(ReadSMSTask.mListSMS.size());
+		} else {
+			changeSmsItem(0);
+		}
+		if (ReadEmailTask.emails != null) {
+			changeEmailItem(ReadEmailTask.emails.size(), readFail);
+		} else {
+			changeEmailItem(0, readFail);
+		}
 	}
 
 	private void showInformationMenu() {

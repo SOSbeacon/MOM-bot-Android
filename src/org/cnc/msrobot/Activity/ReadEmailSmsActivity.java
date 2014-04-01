@@ -29,13 +29,16 @@ public class ReadEmailSmsActivity extends BaseActivity implements OnClickListene
 	private static final String VERB_ASK = "ask";
 	private static final String VERB_READ = "read";
 	public static final String EXTRA_REC = "extra_rec";
+	public static final String EXTRA_TYPE = "extra_type";
+	public static final int TYPE_SENT_SMS = 0;
+	public static final int TYPE_SENT_EMAIL = 1;
 
 	private ListView mListView;
 	private WebView mWebView;
 	private ReadEmailAdapter mAdapter;
 	private int mPosition = 0;
 	private boolean mStop = false;
-	private int mType = SendSmsEmailActivity.TYPE_SENT_SMS;
+	private int mType = TYPE_SENT_SMS;
 	private boolean isRec = true;
 
 	@Override
@@ -50,20 +53,20 @@ public class ReadEmailSmsActivity extends BaseActivity implements OnClickListene
 		setContentView(R.layout.activity_read_email_sms);
 
 		// get type
-		mType = getIntent().getExtras().getInt(SendSmsEmailActivity.EXTRA_TYPE);
+		mType = getIntent().getExtras().getInt(EXTRA_TYPE);
 
 		// find view and set listener
 		mListView = (ListView) findViewById(R.id.lvEmail);
 		mWebView = (WebView) findViewById(R.id.webView);
 		mListView.setChoiceMode(ListView.CHOICE_MODE_SINGLE);
 		ArrayList<EmailSmsItem> list = new ArrayList<EmailSmsItem>();
-		if (mType == SendSmsEmailActivity.TYPE_SENT_EMAIL) {
+		if (mType == TYPE_SENT_EMAIL) {
 			if (ReadEmailTask.emails != null) {
 				for (int i = 0; i < ReadEmailTask.emails.size(); i++) {
 					list.add(new EmailSmsItem(ReadEmailTask.emails.get(i).from, ReadEmailTask.emails.get(i).subject));
 				}
 			}
-		} else if (mType == SendSmsEmailActivity.TYPE_SENT_SMS) {
+		} else if (mType == TYPE_SENT_SMS) {
 			if (ReadSMSTask.mListSMS != null) {
 				for (int i = 0; i < ReadSMSTask.mListSMS.size(); i++) {
 					String person = ReadSMSTask.mListSMS.get(i).person;
@@ -81,7 +84,7 @@ public class ReadEmailSmsActivity extends BaseActivity implements OnClickListene
 
 			@Override
 			public void onItemClick(AdapterView<?> adapterView, View view, int position, long id) {
-				if (mType == SendSmsEmailActivity.TYPE_SENT_EMAIL) {
+				if (mType == TYPE_SENT_EMAIL) {
 					Email email = ReadEmailTask.emails.get(position);
 					mWebView.loadData(email.htmlContent, "text/html", "UTF-8");
 				} else {
@@ -116,7 +119,7 @@ public class ReadEmailSmsActivity extends BaseActivity implements OnClickListene
 		mListView.setItemChecked(mPosition, true);
 
 		String msg = "";
-		if (mType == SendSmsEmailActivity.TYPE_SENT_EMAIL) {
+		if (mType == TYPE_SENT_EMAIL) {
 			Email email = ReadEmailTask.emails.get(position);
 			mWebView.loadData(email.htmlContent, "text/html", "UTF-8");
 			if (isRec) {
@@ -175,7 +178,7 @@ public class ReadEmailSmsActivity extends BaseActivity implements OnClickListene
 			String answer = data.get(0);
 			showCenterToast(getString(R.string.common_answer, answer));
 			if (answer.toUpperCase(Locale.US).equals("YES")) {
-				if (mType == SendSmsEmailActivity.TYPE_SENT_EMAIL) {
+				if (mType == TYPE_SENT_EMAIL) {
 					Email email = ReadEmailTask.emails.get(mPosition);
 					speak(email.content, VERB_READ);
 				} else {

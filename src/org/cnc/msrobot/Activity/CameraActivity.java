@@ -7,10 +7,12 @@ import java.util.List;
 import org.cnc.msrobot.R;
 import org.cnc.msrobot.utils.AppUtils;
 import org.cnc.msrobot.utils.Consts;
+import org.cnc.msrobot.utils.Consts.RequestCode;
 import org.cnc.msrobot.utils.CropOption;
 import org.cnc.msrobot.utils.CropOptionAdapter;
 import org.cnc.msrobot.utils.Logger;
 
+import android.app.Activity;
 import android.app.AlertDialog;
 import android.content.ComponentName;
 import android.content.ContentValues;
@@ -58,8 +60,9 @@ public class CameraActivity extends BaseActivity {
 	@Override
 	public void onActivityResult(int requestCode, int resultCode, Intent aIntent) {
 		super.onActivityResult(requestCode, resultCode, aIntent);
+		if (resultCode != Activity.RESULT_OK) return;
 		Logger.debug(TAG, "result " + aIntent + ", requestCode: " + resultCode + ", requestCode: " + requestCode);
-		if (requestCode == Consts.REQUEST_GALLERY) {
+		if (requestCode == RequestCode.REQUEST_GALLERY) {
 			Uri galleryUri = aIntent.getData();
 			if (galleryUri == null) {
 				mNewImagePath = aIntent.getAction();
@@ -67,8 +70,8 @@ public class CameraActivity extends BaseActivity {
 				mNewImagePath = AppUtils.getRealPathFromURI(this, galleryUri);
 			}
 			// Start Create Talk Activity
-			gotoSendMmsAndEmail();
-		} else if (requestCode == Consts.REQUEST_CAPTURE) {
+			setResultAndFinish();
+		} else if (requestCode == RequestCode.REQUEST_CAPTURE) {
 			if (aIntent != null) {
 				mNewImageUri = aIntent.getData();
 				mNewImagePath = AppUtils.getRealPathFromURI(this, mNewImageUri);
@@ -79,7 +82,7 @@ public class CameraActivity extends BaseActivity {
 			}
 			// Start Create Talk Activity
 			mImageRotation = true;
-			gotoSendMmsAndEmail();
+			setResultAndFinish();
 		}
 	}
 
@@ -115,7 +118,7 @@ public class CameraActivity extends BaseActivity {
 				co.title = getPackageManager().getApplicationLabel(res.activityInfo.applicationInfo);
 				co.icon = getPackageManager().getApplicationIcon(res.activityInfo.applicationInfo);
 				co.appIntent = new Intent(intentCapture);
-				co.requestCode = Consts.REQUEST_CAPTURE;
+				co.requestCode = RequestCode.REQUEST_CAPTURE;
 
 				co.appIntent.setComponent(new ComponentName(res.activityInfo.packageName, res.activityInfo.name));
 
@@ -128,7 +131,7 @@ public class CameraActivity extends BaseActivity {
 			co.title = getString(R.string.common_camera);
 			co.icon = getResources().getDrawable(R.drawable.img_btn_bottom_camera);
 			co.appIntent = new Intent(intentCapture);
-			co.requestCode = Consts.REQUEST_CAPTURE;
+			co.requestCode = RequestCode.REQUEST_CAPTURE;
 
 			co.appIntent.setComponent(new ComponentName(res.activityInfo.packageName, res.activityInfo.name));
 
@@ -151,7 +154,7 @@ public class CameraActivity extends BaseActivity {
 			co.title = getString(R.string.common_gallery);
 			co.icon = getResources().getDrawable(R.drawable.img_btn_bottom_gallery);
 			co.appIntent = new Intent(intentGallery);
-			co.requestCode = Consts.REQUEST_GALLERY;
+			co.requestCode = RequestCode.REQUEST_GALLERY;
 
 			co.appIntent.setComponent(new ComponentName(res.activityInfo.packageName, res.activityInfo.name));
 
@@ -170,7 +173,7 @@ public class CameraActivity extends BaseActivity {
 
 					generationImageTemp();
 
-					if (crop.requestCode == Consts.REQUEST_GALLERY) {
+					if (crop.requestCode == RequestCode.REQUEST_GALLERY) {
 						crop.appIntent.putExtra(MediaStore.EXTRA_OUTPUT, mNewImagePath);
 					} else {
 						ContentValues values = new ContentValues();
@@ -211,12 +214,10 @@ public class CameraActivity extends BaseActivity {
 		mNewImageUri = Uri.fromFile(file);
 	}
 
-	protected void gotoSendMmsAndEmail() {
-		Intent intent = new Intent(CameraActivity.this, SendSmsEmailActivity.class);
-		Bundle bundle = getIntent().getExtras();
-		intent.putExtra(SendSmsEmailActivity.EXTRA_TYPE, bundle.getInt(SendSmsEmailActivity.EXTRA_TYPE));
+	protected void setResultAndFinish() {
+		Intent intent = new Intent();
 		intent.putExtra(SendSmsEmailActivity.EXTRA_IMAGE, mNewImagePath);
-		startActivity(intent);
+		setResult(Activity.RESULT_OK, intent);
 		finish();
 	}
 }

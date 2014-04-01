@@ -42,7 +42,6 @@ import android.support.v4.app.LoaderManager.LoaderCallbacks;
 import android.support.v4.content.CursorLoader;
 import android.support.v4.content.Loader;
 import android.text.TextUtils;
-import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.View.OnClickListener;
@@ -390,20 +389,20 @@ public class HomeFragment extends BaseFragment implements LoaderCallbacks<Cursor
 				.setColorResId(R.color.black).build());
 		// add sent text message
 		adapterMain.add(new ItemListFunction.Builder(getBaseActivity()).setType(ItemListFunction.TYPE_FUNCTION)
-				.setDescResId(R.string.function_sent_text_sms).setItemClickId(ItemListFunction.FUNCTION_SENT_TEXT_SMS)
+				.setDescResId(R.string.function_sent_text_sms).setItemClickId(ItemListFunction.FUNCTION_SENT_MESSAGE)
 				.setColorResId(R.color.black).build());
 		// add image message
 		adapterMain.add(new ItemListFunction.Builder(getBaseActivity()).setType(ItemListFunction.TYPE_FUNCTION)
-				.setDescResId(R.string.function_sent_picture_mms)
-				.setItemClickId(ItemListFunction.FUNCTION_SENT_PICTURE_MMS).setColorResId(R.color.black).build());
+				.setDescResId(R.string.function_calendar).setItemClickId(ItemListFunction.FUNCTION_CHECK_MY_CALENDAR)
+				.setColorResId(R.color.black).build());
 		// add information item
 		adapterMain.add(new ItemListFunction.Builder(getBaseActivity()).setType(ItemListFunction.TYPE_FUNCTION)
-				.setDescResId(R.string.function_sent_text_email)
-				.setItemClickId(ItemListFunction.FUNCTION_SENT_TEXT_EMAIL).setColorResId(R.color.black).build());
+				.setDescResId(R.string.function_desc_set_reminder)
+				.setItemClickId(ItemListFunction.FUNCTION_SET_REMINDER).setColorResId(R.color.black).build());
 		// add emergency item
 		adapterMain.add(new ItemListFunction.Builder(getBaseActivity()).setType(ItemListFunction.TYPE_FUNCTION)
-				.setDescResId(R.string.function_sent_picture_email)
-				.setItemClickId(ItemListFunction.FUNCTION_SENT_PICTURE_EMAIL).setColorResId(R.color.black).build());
+				.setDescResId(R.string.function_desc_set_alarm).setItemClickId(ItemListFunction.FUNCTION_SET_ALARM)
+				.setColorResId(R.color.black).build());
 		adapterMain.notifyDataSetChanged();
 	}
 

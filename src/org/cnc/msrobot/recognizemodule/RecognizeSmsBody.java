@@ -22,7 +22,6 @@ public class RecognizeSmsBody extends RecognizeBase implements RecognizeModuleLi
 	@Override
 	public void onRecoginze(final ArrayList<String> data) {
 		Intent intent = new Intent(activity, SendSmsEmailActivity.class);
-		intent.putExtra(SendSmsEmailActivity.EXTRA_TYPE, SendSmsEmailActivity.TYPE_SENT_SMS);
 		intent.putExtra(SendSmsEmailActivity.EXTRA_TO, MainActivity.contactRecognize.phone);
 		intent.putExtra(SendSmsEmailActivity.EXTRA_BODY, data.get(0));
 		activity.startActivity(intent);

@@ -13,7 +13,6 @@ import org.cnc.msrobot.recognizemodule.RecoginizeIds;
 import org.cnc.msrobot.recognizemodule.RecognizeBase;
 import org.cnc.msrobot.recognizemodule.RecognizeCommand;
 import org.cnc.msrobot.recognizemodule.RecognizeEmailBody;
-import org.cnc.msrobot.recognizemodule.RecognizeEmailSubject;
 import org.cnc.msrobot.recognizemodule.RecognizeEmailTo;
 import org.cnc.msrobot.recognizemodule.RecognizeSearch;
 import org.cnc.msrobot.recognizemodule.RecognizeSmsBody;
@@ -62,7 +61,6 @@ public class MainActivity extends BaseActivity implements LoaderCallbacks<Cursor
 	private CharSequence mDrawerTitle;
 	private CharSequence mTitle;
 	public static ContactResource contactRecognize = new ContactResource();
-	public static String subjectRecognize;
 	protected BaseFragment fragment;
 	public static ArrayList<ContactResource> listContact = new ArrayList<ContactResource>();
 	SparseArray<RecognizeBase> mRecModule = new SparseArray<RecognizeBase>();
@@ -326,7 +324,6 @@ public class MainActivity extends BaseActivity implements LoaderCallbacks<Cursor
 		mRecModule.put(RecoginizeIds.MODULE_SMS_TO, new RecognizeSmsTo(this));
 		mRecModule.put(RecoginizeIds.MODULE_SMS_BODY, new RecognizeSmsBody(this));
 		mRecModule.put(RecoginizeIds.MODULE_EMAIL_TO, new RecognizeEmailTo(this));
-		mRecModule.put(RecoginizeIds.MODULE_EMAIL_SUBJECT, new RecognizeEmailSubject(this));
 		mRecModule.put(RecoginizeIds.MODULE_EMAIL_BODY, new RecognizeEmailBody(this));
 		mRecModule.put(RecoginizeIds.MODULE_SEARCH, new RecognizeSearch(this));
 	}
@@ -473,24 +470,6 @@ public class MainActivity extends BaseActivity implements LoaderCallbacks<Cursor
 
 	@Override
 	public void onClick(View v) {
-		switch (v.getId()) {
-			case R.id.tvSMS: {
-				Intent intent = new Intent(this, ReadEmailSmsActivity.class);
-				intent.putExtra(SendSmsEmailActivity.EXTRA_TYPE, SendSmsEmailActivity.TYPE_SENT_SMS);
-				intent.putExtra(ReadEmailSmsActivity.EXTRA_REC, false);
-				startActivity(intent);
-				break;
-			}
-			case R.id.tvEmail: {
-				Intent intent = new Intent(this, ReadEmailSmsActivity.class);
-				intent.putExtra(SendSmsEmailActivity.EXTRA_TYPE, SendSmsEmailActivity.TYPE_SENT_EMAIL);
-				intent.putExtra(ReadEmailSmsActivity.EXTRA_REC, false);
-				startActivity(intent);
-				break;
-			}
-			default:
-				break;
-		}
 	}
 
 	public void addChatListView(String text, int pos) {

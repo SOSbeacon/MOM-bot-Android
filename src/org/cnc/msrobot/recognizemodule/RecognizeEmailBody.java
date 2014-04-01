@@ -23,9 +23,7 @@ public class RecognizeEmailBody extends RecognizeBase implements RecognizeModule
 	@Override
 	public void onRecoginze(final ArrayList<String> data) {
 		Intent intent = new Intent(activity, SendSmsEmailActivity.class);
-		intent.putExtra(SendSmsEmailActivity.EXTRA_TYPE, SendSmsEmailActivity.TYPE_SENT_EMAIL);
 		intent.putExtra(SendSmsEmailActivity.EXTRA_TO, MainActivity.contactRecognize.email);
-		intent.putExtra(SendSmsEmailActivity.EXTRA_SUBJECT, MainActivity.subjectRecognize);
 		intent.putExtra(SendSmsEmailActivity.EXTRA_BODY, data.get(0));
 		activity.startActivity(intent);
 	}

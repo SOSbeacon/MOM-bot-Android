@@ -9,8 +9,7 @@ import java.io.OutputStream;
 import java.util.ArrayList;
 import java.util.List;
 
-import org.cnc.msrobot.R;
-import org.cnc.msrobot.activity.BaseActivity;
+import org.cnc.msrobot.utils.Consts.RequestCode;
 
 import android.app.Activity;
 import android.app.AlertDialog;
@@ -26,10 +25,7 @@ import android.net.Uri;
 import android.os.Environment;
 import android.provider.MediaStore;
 import android.support.v4.app.Fragment;
-import android.view.Gravity;
 import android.widget.Toast;
-
-import com.nostra13.universalimageloader.core.decode.ImageDecoder;
 
 public class PhotoUtils {
 	private static final String TAG = PhotoUtils.class.getSimpleName();
@@ -89,9 +85,9 @@ public class PhotoUtils {
 				i.setComponent(new ComponentName(res.activityInfo.packageName, res.activityInfo.name));
 
 				if (aFragment == null) {
-					aActivity.startActivityForResult(i, Consts.REQUEST_CROP_AFTER_CAPTURE);
+					aActivity.startActivityForResult(i, RequestCode.REQUEST_CROP_AFTER_CAPTURE);
 				} else {
-					aFragment.startActivityForResult(i, Consts.REQUEST_CROP_AFTER_CAPTURE);
+					aFragment.startActivityForResult(i, RequestCode.REQUEST_CROP_AFTER_CAPTURE);
 				}
 			} else {
 				for (ResolveInfo res : list) {
@@ -114,10 +110,10 @@ public class PhotoUtils {
 					public void onClick(DialogInterface dialog, int item) {
 						if (aFragment == null) {
 							aActivity.startActivityForResult(cropOptions.get(item).appIntent,
-									Consts.REQUEST_CROP_AFTER_CAPTURE);
+									RequestCode.REQUEST_CROP_AFTER_CAPTURE);
 						} else {
 							aFragment.startActivityForResult(cropOptions.get(item).appIntent,
-									Consts.REQUEST_CROP_AFTER_CAPTURE);
+									RequestCode.REQUEST_CROP_AFTER_CAPTURE);
 						}
 					}
 				});

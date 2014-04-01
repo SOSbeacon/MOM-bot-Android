@@ -1,15 +1,18 @@
 package org.cnc.msrobot.activity;
 
 import java.util.ArrayList;
+import java.util.List;
 import java.util.Locale;
-import java.util.regex.Matcher;
 
 import org.cnc.msrobot.R;
 import org.cnc.msrobot.task.SendEmailTask;
+import org.cnc.msrobot.utils.Consts.RequestCode;
 import org.cnc.msrobot.utils.ContactsEditText;
+import org.cnc.msrobot.utils.ContactsEditText.Contact;
 import org.cnc.msrobot.utils.CustomActionBar;
 import org.cnc.msrobot.utils.DialogUtils.OnConfirmClickListener;
 
+import android.app.Activity;
 import android.content.Intent;
 import android.os.Bundle;
 import android.telephony.SmsManager;
@@ -18,23 +21,20 @@ import android.util.Log;
 import android.util.Patterns;
 import android.view.View;
 import android.view.View.OnClickListener;
+import android.widget.CheckBox;
 import android.widget.EditText;
 import android.widget.ImageView;
 
 import com.nostra13.universalimageloader.core.ImageLoader;
 
 public class SendSmsEmailActivity extends BaseActivity implements OnClickListener {
-	public static final int TYPE_SENT_SMS = 0;
-	public static final int TYPE_SENT_EMAIL = 1;
-	public static final String EXTRA_TYPE = "extra_type";
 	public static final String EXTRA_TO = "extra_to";
-	public static final String EXTRA_SUBJECT = "extra_subject";
 	public static final String EXTRA_BODY = "extra_body";
 	public static final String EXTRA_IMAGE = "extra_image";
-	private EditText mEtSubject, mEtBody;
+	private EditText mEtBody;
 	private ContactsEditText mEtTo;
 	private ImageView mImgAttachment;
-	private int mType;
+	private CheckBox mChkSms, mChkEmail;
 	private String image;
 
 	@Override
@@ -45,28 +45,19 @@ public class SendSmsEmailActivity extends BaseActivity implements OnClickListene
 		getCusomActionBar().setOnClickListener(this);
 
 		mEtTo = (ContactsEditText) findViewById(R.id.etTo);
-		mEtSubject = (EditText) findViewById(R.id.etSubject);
 		mEtBody = (EditText) findViewById(R.id.etBody);
 		mImgAttachment = (ImageView) findViewById(R.id.imgAttachment);
+		mChkSms = (CheckBox) findViewById(R.id.chkSms);
+		mChkEmail = (CheckBox) findViewById(R.id.chkEmail);
+
+		// set default send email
+		mChkEmail.setChecked(true);
 
 		Bundle bundle = getIntent().getExtras();
-		mType = bundle.getInt(EXTRA_TYPE);
-		image = bundle.getString(EXTRA_IMAGE);
-		if (!TextUtils.isEmpty(image)) {
-			Log.d("zzz", image);
-			mImgAttachment.setVisibility(View.VISIBLE);
-			ImageLoader.getInstance().displayImage("file:/" + image, mImgAttachment);
+		if (bundle != null) {
+			mEtTo.setText(bundle.getString(EXTRA_TO));
+			mEtBody.setText(bundle.getString(EXTRA_BODY));
 		}
-		if (mType == TYPE_SENT_SMS) {
-			mEtSubject.setVisibility(View.GONE);
-			findViewById(R.id.tvSubject).setVisibility(View.GONE);
-			mEtTo.setShowNumber(true);
-		} else {
-			mEtSubject.setText(bundle.getString(EXTRA_SUBJECT));
-			mEtTo.setShowEmail(true);
-		}
-		mEtTo.setText(bundle.getString(EXTRA_TO));
-		mEtBody.setText(bundle.getString(EXTRA_BODY));
 
 		if (!TextUtils.isEmpty(mEtBody.getText().toString())) {
 			handler.postDelayed(new Runnable() {
@@ -74,38 +65,41 @@ public class SendSmsEmailActivity extends BaseActivity implements OnClickListene
 				@Override
 				public void run() {
 					String msg = "";
-					if (mType == TYPE_SENT_SMS) {
-						msg = getString(R.string.recognize_ask_send_message);
-					} else {
-						msg = getString(R.string.recognize_ask_send_email);
-					}
+					msg = getString(R.string.recognize_ask_send_message);
 					speakBeforeRecognize(msg, 0);
 				}
 			}, 1000);
 		}
+
+		mImgAttachment.setOnClickListener(new OnClickListener() {
+
+			@Override
+			public void onClick(View v) {
+				startActivityForResult(new Intent(SendSmsEmailActivity.this, CameraActivity.class),
+						RequestCode.REQUEST_CAMERA);
+			}
+		});
 	}
 
 	@Override
 	protected void onResume() {
 		super.onResume();
-		if (mType == TYPE_SENT_EMAIL) {
-			// check email config
-			if (TextUtils.isEmpty(mSharePrefs.getGmailUsername())) {
-				// show dialog to confirm setup email
-				mDialog.showConfirmDialog(R.string.dialog_confirm_setup_email, new OnConfirmClickListener() {
+		// check email config
+		if (TextUtils.isEmpty(mSharePrefs.getGmailUsername())) {
+			// show dialog to confirm setup email
+			mDialog.showConfirmDialog(R.string.dialog_confirm_setup_email, new OnConfirmClickListener() {
 
-					@Override
-					public void onConfirmOkClick() {
-						startActivity(new Intent(SendSmsEmailActivity.this, EmailSetupActivity.class));
-					}
+				@Override
+				public void onConfirmOkClick() {
+					startActivity(new Intent(SendSmsEmailActivity.this, EmailSetupActivity.class));
+				}
 
-					@Override
-					public void onConfirmCancelClick() {
-						showCenterToast(R.string.msg_info_setup_email);
-						finish();
-					}
-				});
-			}
+				@Override
+				public void onConfirmCancelClick() {
+					showCenterToast(R.string.msg_info_setup_email);
+					finish();
+				}
+			});
 		}
 	}
 
@@ -137,31 +131,26 @@ public class SendSmsEmailActivity extends BaseActivity implements OnClickListene
 
 	private void send() {
 		if (TextUtils.isEmpty(mEtTo.getText())) return;
-		if (mType == TYPE_SENT_SMS) {
-			SmsManager smsManager = SmsManager.getDefault();
-			// Pattern patternNumber = Pattern.compile("(^(\\+)?\\d{2}-\\d{8,16})|(0\\d{8,18})|(\\d{8,18})");
-			Matcher m = Patterns.PHONE.matcher(mEtTo.getText().toString());
-			while (m.find()) { // Find each match in turn; String can't do this.
-				String number = m.group(); // Access a submatch group; String can't do this.
-				smsManager.sendTextMessage(number, null, mEtBody.getText().toString(), null, null);
+		List<Contact> list = mEtTo.getSelectedContact();
+		String emailTo = "";
+		SmsManager smsManager = SmsManager.getDefault();
+		for (int i = 0; i < list.size(); i++) {
+			Contact c = list.get(i);
+			Log.d("zzz", c.name + " " + c.email + " " + c.mobile);
+			if (mChkSms.isChecked()) {
+				smsManager.sendTextMessage(c.mobile, null, mEtBody.getText().toString(), null, null);
 			}
-			showCenterToast("Send SMS success!");
+			if (mChkEmail.isChecked()) {
+				emailTo += "," + c.email;
+			}
+		}
+		if (mChkEmail.isChecked()) {
+			if (!TextUtils.isEmpty(emailTo)) {
+				emailTo = emailTo.substring(1);
+			}
+			new SendEmailTask(this, emailTo, "MOM-bot message", mEtBody.getText().toString(), image).execute();
 		} else {
-			try {
-				String emailTo = "";
-				Matcher m = Patterns.EMAIL_ADDRESS.matcher(mEtTo.getText().toString());
-				while (m.find()) { // Find each match in turn; String can't do this.
-					emailTo += "," + m.group();
-				}
-				if (!TextUtils.isEmpty(emailTo)) {
-					emailTo = emailTo.substring(1);
-				}
-				new SendEmailTask(this, emailTo, mEtSubject.getText().toString(), mEtBody.getText().toString(), image)
-						.execute();
-			} catch (Exception e) {
-				showCenterToast(e.getMessage());
-				e.printStackTrace();
-			}
+			showCenterToast(R.string.msg_info_send_email_success);
 		}
 		finish();
 	}
@@ -173,6 +162,18 @@ public class SendSmsEmailActivity extends BaseActivity implements OnClickListene
 				send();
 			default:
 				break;
+		}
+	}
+
+	@Override
+	protected void onActivityResult(int requestCode, int resultCode, Intent data) {
+		super.onActivityResult(requestCode, resultCode, data);
+		if (RequestCode.REQUEST_CAMERA == requestCode && resultCode == Activity.RESULT_OK) {
+			image = data.getStringExtra(EXTRA_IMAGE);
+			if (!TextUtils.isEmpty(image)) {
+				mImgAttachment.setVisibility(View.VISIBLE);
+				ImageLoader.getInstance().displayImage("file:/" + image, mImgAttachment);
+			}
 		}
 	}
 }

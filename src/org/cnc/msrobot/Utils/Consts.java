@@ -24,10 +24,6 @@ public class Consts {
 		public static final String TYPE_MONTHLY = "monthly";
 	}
 
-	public static final int REQUEST_GALLERY = 0;
-	public static final int REQUEST_CAPTURE = 1;
-	public static final int REQUEST_CROP_AFTER_CAPTURE = 2;
-
 	public static final String PARAMS_ID = "id";
 	public static final String PARAMS_CITY = "city";
 	public static final String PARAMS_LON = "lon";
@@ -77,6 +73,11 @@ public class Consts {
 		public static final int REQUEST_CODE_CHECK_TTS = 2;
 		public static final int REQUEST_EMAIL_SETUP = 3;
 		public static final int REQUEST_RECOGNIZE = 4;
+		public static final int REQUEST_CAMERA = 5;
+
+		public static final int REQUEST_GALLERY = 6;
+		public static final int REQUEST_CAPTURE = 7;
+		public static final int REQUEST_CROP_AFTER_CAPTURE = 8;
 
 	}
 }

@@ -19,6 +19,8 @@
     <string name="common_delete">Delete</string>
     <string name="common_camera">Camera</string>
     <string name="common_gallery">Gallery</string>
+    <string name="choose_sms">SMS</string>
+    <string name="choose_email">EMAIL</string>
     <string name="dialog_sent_select_title">Choose type</string>
     <string name="dialog_choose_message_title">Choose message</string>
     <string name="dialog_choose_search_title">Choose search</string>
@@ -40,7 +42,7 @@
     <string name="function_desc_information">Information</string>
     <string name="function_desc_emergency">Emergency Help</string>
     <string name="function_desc_admin">Administration</string>
-    <string name="function_desc_read_email_fail">Can\'t read email.</string>
+    <string name="function_desc_read_email_fail">Setup email account</string>
     <string name="function_desc_news">News</string>
     <string name="function_desc_weather">Weather</string>
     <string name="function_sent_text_sms">Send text SMS</string>
@@ -50,6 +52,7 @@
     <string name="function_setup_email_account">Setup email account</string>
     <string name="function_desc_set_alarm">Set alarm</string>
     <string name="function_desc_set_reminder">Add reminder</string>
+    <string name="function_calendar">Check my Calendar</string>
 
     <string-array name="array_list_drawer">
         <item>Home classic</item>
@@ -95,8 +98,8 @@
     <string name="msg_err_dont_recognize">Sorry, we don\'t recognize your answer.</string>
     <string name="msg_err_create_event">Create event failed</string>
     <string name="msg_info_create_event">Create event successfully</string>
-    <string name="msg_info_send_email_success">Send email successfully</string>
-    <string name="msg_err_send_email_fail">Send email failed</string>
+    <string name="msg_info_send_email_success">Send message successfully</string>
+    <string name="msg_err_send_email_fail">Send message failed</string>
     <string name="msg_err_camera_not_sdcard">Insert sdcard in order to take picture</string>
     <string name="msg_info_setup_email">You must setup email account. Go to Administration \> Setup email account</string>
 
@@ -109,7 +112,6 @@
     <string name="recognize_email_subject">Please speak email subject after beep sound.</string>
     <string name="recognize_email_body">Please speak email body content after beep sound.</string>
     <string name="recognize_ask_send_message">Do you want to send this message?</string>
-    <string name="recognize_ask_send_email">Do you want to send this email?</string>
 
     <!-- Command -->
     <string name="command_example">Your command, for example: send message, send email, set alarm 13 o\'clock 10 minute, what time is it, search xxx</string>
@@ -178,8 +180,8 @@
     <string name="email_name_hint">Enter your Gmail email</string>
     <string name="email_pass_hint">Enter your password</string>
     <string name="email_to">To:</string>
-    <string name="email_subject">Subject:</string>
-    <string name="email_body">Content:</string>
+    <string name="email_body">Message:</string>
+    <string name="email_image">Image:</string>
 
     <!-- Login -->
     <string name="login_instructions">Please enter your correct email and password and click on login button. Account for test: tester1@cnc.vn. Pass: Admin123</string>
@@ -195,4 +197,5 @@
 
     <!-- Notification -->
     <string name="notification_title">MOM-Bot reminder </string>
+
 </resources>

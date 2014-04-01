@@ -11,14 +11,56 @@
         <LinearLayout
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:orientation="horizontal" >
+            android:layout_marginTop="@dimen/common_margin_layout_medium"
+            android:paddingLeft="@dimen/common_margin_layout_medium"
+            android:paddingRight="@dimen/common_margin_layout_medium"
+            android:weightSum="2" >
+
+            <CheckBox
+                android:id="@+id/chkSms"
+                android:layout_width="0dp"
+                android:layout_height="wrap_content"
+                android:layout_weight="1"
+                android:text="@string/choose_sms"
+                android:textColor="@color/gray"
+                android:textSize="@dimen/common_textsize_larger" />
+
+            <CheckBox
+                android:id="@+id/chkEmail"
+                android:layout_width="0dp"
+                android:layout_height="wrap_content"
+                android:layout_weight="1"
+                android:text="@string/choose_email"
+                android:textColor="@color/gray"
+                android:textSize="@dimen/common_textsize_larger" />
+        </LinearLayout>
+
+        <RelativeLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="@dimen/common_margin_layout_medium"
+            android:orientation="horizontal"
+            android:paddingLeft="@dimen/common_margin_layout_medium"
+            android:paddingRight="@dimen/common_margin_layout_medium" >
 
             <TextView
+                android:id="@+id/lbTo"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
+                android:layout_alignRight="@+id/lbMessage"
                 android:layout_marginLeft="@dimen/common_margin_layout"
-                android:layout_marginTop="@dimen/common_margin_layout"
+                android:layout_marginTop="@dimen/common_margin_layout_medium"
                 android:text="@string/email_to"
+                android:textColor="@color/gray" />
+
+            <TextView
+                android:id="@+id/lbMessage"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_alignTop="@+id/etBody"
+                android:layout_marginLeft="@dimen/common_margin_layout_medium"
+                android:layout_marginTop="@dimen/common_margin_layout_large"
+                android:text="@string/email_body"
                 android:textColor="@color/gray" />
 
             <org.cnc.msrobot.utils.ContactsEditText
@@ -26,48 +68,45 @@
                 android:layout_width="fill_parent"
                 android:layout_height="wrap_content"
                 android:layout_marginLeft="@dimen/common_margin_layout_medium"
-                android:inputType="textEmailAddress" />
-        </LinearLayout>
+                android:layout_toRightOf="@id/lbTo"
+                android:background="@drawable/img_bg_u_content"
+                android:inputType="textMultiLine"
+                android:maxLines="3"
+                android:singleLine="false" />
 
-        <TextView
-            android:id="@+id/tvSubject"
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:layout_marginLeft="@dimen/common_margin_layout"
-            android:layout_marginTop="@dimen/common_margin_layout_medium"
-            android:text="@string/email_subject"
-            android:textColor="@color/gray" />
+            <EditText
+                android:id="@+id/etBody"
+                android:layout_width="fill_parent"
+                android:layout_height="wrap_content"
+                android:layout_below="@id/etTo"
+                android:layout_marginBottom="5dp"
+                android:layout_marginLeft="@dimen/common_margin_layout_medium"
+                android:layout_toRightOf="@id/lbMessage"
+                android:background="@drawable/img_bg_u_content"
+                android:inputType="textMultiLine"
+                android:lines="3" />
 
-        <EditText
-            android:id="@+id/etSubject"
-            android:layout_width="fill_parent"
-            android:layout_height="wrap_content"
-            android:layout_marginBottom="5dp"
-            android:layout_marginTop="5dp"
-            android:inputType="textEmailSubject" />
+            <ImageView
+                android:id="@+id/imgAttachment"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_below="@id/etBody"
+                android:layout_marginLeft="@dimen/common_margin_layout_medium"
+                android:layout_toRightOf="@+id/lbImage"
+                android:background="@drawable/img_bg_u_content"
+                android:contentDescription="@string/common_blank" />
 
-        <TextView
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:layout_marginLeft="@dimen/common_margin_layout"
-            android:layout_marginTop="@dimen/common_margin_layout_medium"
-            android:text="@string/email_body"
-            android:textColor="@color/gray" />
-
-        <EditText
-            android:id="@+id/etBody"
-            android:layout_width="fill_parent"
-            android:layout_height="wrap_content"
-            android:layout_marginBottom="5dp"
-            android:inputType="textMultiLine"
-            android:lines="3" />
-
-        <ImageView
-            android:id="@+id/imgAttachment"
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:contentDescription="@string/common_blank"
-            android:visibility="gone" />
+            <TextView
+                android:id="@+id/lbImage"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_alignRight="@id/lbMessage"
+                android:layout_alignTop="@id/imgAttachment"
+                android:layout_marginLeft="@dimen/common_margin_layout_medium"
+                android:layout_marginTop="@dimen/common_margin_layout"
+                android:text="@string/email_image"
+                android:textColor="@color/gray" />
+        </RelativeLayout>
     </LinearLayout>
 
 </ScrollView>
