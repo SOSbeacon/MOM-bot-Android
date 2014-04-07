@@ -1,12 +1,16 @@
 <?xml version="1.0" encoding="utf-8"?>
 <ScrollView xmlns:android="http://schemas.android.com/apk/res/android"
+    android:id="@+id/svMessage"
     android:layout_width="match_parent"
     android:layout_height="match_parent" >
 
     <LinearLayout
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:orientation="vertical" >
+        android:clickable="true"
+        android:focusableInTouchMode="true"
+        android:orientation="vertical"
+        android:paddingBottom="@dimen/common_margin_layout_xlarge2" >
 
         <LinearLayout
             android:layout_width="match_parent"
@@ -70,9 +74,12 @@
                 android:layout_marginLeft="@dimen/common_margin_layout_medium"
                 android:layout_toRightOf="@id/lbTo"
                 android:background="@drawable/img_bg_u_content"
+                android:hint="@string/email_hint_to"
                 android:inputType="textMultiLine"
                 android:maxLines="3"
-                android:singleLine="false" />
+                android:padding="@dimen/common_margin_layout"
+                android:singleLine="false"
+                android:textSize="@dimen/common_textsize_medium" />
 
             <EditText
                 android:id="@+id/etBody"
@@ -84,28 +91,28 @@
                 android:layout_toRightOf="@id/lbMessage"
                 android:background="@drawable/img_bg_u_content"
                 android:inputType="textMultiLine"
-                android:lines="3" />
+                android:lines="3"
+                android:padding="@dimen/common_margin_layout" />
+
+            <TextView
+                android:id="@+id/tvAttachment"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_below="@id/etBody"
+                android:layout_centerHorizontal="true"
+                android:background="@drawable/item_button_click"
+                android:padding="@dimen/common_margin_layout_medium"
+                android:text="@string/email_image" />
 
             <ImageView
                 android:id="@+id/imgAttachment"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:layout_below="@id/etBody"
+                android:layout_below="@id/tvAttachment"
                 android:layout_marginLeft="@dimen/common_margin_layout_medium"
-                android:layout_toRightOf="@+id/lbImage"
-                android:background="@drawable/img_bg_u_content"
-                android:contentDescription="@string/common_blank" />
-
-            <TextView
-                android:id="@+id/lbImage"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:layout_alignRight="@id/lbMessage"
-                android:layout_alignTop="@id/imgAttachment"
-                android:layout_marginLeft="@dimen/common_margin_layout_medium"
-                android:layout_marginTop="@dimen/common_margin_layout"
-                android:text="@string/email_image"
-                android:textColor="@color/gray" />
+                android:contentDescription="@string/common_blank"
+                android:paddingTop="@dimen/common_margin_layout_medium"
+                android:scaleType="fitCenter" />
         </RelativeLayout>
     </LinearLayout>
 

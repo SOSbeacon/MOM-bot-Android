@@ -33,10 +33,10 @@
     <!-- Function list main string -->
     <string name="function_desc_back">Back</string>
     <string name="function_desc_getting_data">Getting data\.\.\.</string>
-    <string name="function_desc_no_sms">0 SMS</string>
-    <string name="function_desc_no_email">0 Email</string>
-    <string name="function_desc_unread_sms">%1$s SMS</string>
-    <string name="function_desc_unread_email">%1$s Email</string>
+    <string name="function_desc_no_sms">No SMS</string>
+    <string name="function_desc_no_email">No Email</string>
+    <string name="function_desc_unread_sms">%1$s Unread SMS</string>
+    <string name="function_desc_unread_email">%1$s Unread Email</string>
     <string name="function_desc_command">COMMAND</string>
     <string name="function_desc_communication">Communications</string>
     <string name="function_desc_information">Information</string>
@@ -45,14 +45,11 @@
     <string name="function_desc_read_email_fail">Setup email account</string>
     <string name="function_desc_news">News</string>
     <string name="function_desc_weather">Weather</string>
-    <string name="function_sent_text_sms">Send text SMS</string>
-    <string name="function_sent_picture_mms">Send picture MMS</string>
-    <string name="function_sent_text_email">Send text Email</string>
-    <string name="function_sent_picture_email">Send picture Email</string>
+    <string name="function_sent_text_sms">Send message</string>
     <string name="function_setup_email_account">Setup email account</string>
-    <string name="function_desc_set_alarm">Set alarm</string>
-    <string name="function_desc_set_reminder">Add reminder</string>
-    <string name="function_calendar">Check my Calendar</string>
+    <string name="function_desc_set_alarm">Alarm</string>
+    <string name="function_desc_set_reminder">Reminder</string>
+    <string name="function_calendar">Calendar</string>
 
     <string-array name="array_list_drawer">
         <item>Home classic</item>
@@ -94,23 +91,20 @@
     <string name="errorResultTimeout">Stop listening</string>
     <string name="msg_warn_location_cannot_determine">Can\'t determine your location. Do you want to adjust your setting now?</string>
     <string name="msg_err_cannot_open_setting">Can not open setting</string>
-    <string name="msg_warn_no_people_recognize">This name doesn\'t exist. Please try again (%1$s).</string>
-    <string name="msg_err_dont_recognize">Sorry, we don\'t recognize your answer.</string>
+    <string name="msg_warn_no_people_recognize">This name  \'%1$s\' doesn\'t exist.</string>
     <string name="msg_err_create_event">Create event failed</string>
     <string name="msg_info_create_event">Create event successfully</string>
     <string name="msg_info_send_email_success">Send message successfully</string>
     <string name="msg_err_send_email_fail">Send message failed</string>
     <string name="msg_err_camera_not_sdcard">Insert sdcard in order to take picture</string>
     <string name="msg_info_setup_email">You must setup email account. Go to Administration \> Setup email account</string>
+    <string name="msg_war_no_contact">Contact list is empty.</string>
 
     <!-- Regconize speech -->
-    <string name="recognize_sms_to">Please speak people should be sent message after beep sound.</string>
-    <string name="recognize_sms_body">Please speak message content after beep sound.</string>
     <string name="recognize_search">Please speak search content after beep sound.</string>
     <string name="recognize_alarm">Please speak time alarm after beep sound.</string>
-    <string name="recognize_email_to">Please speak people should be sent email after beep sound.</string>
-    <string name="recognize_email_subject">Please speak email subject after beep sound.</string>
-    <string name="recognize_email_body">Please speak email body content after beep sound.</string>
+    <string name="recognize_message_to">Who do you want me to send this message to?</string>
+    <string name="recognize_message_content">Please input message content</string>
     <string name="recognize_ask_send_message">Do you want to send this message?</string>
 
     <!-- Command -->
@@ -135,14 +129,12 @@
     <string name="sms_no_message">\.\.\. You have no message.</string>
     <string name="sms_unread">\.\.\. You have %1$s unread message.</string>
     <string name="sms_unreads">\.\.\. You have %1$s unread messages.</string>
-    <string name="sms_read_message">\.\.\. Message from %1$s:\.\.\. %2$s</string>
     <string name="sms_ask_read_message">\.\.\. Message from %1$s. Do you want to read it?</string>
 
     <!-- Speak SMS string -->
     <string name="email_no_message">\.\.\. You have no Email.</string>
     <string name="email_unread">\.\.\. You have %1$s unread Email.</string>
     <string name="email_unreads">\.\.\. You have %1$s unread Emails.</string>
-    <string name="email_read_message">\.\.\. Email from: %1$s, subject: %2$s\.\.\.  %3$s</string>
     <string name="email_ask_read_message">\.\.\. Email from: %1$s, subject: %2$s. Do you want to read it?</string>
 
     <!-- Speak Weather string -->
@@ -181,7 +173,8 @@
     <string name="email_pass_hint">Enter your password</string>
     <string name="email_to">To:</string>
     <string name="email_body">Message:</string>
-    <string name="email_image">Image:</string>
+    <string name="email_image">Attach image</string>
+    <string name="email_hint_to">Click here and choose people</string>
 
     <!-- Login -->
     <string name="login_instructions">Please enter your correct email and password and click on login button. Account for test: tester1@cnc.vn. Pass: Admin123</string>

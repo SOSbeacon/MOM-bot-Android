@@ -4,6 +4,8 @@ import java.util.ArrayList;
 import java.util.Calendar;
 
 import org.cnc.msrobot.R;
+import org.cnc.msrobot.InputOutput.TextInput;
+import org.cnc.msrobot.InputOutput.VoiceToastOutput;
 import org.cnc.msrobot.activity.AddOrEditEventActivity;
 import org.cnc.msrobot.activity.EmailSetupActivity;
 import org.cnc.msrobot.activity.MainActivity;
@@ -27,6 +29,7 @@ import android.app.TimePickerDialog.OnTimeSetListener;
 import android.content.Intent;
 import android.location.Location;
 import android.os.Bundle;
+import android.os.Handler;
 import android.text.TextUtils;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -37,6 +40,7 @@ import android.widget.TimePicker;
 import com.android.volley.Response.Listener;
 
 public class ClassicFragment extends BaseFragment implements OnFunctionDoListener {
+	private static final int DELAY_CHECK_SMS_EMAIL = 1000 * 60 * 5; // 5 minute
 	private View mLayout;
 	private MainAdapter adapterMain;
 	private ReadSMSTask readSmsTask;
@@ -66,6 +70,25 @@ public class ClassicFragment extends BaseFragment implements OnFunctionDoListene
 			}
 		}
 	};
+	private Handler handler = new Handler();
+	private Runnable mCheckSmsEmailRunnable = new Runnable() {
+		@Override
+		public void run() {
+			// init task read sms
+			readSmsTask = new ReadSMSTask((MainActivity) getBaseActivity());
+			readSmsTask.execute();
+			// init task read email
+			String user = mSharePrefs.getGmailUsername();
+			String pass = mSharePrefs.getGmailPass();
+			if (!TextUtils.isEmpty(user) && !TextUtils.isEmpty(pass)) {
+				readEmailTask = new ReadEmailTask((MainActivity) getBaseActivity());
+				readEmailTask.execute(user, pass);
+			} else {
+				changeEmailItem(0, true);
+			}
+			handler.postDelayed(this, DELAY_CHECK_SMS_EMAIL);
+		}
+	};
 
 	@Override
 	public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
@@ -74,18 +97,6 @@ public class ClassicFragment extends BaseFragment implements OnFunctionDoListene
 		ListView lv = (ListView) mLayout.findViewById(R.id.lvMain);
 		lv.setAdapter(adapterMain);
 
-		// init task read sms
-		readSmsTask = new ReadSMSTask((MainActivity) getBaseActivity());
-		readSmsTask.execute();
-		// init task read email
-		String user = mSharePrefs.getGmailUsername();
-		String pass = mSharePrefs.getGmailPass();
-		if (!TextUtils.isEmpty(user) && !TextUtils.isEmpty(pass)) {
-			readEmailTask = new ReadEmailTask((MainActivity) getBaseActivity());
-			readEmailTask.execute(user, pass);
-		} else {
-			changeEmailItem(0, true);
-		}
 		return mLayout;
 	}
 
@@ -100,6 +111,9 @@ public class ClassicFragment extends BaseFragment implements OnFunctionDoListene
 	@Override
 	public void onCreate(Bundle savedInstanceState) {
 		super.onCreate(savedInstanceState);
+		// change input, output
+		getBaseActivity().changeIO(new TextInput(getBaseActivity()), new VoiceToastOutput(getBaseActivity()));
+
 		// init adapter
 		adapterMain = new MainAdapter(getBaseActivity(), new ArrayList<ItemListFunction>(), this);
 		// init & request weather
@@ -111,7 +125,9 @@ public class ClassicFragment extends BaseFragment implements OnFunctionDoListene
 	@Override
 	public void onStop() {
 		super.onStop();
-		readSmsTask.cancel(true);
+		if (readSmsTask != null) {
+			readSmsTask.cancel(true);
+		}
 		if (readEmailTask != null) {
 			readEmailTask.cancel(true);
 		}
@@ -120,10 +136,48 @@ public class ClassicFragment extends BaseFragment implements OnFunctionDoListene
 	@Override
 	public void onDetach() {
 		super.onDetach();
-		readSmsTask.cancel(true);
+		if (readSmsTask != null) {
+			readSmsTask.cancel(true);
+		}
 		if (readEmailTask != null) {
 			readEmailTask.cancel(true);
 		}
+	}
+
+	@Override
+	public void onResume() {
+		super.onResume();
+		// update unread sms, email when activity resume
+		int unread;
+		if (ReadSMSTask.mListSMS != null) {
+			unread = 0;
+			for (int i = 0; i < ReadSMSTask.mListSMS.size(); i++) {
+				if (ReadSMSTask.mListSMS.get(i).seen == 0) {
+					unread++;
+				}
+			}
+			changeSmsItem(unread);
+		} else {
+			changeSmsItem(0);
+		}
+		if (ReadEmailTask.emails != null) {
+			unread = 0;
+			for (int i = 0; i < ReadEmailTask.emails.size(); i++) {
+				if (!ReadEmailTask.emails.get(i).seen) {
+					unread++;
+				}
+			}
+			changeEmailItem(unread, readFail);
+		} else {
+			changeEmailItem(0, readFail);
+		}
+		handler.post(mCheckSmsEmailRunnable);
+	}
+
+	@Override
+	public void onPause() {
+		super.onPause();
+		handler.removeCallbacks(mCheckSmsEmailRunnable);
 	}
 
 	@Override
@@ -141,8 +195,9 @@ public class ClassicFragment extends BaseFragment implements OnFunctionDoListene
 		if (mMenuIndex != 1) return; // not communication menu
 		ItemListFunction item = adapterMain.getItem(2);
 		if (item.itemClickId != ItemListFunction.FUNCTION_READ_SMS) return;
+		item.notifyCount = count;
 		if (item.notifyCount > 0) {
-			item.desc = getString(R.string.function_desc_unread_sms, item.notifyCount);
+			item.desc = getString(R.string.function_desc_unread_sms, "");
 		} else {
 			item.desc = getString(R.string.function_desc_no_sms);
 		}
@@ -155,6 +210,7 @@ public class ClassicFragment extends BaseFragment implements OnFunctionDoListene
 		ItemListFunction item = adapterMain.getItem(3);
 		if (item.itemClickId != ItemListFunction.FUNCTION_READ_EMAIL
 				&& item.itemClickId != ItemListFunction.FUNCTION_SETUP_EMAIL_ACCOUNT) return;
+		item.notifyCount = 0;
 		item.desc = getString(R.string.function_desc_getting_data);
 		adapterMain.notifyDataSetChanged();
 	}
@@ -167,13 +223,15 @@ public class ClassicFragment extends BaseFragment implements OnFunctionDoListene
 		if (item.itemClickId != ItemListFunction.FUNCTION_READ_EMAIL
 				&& item.itemClickId != ItemListFunction.FUNCTION_SETUP_EMAIL_ACCOUNT) return;
 		if (!readFail) {
+			item.notifyCount = count;
 			if (item.notifyCount > 0) {
-				item.desc = getString(R.string.function_desc_unread_email, item.notifyCount);
+				item.desc = getString(R.string.function_desc_unread_email, "");
 			} else {
 				item.desc = getString(R.string.function_desc_no_email);
 			}
 			item.itemClickId = ItemListFunction.FUNCTION_READ_EMAIL;
 		} else {
+			item.notifyCount = 0;
 			item.desc = getString(R.string.function_desc_read_email_fail);
 			item.itemClickId = ItemListFunction.FUNCTION_SETUP_EMAIL_ACCOUNT;
 		}
@@ -274,13 +332,26 @@ public class ClassicFragment extends BaseFragment implements OnFunctionDoListene
 		adapterMain.add(new ItemListFunction.Builder(getBaseActivity()).setType(ItemListFunction.TYPE_FUNCTION_CLASSIC)
 				.setDescResId(R.string.function_desc_back).setItemClickId(ItemListFunction.FUNCTION_BACK_TO_COMMAND)
 				.setColorResId(R.color.buttonFocused1).build());
+		int unread = 0;
 		if (ReadSMSTask.mListSMS != null) {
-			changeSmsItem(ReadSMSTask.mListSMS.size());
+			unread = 0;
+			for (int i = 0; i < ReadSMSTask.mListSMS.size(); i++) {
+				if (ReadSMSTask.mListSMS.get(i).read == 0) {
+					unread++;
+				}
+			}
+			changeSmsItem(unread);
 		} else {
 			changeSmsItem(0);
 		}
 		if (ReadEmailTask.emails != null) {
-			changeEmailItem(ReadEmailTask.emails.size(), readFail);
+			unread = 0;
+			for (int i = 0; i < ReadEmailTask.emails.size(); i++) {
+				if (!ReadEmailTask.emails.get(i).seen) {
+					unread++;
+				}
+			}
+			changeEmailItem(unread, readFail);
 		} else {
 			changeEmailItem(0, readFail);
 		}

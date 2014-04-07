@@ -25,6 +25,8 @@ import android.speech.tts.TextToSpeech;
 import android.text.Html;
 import android.text.TextUtils;
 
+import com.sun.mail.imap.IMAPFolder;
+
 public class ReadEmailTask extends AsyncTask<String, Void, Boolean> {
 	public static ArrayList<Email> emails;
 	private MainActivity mContext;
@@ -74,7 +76,7 @@ public class ReadEmailTask extends AsyncTask<String, Void, Boolean> {
 				unReadString = mContext.getString(R.string.email_unread, unReadCount);
 			}
 			// speech
-			mContext.speak(unReadString, TextToSpeech.QUEUE_ADD);
+			mContext.getTextToSpeech().speak(unReadString, TextToSpeech.QUEUE_ADD);
 			mContext.changeEmailItem(unReadCount, false);
 		} else if (result == false) {
 			mContext.changeEmailItem(0, true);
@@ -91,7 +93,7 @@ public class ReadEmailTask extends AsyncTask<String, Void, Boolean> {
 			// IMAP host for gmail.
 			store.connect("imap.gmail.com", email, pass);
 
-			Folder inbox = store.getFolder("Inbox");
+			IMAPFolder inbox = (IMAPFolder) store.getFolder("Inbox");
 			inbox.open(Folder.READ_ONLY);
 			FlagTerm ft = new FlagTerm(new Flags(Flags.Flag.SEEN), false);
 			Message[] msgs = inbox.search(ft);
@@ -99,6 +101,7 @@ public class ReadEmailTask extends AsyncTask<String, Void, Boolean> {
 			for (int i = 0; i < msgs.length; i++) {
 				Message msg = msgs[i];
 				Email e = new Email();
+				e.uid = inbox.getUID(msg);
 				e.subject = msg.getSubject();
 				e.from = msg.getFrom()[0].toString();
 				String s = msg.getContent() + "";

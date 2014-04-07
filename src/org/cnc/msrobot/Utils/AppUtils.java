@@ -3,9 +3,9 @@ package org.cnc.msrobot.utils;
 import java.util.Calendar;
 
 import org.cnc.msrobot.R;
-import org.cnc.msrobot.activity.BaseActivity;
 
 import android.annotation.TargetApi;
+import android.app.Activity;
 import android.app.SearchManager;
 import android.content.ContentUris;
 import android.content.Context;
@@ -23,6 +23,7 @@ import android.util.DisplayMetrics;
 import android.view.View;
 import android.view.WindowManager;
 import android.view.inputmethod.InputMethodManager;
+import android.widget.Toast;
 
 /**
  * @author cnc
@@ -308,12 +309,19 @@ public class AppUtils {
 	 * 
 	 * @param targetCal
 	 */
-	public static void setAlarm(BaseActivity context, Calendar targetCal) {
-		context.showCenterToast("\n\n***\n" + "Alarm is set " + targetCal.getTime() + "\n" + "***\n");
+	public static void setAlarm(Context context, Calendar targetCal) {
+		Toast.makeText(context, "\n\n***\n" + "Alarm is set " + targetCal.getTime() + "\n" + "***\n", Toast.LENGTH_LONG)
+				.show();
 		Intent openNewAlarm = new Intent(AlarmClock.ACTION_SET_ALARM);
 		openNewAlarm.putExtra(AlarmClock.EXTRA_HOUR, targetCal.get(Calendar.HOUR_OF_DAY));
 		openNewAlarm.putExtra(AlarmClock.EXTRA_MINUTES, targetCal.get(Calendar.MINUTE));
 		openNewAlarm.putExtra(AlarmClock.EXTRA_SKIP_UI, true);
 		context.startActivity(openNewAlarm);
+	}
+
+	public static void hideKeyboard(View view) {
+		InputMethodManager inputMethodManager = (InputMethodManager) view.getContext().getSystemService(
+				Activity.INPUT_METHOD_SERVICE);
+		inputMethodManager.hideSoftInputFromWindow(view.getWindowToken(), 0);
 	}
 }

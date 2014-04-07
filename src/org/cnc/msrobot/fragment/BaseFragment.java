@@ -1,12 +1,9 @@
 package org.cnc.msrobot.fragment;
 
-import java.util.ArrayList;
-
 import org.cnc.msrobot.activity.BaseActivity;
-import org.cnc.msrobot.activity.BaseActivity.FragmentRecognizeVoiceListener;
-import org.cnc.msrobot.activity.BaseActivity.SpeakAnimationListener;
 import org.cnc.msrobot.requestmanager.RequestManager;
 import org.cnc.msrobot.utils.SharePrefs;
+import org.cnc.msrobot.utils.TextToSpeechUtils.SpeechListener;
 
 import android.app.Activity;
 import android.content.ContentResolver;
@@ -18,7 +15,7 @@ import android.support.v4.app.Fragment;
  * @author thanhlcm
  * 
  */
-public class BaseFragment extends Fragment implements FragmentRecognizeVoiceListener {
+public class BaseFragment extends Fragment {
 	protected SharePrefs mSharePrefs = SharePrefs.getInstance();
 	protected RequestManager mRequestManager = RequestManager.getInstance();
 	private final Object attachingActivityLock = new Object();
@@ -28,7 +25,6 @@ public class BaseFragment extends Fragment implements FragmentRecognizeVoiceList
 	@Override
 	public void onCreate(Bundle savedInstanceState) {
 		super.onCreate(savedInstanceState);
-		getBaseActivity().setOnRecogizeVoiceListener(this);
 	}
 
 	@Override
@@ -106,32 +102,22 @@ public class BaseFragment extends Fragment implements FragmentRecognizeVoiceList
 
 	public void speak(String msg, int queueMode) {
 		if (getBaseActivity() != null) {
-			getBaseActivity().speak(msg, queueMode);
+			getBaseActivity().getTextToSpeech().speak(msg, queueMode);
 		}
 	}
 
 	public void stopSpeak() {
 		if (getBaseActivity() != null) {
-			getBaseActivity().stopSpeak();
-		}
-	}
-
-	@Override
-	public void onRecognize(final ArrayList<String> data) {
-	}
-
-	public void listen() {
-		if (getBaseActivity() != null) {
-			getBaseActivity().listen();
+			getBaseActivity().getTextToSpeech().stopSpeak();
 		}
 	}
 
 	public void refresh() {
 	}
 
-	public void setOnSpeakAnimationListener(SpeakAnimationListener listener) {
+	public void setOnSpeakAnimationListener(SpeechListener listener) {
 		if (getBaseActivity() != null) {
-			getBaseActivity().setOnSpeakAnimationListener(listener);
+			getBaseActivity().setSpeechListener(listener);
 		}
 	}
 }

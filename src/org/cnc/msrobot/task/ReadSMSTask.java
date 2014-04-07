@@ -6,7 +6,6 @@ import org.cnc.msrobot.R;
 import org.cnc.msrobot.activity.MainActivity;
 import org.cnc.msrobot.resource.SMS;
 
-import android.content.ContentValues;
 import android.database.Cursor;
 import android.net.Uri;
 import android.os.AsyncTask;
@@ -46,13 +45,6 @@ public class ReadSMSTask extends AsyncTask<Void, Void, Boolean> {
 				}
 				c.close();
 			}
-			// update sms read status
-			if (mListSMS != null && mListSMS.size() > 0) {
-				// set read status is 1 (read)
-				ContentValues value = new ContentValues();
-				value.put(SMS.COLUMN_READ, 1);
-				mContext.getContentResolver().update(uri, value, where, null);
-			}
 			return true;
 		} catch (Exception e) {
 			e.printStackTrace();
@@ -76,7 +68,7 @@ public class ReadSMSTask extends AsyncTask<Void, Void, Boolean> {
 				unReadString = mContext.getString(R.string.sms_unread, unReadCount);
 			}
 			// speech
-			mContext.speak(unReadString, TextToSpeech.QUEUE_ADD);
+			mContext.getTextToSpeech().speak(unReadString, TextToSpeech.QUEUE_ADD);
 		}
 		mContext.changeSmsItem(unReadCount);
 	}

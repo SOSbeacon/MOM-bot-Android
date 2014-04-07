@@ -1,14 +1,16 @@
 package org.cnc.msrobot.activity;
 
-import java.util.ArrayList;
 import java.util.List;
-import java.util.Locale;
 
 import org.cnc.msrobot.R;
+import org.cnc.msrobot.module.AskYesNoModule;
+import org.cnc.msrobot.module.AskYesNoModule.AskYesNoModuleListener;
+import org.cnc.msrobot.resource.ContactResource;
+import org.cnc.msrobot.resource.StaticResource;
 import org.cnc.msrobot.task.SendEmailTask;
+import org.cnc.msrobot.utils.AppUtils;
 import org.cnc.msrobot.utils.Consts.RequestCode;
 import org.cnc.msrobot.utils.ContactsEditText;
-import org.cnc.msrobot.utils.ContactsEditText.Contact;
 import org.cnc.msrobot.utils.CustomActionBar;
 import org.cnc.msrobot.utils.DialogUtils.OnConfirmClickListener;
 
@@ -17,18 +19,19 @@ import android.content.Intent;
 import android.os.Bundle;
 import android.telephony.SmsManager;
 import android.text.TextUtils;
-import android.util.Log;
 import android.util.Patterns;
 import android.view.View;
 import android.view.View.OnClickListener;
+import android.view.View.OnFocusChangeListener;
 import android.widget.CheckBox;
 import android.widget.EditText;
 import android.widget.ImageView;
 
 import com.nostra13.universalimageloader.core.ImageLoader;
 
-public class SendSmsEmailActivity extends BaseActivity implements OnClickListener {
-	public static final String EXTRA_TO = "extra_to";
+public class SendSmsEmailActivity extends BaseActivity implements OnClickListener, OnFocusChangeListener,
+		AskYesNoModuleListener {
+	public static final String EXTRA_CONTACT_POSITION = "extra_contact_position";
 	public static final String EXTRA_BODY = "extra_body";
 	public static final String EXTRA_IMAGE = "extra_image";
 	private EditText mEtBody;
@@ -55,30 +58,24 @@ public class SendSmsEmailActivity extends BaseActivity implements OnClickListene
 
 		Bundle bundle = getIntent().getExtras();
 		if (bundle != null) {
-			mEtTo.setText(bundle.getString(EXTRA_TO));
+			int pos = bundle.getInt(EXTRA_CONTACT_POSITION);
+			if (StaticResource.listContact != null && pos >= 0 && pos < StaticResource.listContact.size()) {
+				ContactResource c = StaticResource.listContact.get(pos);
+				mEtTo.addContact(c);
+			}
 			mEtBody.setText(bundle.getString(EXTRA_BODY));
 		}
 
 		if (!TextUtils.isEmpty(mEtBody.getText().toString())) {
-			handler.postDelayed(new Runnable() {
-
-				@Override
-				public void run() {
-					String msg = "";
-					msg = getString(R.string.recognize_ask_send_message);
-					speakBeforeRecognize(msg, 0);
-				}
-			}, 1000);
+			// run module ask yes no to send message
+			new AskYesNoModule(this, input, output, R.string.recognize_ask_send_message, this).run();
 		}
 
-		mImgAttachment.setOnClickListener(new OnClickListener() {
+		// set click event
+		findViewById(R.id.tvAttachment).setOnClickListener(this);
 
-			@Override
-			public void onClick(View v) {
-				startActivityForResult(new Intent(SendSmsEmailActivity.this, CameraActivity.class),
-						RequestCode.REQUEST_CAMERA);
-			}
-		});
+		// set click outsode for hide keyboard
+		mEtBody.setOnFocusChangeListener(this);
 	}
 
 	@Override
@@ -103,26 +100,6 @@ public class SendSmsEmailActivity extends BaseActivity implements OnClickListene
 		}
 	}
 
-	@Override
-	public void onUtteranceCompleted(String utteranceId) {
-		handler.postDelayed(new Runnable() {
-			@Override
-			public void run() {
-				listen();
-			}
-		}, 500);
-	}
-
-	@Override
-	public void onRecognize(ArrayList<String> data) {
-		String answer = data.get(0);
-		String yes = getString(R.string.common_yes).toLowerCase(Locale.US);
-		showCenterToast(getString(R.string.common_answer, answer));
-		if (yes.equals(answer.toLowerCase(Locale.US))) {
-			send();
-		}
-	}
-
 	protected boolean validateEmail(String email) {
 		boolean valid = false;
 		if (!TextUtils.isEmpty(email) && Patterns.EMAIL_ADDRESS.matcher(email).matches()) valid = true;
@@ -131,14 +108,17 @@ public class SendSmsEmailActivity extends BaseActivity implements OnClickListene
 
 	private void send() {
 		if (TextUtils.isEmpty(mEtTo.getText())) return;
-		List<Contact> list = mEtTo.getSelectedContact();
+		List<ContactResource> list = mEtTo.getSelectedContact();
 		String emailTo = "";
 		SmsManager smsManager = SmsManager.getDefault();
 		for (int i = 0; i < list.size(); i++) {
-			Contact c = list.get(i);
-			Log.d("zzz", c.name + " " + c.email + " " + c.mobile);
-			if (mChkSms.isChecked()) {
-				smsManager.sendTextMessage(c.mobile, null, mEtBody.getText().toString(), null, null);
+			ContactResource c = list.get(i);
+			if (mChkSms.isChecked() && c.phone != null && !TextUtils.isEmpty(c.phone)) {
+				try {
+					smsManager.sendTextMessage(c.phone, null, mEtBody.getText().toString(), null, null);
+				} catch (Exception ex) {
+					ex.printStackTrace();
+				}
 			}
 			if (mChkEmail.isChecked()) {
 				emailTo += "," + c.email;
@@ -160,6 +140,11 @@ public class SendSmsEmailActivity extends BaseActivity implements OnClickListene
 		switch (v.getId()) {
 			case R.id.tvSend:
 				send();
+				break;
+			case R.id.tvAttachment:
+				startActivityForResult(new Intent(SendSmsEmailActivity.this, CameraActivity.class),
+						RequestCode.REQUEST_CAMERA);
+				break;
 			default:
 				break;
 		}
@@ -175,5 +160,21 @@ public class SendSmsEmailActivity extends BaseActivity implements OnClickListene
 				ImageLoader.getInstance().displayImage("file:/" + image, mImgAttachment);
 			}
 		}
+	}
+
+	@Override
+	public void onFocusChange(View view, boolean hasFocus) {
+		if (!hasFocus) {
+			AppUtils.hideKeyboard(view);
+		}
+	}
+
+	@Override
+	public void onYes() {
+		send();
+	}
+
+	@Override
+	public void onNo() {
 	}
 }

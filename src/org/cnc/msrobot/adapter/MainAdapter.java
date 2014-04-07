@@ -4,14 +4,13 @@ import java.util.ArrayList;
 
 import org.cnc.msrobot.R;
 import org.cnc.msrobot.activity.BaseActivity;
+import org.cnc.msrobot.activity.CalendarActivity;
 import org.cnc.msrobot.activity.EmailSetupActivity;
-import org.cnc.msrobot.activity.MainActivity;
 import org.cnc.msrobot.activity.ReadEmailSmsActivity;
 import org.cnc.msrobot.activity.RssActivity;
-import org.cnc.msrobot.activity.SendSmsEmailActivity;
 import org.cnc.msrobot.activity.WeatherActivity;
-import org.cnc.msrobot.fragment.CalendarEventFragment;
-import org.cnc.msrobot.recognizemodule.RecoginizeIds;
+import org.cnc.msrobot.module.Module;
+import org.cnc.msrobot.module.ModuleManager;
 import org.cnc.msrobot.resource.ItemListFunction;
 import org.cnc.msrobot.utils.AppUtils;
 import org.cnc.msrobot.utils.Consts.RequestCode;
@@ -137,13 +136,8 @@ public class MainAdapter extends ArrayAdapter<ItemListFunction> implements OnCli
 	@Override
 	public void onClick(View v) {
 		// first, stop speech
-		activity.stopSpeak();
 		ViewHolder holder = (ViewHolder) v.getTag();
-		doFunction(holder.item.itemClickId);
-	}
-
-	private void doFunction(int funcId) {
-		switch (funcId) {
+		switch (holder.item.itemClickId) {
 			case ItemListFunction.FUNCTION_READ_SMS: {
 				Intent intent = new Intent(activity, ReadEmailSmsActivity.class);
 				intent.putExtra(ReadEmailSmsActivity.EXTRA_TYPE, ReadEmailSmsActivity.TYPE_SENT_SMS);
@@ -157,8 +151,7 @@ public class MainAdapter extends ArrayAdapter<ItemListFunction> implements OnCli
 				break;
 			}
 			case ItemListFunction.FUNCTION_SENT_MESSAGE: {
-				Intent intent = new Intent(activity, SendSmsEmailActivity.class);
-				activity.startActivity(intent);
+				ModuleManager.getInstance().runModule(Module.MODULE_SEND_MESSAGE);
 				break;
 			}
 			case ItemListFunction.FUNCTION_CHECK_WEATHER:
@@ -168,13 +161,14 @@ public class MainAdapter extends ArrayAdapter<ItemListFunction> implements OnCli
 				activity.startActivity(new Intent(getContext(), RssActivity.class));
 				break;
 			case ItemListFunction.FUNCTION_SEARCH:
-				((MainActivity) activity).doRecognizeModule(RecoginizeIds.MODULE_SEARCH);
+				ModuleManager.getInstance().runModule(Module.MODULE_SEARCH);
 				break;
 			case ItemListFunction.FUNCTION_SPEAK_TIME:
-				activity.speak(AppUtils.getCurrentTimeForSpeech(getContext()), TextToSpeech.QUEUE_FLUSH);
+				activity.getTextToSpeech().speak(AppUtils.getCurrentTimeForSpeech(getContext()),
+						TextToSpeech.QUEUE_FLUSH);
 				break;
 			case ItemListFunction.FUNCTION_CHECK_MY_CALENDAR:
-				activity.startActivity(new Intent(getContext(), CalendarEventFragment.class));
+				activity.startActivity(new Intent(getContext(), CalendarActivity.class));
 				break;
 			case ItemListFunction.FUNCTION_SETUP_EMAIL_ACCOUNT:
 				activity.startActivityForResult(new Intent(getContext(), EmailSetupActivity.class),
@@ -182,7 +176,7 @@ public class MainAdapter extends ArrayAdapter<ItemListFunction> implements OnCli
 				break;
 		}
 		if (listener != null) {
-			listener.doFunction(funcId);
+			listener.doFunction(holder.item.itemClickId);
 		}
 	}
 

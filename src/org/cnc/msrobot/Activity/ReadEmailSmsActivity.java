@@ -1,19 +1,18 @@
 package org.cnc.msrobot.activity;
 
 import java.util.ArrayList;
-import java.util.HashMap;
-import java.util.Locale;
 
 import org.cnc.msrobot.R;
+import org.cnc.msrobot.module.ReadMessageModule;
+import org.cnc.msrobot.module.ReadMessageModule.ReadMessageModuleListener;
 import org.cnc.msrobot.resource.Email;
+import org.cnc.msrobot.task.MarkEmailSeenTask;
+import org.cnc.msrobot.task.MarkSmsSeenTask;
 import org.cnc.msrobot.task.ReadEmailTask;
 import org.cnc.msrobot.task.ReadSMSTask;
-import org.cnc.msrobot.utils.CustomActionBar;
 
 import android.content.Context;
-import android.media.AudioManager;
 import android.os.Bundle;
-import android.speech.tts.TextToSpeech;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.View.OnClickListener;
@@ -26,9 +25,6 @@ import android.widget.ListView;
 import android.widget.TextView;
 
 public class ReadEmailSmsActivity extends BaseActivity implements OnClickListener {
-	private static final String VERB_ASK = "ask";
-	private static final String VERB_READ = "read";
-	public static final String EXTRA_REC = "extra_rec";
 	public static final String EXTRA_TYPE = "extra_type";
 	public static final int TYPE_SENT_SMS = 0;
 	public static final int TYPE_SENT_EMAIL = 1;
@@ -37,18 +33,13 @@ public class ReadEmailSmsActivity extends BaseActivity implements OnClickListene
 	private WebView mWebView;
 	private ReadEmailAdapter mAdapter;
 	private int mPosition = 0;
-	private boolean mStop = false;
 	private int mType = TYPE_SENT_SMS;
-	private boolean isRec = true;
+	private ReadMessageModule mAskModule;
 
 	@Override
 	protected void onCreate(Bundle savedInstanceState) {
 		super.onCreate(savedInstanceState);
 		// set action bar
-		isRec = getIntent().getExtras().getBoolean(EXTRA_REC, true);
-		if (isRec) {
-			mActionbar.setType(CustomActionBar.TYPE_EMAIL);
-		}
 		mActionbar.setOnClickListener(this);
 		setContentView(R.layout.activity_read_email_sms);
 
@@ -78,6 +69,8 @@ public class ReadEmailSmsActivity extends BaseActivity implements OnClickListene
 				}
 			}
 		}
+
+		// init adapter and set adapter to list
 		mAdapter = new ReadEmailAdapter(this, list);
 		mListView.setAdapter(mAdapter);
 		mListView.setOnItemClickListener(new OnItemClickListener() {
@@ -92,8 +85,18 @@ public class ReadEmailSmsActivity extends BaseActivity implements OnClickListene
 					mWebView.loadData(item.subject, "text/html", "UTF-8");
 				}
 				mPosition = position;
-				stopSpeak();
+				getTextToSpeech().stopSpeak();
 				readEmail(mPosition);
+			}
+		});
+
+		// init ask module
+		mAskModule = new ReadMessageModule(this, input, output);
+		mAskModule.setListener(new ReadMessageModuleListener() {
+			@Override
+			public void onNext() {
+				getTextToSpeech().stopSpeak();
+				readEmail(mPosition + 1);
 			}
 		});
 
@@ -106,98 +109,27 @@ public class ReadEmailSmsActivity extends BaseActivity implements OnClickListene
 		}, 1000);
 	}
 
-	private void speak(String msg, String verb) {
-		HashMap<String, String> myHashAlarm = new HashMap<String, String>();
-		myHashAlarm.put(TextToSpeech.Engine.KEY_PARAM_STREAM, String.valueOf(AudioManager.STREAM_MUSIC));
-		myHashAlarm.put(TextToSpeech.Engine.KEY_PARAM_UTTERANCE_ID, verb);
-		getTextToSpeech().speak(msg, TextToSpeech.QUEUE_FLUSH, myHashAlarm);
-	}
-
 	private void readEmail(int position) {
 		if (position >= mAdapter.getCount()) return;
 		mPosition = position;
 		mListView.setItemChecked(mPosition, true);
+		mListView.setSelection(mPosition);
 
-		String msg = "";
+		String ask = "", content = "";
 		if (mType == TYPE_SENT_EMAIL) {
 			Email email = ReadEmailTask.emails.get(position);
 			mWebView.loadData(email.htmlContent, "text/html", "UTF-8");
-			if (isRec) {
-				msg = getString(R.string.email_ask_read_message, email.from, email.subject);
-			} else {
-				msg = getString(R.string.email_read_message, email.from, email.subject, email.content);
-			}
+			ask = getString(R.string.email_ask_read_message, email.from, email.subject);
+			content = ReadEmailTask.emails.get(mPosition).content;
+			new MarkEmailSeenTask(position).execute();
 		} else {
 			EmailSmsItem item = mAdapter.getItem(position);
 			mWebView.loadData(item.subject, "text/html", "UTF-8");
-			if (isRec) {
-				msg = getString(R.string.sms_ask_read_message, item.from);
-			} else {
-				msg = getString(R.string.sms_read_message, item.from, item.subject);
-			}
+			ask = getString(R.string.sms_ask_read_message, item.from);
+			content = mAdapter.getItem(mPosition).subject;
+			//new MarkSmsSeenTask(this, position).execute();
 		}
-		if (isRec) {
-			speak(msg, VERB_ASK);
-		} else {
-			speak(msg, VERB_READ);
-		}
-	}
-
-	@Override
-	public void onUtteranceCompleted(String utteranceId) {
-		// neu stop tu action bar thi bo qua
-		if (mStop) {
-			mStop = false;
-			return;
-		}
-		try {
-			if (VERB_ASK.equals(utteranceId)) {
-				// run listener for 200 ms delay
-				handler.postDelayed(new Runnable() {
-					@Override
-					public void run() {
-						listen();
-					}
-				}, 200);
-			} else if (VERB_READ.equals(utteranceId)) {
-				// run listener for 200 ms delay
-				handler.postDelayed(new Runnable() {
-					@Override
-					public void run() {
-						readEmail(mPosition + 1);
-					}
-				}, 1000);
-			}
-		} catch (Exception e) {
-		}
-	}
-
-	@Override
-	public void onRecognize(ArrayList<String> data) {
-		if (data.size() > 0) {
-			String answer = data.get(0);
-			showCenterToast(getString(R.string.common_answer, answer));
-			if (answer.toUpperCase(Locale.US).equals("YES")) {
-				if (mType == TYPE_SENT_EMAIL) {
-					Email email = ReadEmailTask.emails.get(mPosition);
-					speak(email.content, VERB_READ);
-				} else {
-					EmailSmsItem item = mAdapter.getItem(mPosition);
-					speak(item.subject, VERB_READ);
-				}
-			} else {
-				// run listener for 200 ms delay
-				handler.postDelayed(new Runnable() {
-					@Override
-					public void run() {
-						readEmail(mPosition + 1);
-					}
-				}, 1000);
-			}
-		} else {
-			Email email = ReadEmailTask.emails.get(mPosition);
-			speak(email.content, VERB_READ);
-		}
+		mAskModule.readAsk(ask, content);
 	}
 
 	private class EmailSmsItem {
@@ -245,22 +177,13 @@ public class ReadEmailSmsActivity extends BaseActivity implements OnClickListene
 	public void onClick(View v) {
 		switch (v.getId()) {
 			case R.id.imgPlay:
-				if (getTextToSpeech().isSpeaking()) {
-					mStop = true;
-				}
 				readEmail(mPosition);
 				break;
 			case R.id.imgStop:
-				if (getTextToSpeech().isSpeaking()) {
-					mStop = true;
-				}
 				getTextToSpeech().stop();
 				break;
 			case R.id.imgNext:
 				if (mPosition < mAdapter.getCount() - 1) {
-					if (getTextToSpeech().isSpeaking()) {
-						mStop = true;
-					}
 					readEmail(mPosition + 1);
 				}
 				break;

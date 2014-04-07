@@ -8,6 +8,8 @@ import org.cnc.msrobot.utils.AppUtils;
 import org.cnc.msrobot.utils.Consts;
 import org.cnc.msrobot.utils.LruBitmapCache;
 import org.cnc.msrobot.utils.SharePrefs;
+import org.cnc.msrobot.utils.SpeechToText;
+import org.cnc.msrobot.utils.TextToSpeechUtils;
 
 import android.app.Application;
 
@@ -26,7 +28,7 @@ public class MainApplication extends Application {
 		super.onCreate();
 
 		// init crash report
-//		ACRA.init(this);
+		// ACRA.init(this);
 
 		// Init Request Manager
 		RequestManager.getInstance().init(getApplicationContext());
@@ -45,6 +47,16 @@ public class MainApplication extends Application {
 
 		// start service
 		setAlarmService();
+
+		// init Text To Speech
+		TextToSpeechUtils.getInstance().init(getApplicationContext());
+		SpeechToText.getInstance().init(getApplicationContext());
+	}
+
+	@Override
+	public void onTerminate() {
+		super.onTerminate();
+		TextToSpeechUtils.getInstance().shutdown();
 	}
 
 	private void InitImageLoaderConfiguration() {

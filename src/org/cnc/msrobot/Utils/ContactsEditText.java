@@ -24,6 +24,7 @@ import java.util.regex.Pattern;
 
 import org.cnc.msrobot.R;
 import org.cnc.msrobot.provider.DbContract.TableContact;
+import org.cnc.msrobot.resource.ContactResource;
 
 import android.annotation.SuppressLint;
 import android.content.Context;
@@ -31,25 +32,30 @@ import android.database.Cursor;
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
 import android.graphics.Canvas;
+import android.graphics.Color;
 import android.graphics.drawable.BitmapDrawable;
 import android.net.Uri;
 import android.os.Build;
 import android.support.v4.widget.CursorAdapter;
 import android.text.Spannable;
+import android.text.SpannableString;
 import android.text.SpannableStringBuilder;
+import android.text.Spanned;
+import android.text.TextUtils;
 import android.text.style.ImageSpan;
 import android.util.AttributeSet;
+import android.util.Log;
 import android.util.TypedValue;
 import android.view.LayoutInflater;
 import android.view.View;
+import android.view.View.OnClickListener;
+import android.view.View.OnFocusChangeListener;
 import android.view.ViewGroup;
-import android.widget.AdapterView;
-import android.widget.AdapterView.OnItemClickListener;
 import android.widget.ImageView;
 import android.widget.MultiAutoCompleteTextView;
 import android.widget.TextView;
 
-public class ContactsEditText extends MultiAutoCompleteTextView {
+public class ContactsEditText extends MultiAutoCompleteTextView implements OnClickListener, OnFocusChangeListener {
 
 	public static Pattern mPatternTagFriend = Pattern.compile("@\\{name: (.*?), email: (.*?), mobile: (.*?)\\}",
 			Pattern.CASE_INSENSITIVE);
@@ -88,29 +94,88 @@ public class ContactsEditText extends MultiAutoCompleteTextView {
 		// Set adapter
 		mAdapter = new ContactsAdapter(context);
 		setAdapter(mAdapter);
+		mAdapter.swapCursor(mAdapter.runQueryOnBackgroundThread(""));
 
 		// Separate entries by commas
-		setTokenizer(new MultiAutoCompleteTextView.CommaTokenizer());
+		setTokenizer(new Tokenizer() {
+
+			@Override
+			public CharSequence terminateToken(CharSequence text) {
+				int i = text.length();
+
+				while (i > 0 && text.charAt(i - 1) == ' ') {
+					i--;
+				}
+
+				if (i > 0 && text.charAt(i - 1) == ' ') {
+					return text;
+				} else {
+					if (text instanceof Spanned) {
+						SpannableString sp = new SpannableString(text + " ");
+						TextUtils.copySpansFrom((Spanned) text, 0, text.length(), Object.class, sp, 0);
+						return sp;
+					} else {
+						return text + " ";
+					}
+				}
+			}
+
+			@Override
+			public int findTokenStart(CharSequence text, int cursor) {
+				int i = cursor;
+
+				while (i > 0 && text.charAt(i - 1) != ' ') {
+					i--;
+				}
+				// Check if token really started with ' ', else we don't have a valid token
+				if (i < 1 || text.charAt(i - 1) != ' ') { return cursor; }
+
+				return i;
+			}
+
+			@Override
+			public int findTokenEnd(CharSequence text, int cursor) {
+				int i = cursor;
+				int len = text.length();
+
+				while (i < len) {
+					if (text.charAt(i) == ' ') {
+						return i;
+					} else {
+						i++;
+					}
+				}
+
+				return len;
+			}
+		});
 
 		// Pop up suggestions after 1 character is typed.
 		setThreshold(1);
 
-		setOnItemClickListener(new OnItemClickListener() {
-			@Override
-			public void onItemClick(AdapterView<?> adapter, View view, int pos, long id) {
-				String edittext = getText().toString();
-				setText(addPeopleToGroupChat(new SpannableStringBuilder(edittext)));
-				setSelection(edittext.length());
-			}
-		});
+		setOnClickListener(this);
+		setOnFocusChangeListener(this);
 	}
 
 	@Override
 	protected CharSequence convertSelectionToString(Object selectedItem) {
-		Contact contact = (Contact) selectedItem;
-		String friendName = "@{name: " + contact.name + ", email: " + contact.email + ", mobile:  " + contact.mobile
+		ContactResource contact = (ContactResource) selectedItem;
+		return getContactSpanned(contact);
+	}
+
+	public void addContact(ContactResource contact) {
+		append(getContactSpanned(contact));
+		append(" ");
+	}
+
+	public void setTextFromSpannedString(String spannedString) {
+		setText(addPeopleToGroupChat(new SpannableStringBuilder(spannedString)));
+	}
+
+	private CharSequence getContactSpanned(ContactResource contact) {
+		String friendName = "@{name: " + contact.name + ", email: " + contact.email + ", mobile:  " + contact.phone
 				+ " }";
-		return friendName;
+		return addPeopleToGroupChat(new SpannableStringBuilder(friendName));
 	}
 
 	private SpannableStringBuilder addPeopleToGroupChat(SpannableStringBuilder spannable) {
@@ -147,35 +212,32 @@ public class ContactsEditText extends MultiAutoCompleteTextView {
 	private View createContactTextView(String text) {
 		TextView tv = new TextView(getContext());
 		tv.setTextSize(TypedValue.COMPLEX_UNIT_PX,
-				getContext().getResources().getDimension(R.dimen.common_textsize_large));
+				getContext().getResources().getDimension(R.dimen.common_textsize_larger));
 		tv.setText(text);
-		tv.setTextColor(getResources().getColor(R.color.event4_color));
+		tv.setBackgroundResource(R.drawable.img_bg_notify_blue);
+		tv.setTextColor(Color.WHITE);
 		return tv;
 	}
 
 	/**
 	 * get selected contact
 	 */
-	public List<Contact> getSelectedContact() {
+	public List<ContactResource> getSelectedContact() {
 		String text = getText().toString();
+		return getListContact(text);
+	}
+
+	public static List<ContactResource> getListContact(String text) {
 		final Matcher matcherTag = mPatternTagFriend.matcher(text);
-		ArrayList<Contact> result = new ArrayList<Contact>();
+		ArrayList<ContactResource> result = new ArrayList<ContactResource>();
 		while (matcherTag.find()) {
-			Contact c = new Contact();
+			ContactResource c = new ContactResource();
 			c.name = matcherTag.group(1);
 			c.email = matcherTag.group(2);
-			c.mobile = matcherTag.group(3);
+			c.phone = matcherTag.group(3);
 			result.add(c);
 		}
 		return result;
-	}
-
-	/**
-	 * Holder class to return results to the parent Activity.
-	 */
-	public class Contact {
-		public String name, email, mobile;
-		public long id;
 	}
 
 	private class ContactsAdapter extends CursorAdapter {
@@ -193,12 +255,12 @@ public class ContactsEditText extends MultiAutoCompleteTextView {
 		@Override
 		public Object getItem(int position) {
 			Cursor cursor = (Cursor) super.getItem(position);
-			Contact contact = new Contact();
+			ContactResource contact = new ContactResource();
 
-			contact.id = cursor.getLong(ContactsQuery.ID_COLUMN);
+			contact.id = cursor.getInt(ContactsQuery.ID_COLUMN);
 			contact.name = cursor.getString(ContactsQuery.NAME_COLUMN);
 			contact.email = cursor.getString(ContactsQuery.EMAIL_COLUMN);
-			contact.mobile = cursor.getString(ContactsQuery.MOBILE_COLUMN);
+			contact.phone = cursor.getString(ContactsQuery.MOBILE_COLUMN);
 
 			return contact;
 		}
@@ -250,7 +312,7 @@ public class ContactsEditText extends MultiAutoCompleteTextView {
 		public ImageView image;
 	}
 
-	private static interface ContactsQuery {
+	public static interface ContactsQuery {
 
 		// A content URI for the Contacts table
 		final static Uri CONTENT_URI = TableContact.CONTENT_URI;
@@ -340,6 +402,22 @@ public class ContactsEditText extends MultiAutoCompleteTextView {
 			return inSampleSize;
 		}
 
+	}
+
+	@Override
+	public void onClick(View v) {
+		showDropDown();
+	}
+
+	@Override
+	public void onFocusChange(View view, boolean focus) {
+		Log.d("zzz", "onFocusChange: " + focus);
+		if (focus) {
+			showDropDown();
+		} else {
+			dismissDropDown();
+			AppUtils.hideKeyboard(view);
+		}
 	}
 
 }

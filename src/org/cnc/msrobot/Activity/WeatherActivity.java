@@ -89,10 +89,8 @@ public class WeatherActivity extends BaseActivity {
 			String locationSpeech = getString(R.string.weather_location, location);
 			String temp = Math.round(response.temperature.temp) + " " + degress + "C";
 			String weatherSpeech = getString(R.string.weather_infomation, condition, temp);
-			if (mTts != null) {
-				mTts.speak(locationSpeech, TextToSpeech.QUEUE_FLUSH, null);
-				mTts.speak(weatherSpeech, TextToSpeech.QUEUE_ADD, null);
-			}
+			getTextToSpeech().speak(locationSpeech, TextToSpeech.QUEUE_FLUSH);
+			getTextToSpeech().speak(weatherSpeech, TextToSpeech.QUEUE_ADD);
 		}
 	}
 

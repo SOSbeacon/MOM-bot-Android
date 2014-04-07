@@ -15,7 +15,8 @@ public class Consts {
 	public static final String TEMP_SELECTED_IMAGE_NAME = "temp_selected_image" + PHOTO_JPG_EXTENSION;
 	private static final String ROOT_URL = "http://ms-robot.herokuapp.com/";
 	public static final String BASE_URL = "";
-	public static final int TIME_CHECK_REMINDER = 1000 * 60 * 30; // 30 minute
+	public static final int TIME_CHECK_REMINDER = 1000 * 60 * 10; // 30 minute
+	public static final float SPEECH_RATE = 1f;
 
 	public class EventType {
 		public static final String TYPE_NOREPEAT = "norepeat";

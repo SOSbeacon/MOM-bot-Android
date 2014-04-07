@@ -65,6 +65,9 @@ public class AlarmReceiver extends BroadcastReceiver {
 		Log.d("AlarmReceiver", "request list event");
 		Bundle bundle = new Bundle();
 		Calendar calendar = Calendar.getInstance();
+		calendar.set(Calendar.HOUR, 0);
+		calendar.set(Calendar.MINUTE, 0);
+		calendar.set(Calendar.SECOND, 0);
 		bundle.putLong(Consts.PARAMS_QUERY_START, calendar.getTime().getTime());
 		// next 1 days
 		calendar.add(Calendar.DATE, 1);

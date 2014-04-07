@@ -5,15 +5,17 @@ import java.util.Calendar;
 import java.util.Random;
 
 import org.cnc.msrobot.R;
+import org.cnc.msrobot.InputOutput.VoiceInput;
+import org.cnc.msrobot.InputOutput.VoiceSecretaryOutput;
 import org.cnc.msrobot.activity.AddOrEditEventActivity;
-import org.cnc.msrobot.activity.BaseActivity.SpeakAnimationListener;
 import org.cnc.msrobot.activity.EmailSetupActivity;
 import org.cnc.msrobot.activity.MainActivity;
 import org.cnc.msrobot.adapter.ChatAdapter;
 import org.cnc.msrobot.adapter.MainAdapter;
 import org.cnc.msrobot.adapter.MainAdapter.OnFunctionDoListener;
+import org.cnc.msrobot.module.Module;
+import org.cnc.msrobot.module.ModuleManager;
 import org.cnc.msrobot.provider.DbContract.TableEvent;
-import org.cnc.msrobot.recognizemodule.RecoginizeIds;
 import org.cnc.msrobot.resource.EventResource;
 import org.cnc.msrobot.resource.ItemListFunction;
 import org.cnc.msrobot.resource.TaskTime;
@@ -29,6 +31,7 @@ import org.cnc.msrobot.utils.CustomActionBar;
 import org.cnc.msrobot.utils.DateTimeFormater;
 import org.cnc.msrobot.utils.LocationUtils;
 import org.cnc.msrobot.utils.LocationUtils.LocationUtilsListener;
+import org.cnc.msrobot.utils.TextToSpeechUtils.SpeechListener;
 
 import android.app.Activity;
 import android.app.TimePickerDialog;
@@ -54,8 +57,7 @@ import com.android.volley.Response.ErrorListener;
 import com.android.volley.Response.Listener;
 import com.android.volley.VolleyError;
 
-public class HomeFragment extends BaseFragment implements LoaderCallbacks<Cursor>, SpeakAnimationListener,
-		OnFunctionDoListener {
+public class HomeFragment extends BaseFragment implements LoaderCallbacks<Cursor>, SpeechListener, OnFunctionDoListener {
 
 	private static final int DELAY_SPEAKING_ANIMATION = 300;
 	private static final int LOADER_GET_LIST_EVENT = 1;
@@ -130,7 +132,7 @@ public class HomeFragment extends BaseFragment implements LoaderCallbacks<Cursor
 			public void onClick(View v) {
 				adapterChat.clear();
 				adapterChat.add(getString(R.string.command_example));
-				((MainActivity) getBaseActivity()).doRecognizeModule(RecoginizeIds.MODULE_COMMAND);
+				ModuleManager.getInstance().runModule(Module.MODULE_COMMAND);
 			}
 		});
 
@@ -160,6 +162,11 @@ public class HomeFragment extends BaseFragment implements LoaderCallbacks<Cursor
 	@Override
 	public void onCreate(Bundle savedInstanceState) {
 		super.onCreate(savedInstanceState);
+
+		// change input, output
+		getBaseActivity().changeIO(new VoiceInput(getBaseActivity()),
+				new VoiceSecretaryOutput((MainActivity) getBaseActivity()));
+
 		// init adapter
 		adapterChat = new ChatAdapter(getBaseActivity(), new ArrayList<String>());
 		adapterMain = new MainAdapter(getBaseActivity(), new ArrayList<ItemListFunction>(), this);
@@ -171,7 +178,7 @@ public class HomeFragment extends BaseFragment implements LoaderCallbacks<Cursor
 		initCursorLoader();
 		// request list event from server
 		requestListEvent();
-		setOnSpeakAnimationListener(this);
+		getBaseActivity().getTextToSpeech().setSpeechListenerForAll(this);
 	}
 
 	@Override
@@ -544,13 +551,13 @@ public class HomeFragment extends BaseFragment implements LoaderCallbacks<Cursor
 	};
 
 	@Override
-	public void startSpeakingAnimation() {
+	public void startSpeech(String id) {
 		handler.removeCallbacks(mRunnableSpeaking);
 		handler.postDelayed(mRunnableSpeaking, (int) (DELAY_SPEAKING_ANIMATION * random.nextFloat()));
 	}
 
 	@Override
-	public void stopSpeakingAnimation() {
+	public void stopSpeech(String id) {
 		handler.removeCallbacks(mRunnableSpeaking);
 		handler.post(mRunnableStopSpeaking);
 	}

@@ -1,25 +1,17 @@
 package org.cnc.msrobot.activity;
 
-import java.util.ArrayList;
-
 import org.cnc.msrobot.MainApplication;
 import org.cnc.msrobot.R;
 import org.cnc.msrobot.fragment.BaseFragment;
 import org.cnc.msrobot.fragment.CalendarEventFragment;
 import org.cnc.msrobot.fragment.ClassicFragment;
 import org.cnc.msrobot.fragment.HomeFragment;
+import org.cnc.msrobot.module.Module;
 import org.cnc.msrobot.provider.DbContract.TableContact;
-import org.cnc.msrobot.recognizemodule.RecoginizeIds;
-import org.cnc.msrobot.recognizemodule.RecognizeBase;
-import org.cnc.msrobot.recognizemodule.RecognizeCommand;
-import org.cnc.msrobot.recognizemodule.RecognizeEmailBody;
-import org.cnc.msrobot.recognizemodule.RecognizeEmailTo;
-import org.cnc.msrobot.recognizemodule.RecognizeSearch;
-import org.cnc.msrobot.recognizemodule.RecognizeSmsBody;
-import org.cnc.msrobot.recognizemodule.RecognizeSmsTo;
 import org.cnc.msrobot.resource.ContactResource;
 import org.cnc.msrobot.resource.EmptyResource;
 import org.cnc.msrobot.resource.EventResource;
+import org.cnc.msrobot.resource.StaticResource;
 import org.cnc.msrobot.utils.Actions;
 import org.cnc.msrobot.utils.Consts;
 import org.cnc.msrobot.utils.Consts.RequestCode;
@@ -60,10 +52,8 @@ public class MainActivity extends BaseActivity implements LoaderCallbacks<Cursor
 	private ListView mDrawerList;
 	private CharSequence mDrawerTitle;
 	private CharSequence mTitle;
-	public static ContactResource contactRecognize = new ContactResource();
 	protected BaseFragment fragment;
-	public static ArrayList<ContactResource> listContact = new ArrayList<ContactResource>();
-	SparseArray<RecognizeBase> mRecModule = new SparseArray<RecognizeBase>();
+	SparseArray<Module> mRecModule = new SparseArray<Module>();
 	private FrameLayout touchInterceptor;
 	private FrameLayout rootViewGroup;
 
@@ -162,8 +152,6 @@ public class MainActivity extends BaseActivity implements LoaderCallbacks<Cursor
 		// get contact list
 		getContactList();
 
-		initRecognizeModule();
-
 		// check email config
 		if (TextUtils.isEmpty(mSharePrefs.getGmailUsername())) {
 			// show dialog to confirm setup email
@@ -182,13 +170,6 @@ public class MainActivity extends BaseActivity implements LoaderCallbacks<Cursor
 			});
 		}
 	}
-
-	// @Override
-	// public boolean onCreateOptionsMenu(Menu menu) {
-	// MenuInflater inflater = getMenuInflater();
-	// inflater.inflate(R.menu.main_menu, menu);
-	// return super.onCreateOptionsMenu(menu);
-	// }
 
 	/* Called whenever we call invalidateOptionsMenu() */
 	@Override
@@ -319,67 +300,6 @@ public class MainActivity extends BaseActivity implements LoaderCallbacks<Cursor
 		mDrawerToggle.onConfigurationChanged(newConfig);
 	}
 
-	private void initRecognizeModule() {
-		mRecModule.put(RecoginizeIds.MODULE_COMMAND, new RecognizeCommand(this));
-		mRecModule.put(RecoginizeIds.MODULE_SMS_TO, new RecognizeSmsTo(this));
-		mRecModule.put(RecoginizeIds.MODULE_SMS_BODY, new RecognizeSmsBody(this));
-		mRecModule.put(RecoginizeIds.MODULE_EMAIL_TO, new RecognizeEmailTo(this));
-		mRecModule.put(RecoginizeIds.MODULE_EMAIL_BODY, new RecognizeEmailBody(this));
-		mRecModule.put(RecoginizeIds.MODULE_SEARCH, new RecognizeSearch(this));
-	}
-
-	public void doRecognizeModule(int id) {
-		RecognizeBase recModule = mRecModule.get(id);
-		if (isRecording) {
-			stopListening();
-			stopSpeak();
-		} else {
-			if (recModule != null) {
-				recognizeRetry = 0;
-				// message will speak before listen
-				String msg = recModule.getSpeakMessageBeforeListen();
-				if (msg != null) {
-					addChatListView(recModule.getMessageShowInChatList(), 0);
-					speakBeforeRecognize(msg, id);
-				} else {
-					mModuleId = id;
-					listen();
-				}
-			}
-		}
-	}
-
-	@Override
-	public void onUtteranceCompleted(String utteranceId) {
-		super.onUtteranceCompleted(utteranceId);
-		if (utteranceId.equals("0")) return;
-		try {
-			mModuleId = Integer.parseInt(utteranceId);
-			RecognizeBase recModule = mRecModule.get(mModuleId);
-			if (recModule == null) return;
-			if (recModule.isShowRecognizeDialog()) {
-				startActivityForResult(new Intent(this, RecognizeActivity.class), RequestCode.REQUEST_RECOGNIZE);
-			} else {
-				// run listener for 200 ms delay
-				handler.postDelayed(new Runnable() {
-					@Override
-					public void run() {
-						listen();
-					}
-				}, 200);
-			}
-		} catch (Exception e) {
-		}
-	}
-
-	@Override
-	public void onRecognize(final ArrayList<String> data) {
-		if (data == null || data.size() == 0) return;
-		RecognizeBase recModule = mRecModule.get(mModuleId);
-		if (recModule == null) return;
-		recModule.getListener().onRecoginze(data);
-	}
-
 	/**
 	 * Get contact list
 	 */
@@ -403,15 +323,15 @@ public class MainActivity extends BaseActivity implements LoaderCallbacks<Cursor
 					}
 				}
 				break;
-			case RequestCode.REQUEST_RECOGNIZE:
-				if (resultCode == Activity.RESULT_OK) {
-					ArrayList<String> lstData = new ArrayList<String>();
-					lstData.add(data.getStringExtra(RecognizeActivity.EXTRA_TEXT));
-					RecognizeBase recModule = mRecModule.get(mModuleId);
-					if (recModule == null) return;
-					recModule.getListener().onRecoginze(lstData);
-				}
-				break;
+		// case RequestCode.REQUEST_RECOGNIZE:
+		// if (resultCode == Activity.RESULT_OK) {
+		// ArrayList<String> lstData = new ArrayList<String>();
+		// lstData.add(data.getStringExtra(RecognizeActivity.EXTRA_TEXT));
+		// Module recModule = mRecModule.get(mModuleId);
+		// if (recModule == null) return;
+		// recModule.getListener().onRecoginze(lstData);
+		// }
+		// break;
 		}
 	}
 
@@ -451,10 +371,10 @@ public class MainActivity extends BaseActivity implements LoaderCallbacks<Cursor
 			case LOADER_GET_LIST_CONTACT:
 				if (cursor != null) {
 					if (cursor.moveToFirst()) {
-						listContact.clear();
+						StaticResource.listContact.clear();
 						do {
 							ContactResource contact = new ContactResource(cursor);
-							listContact.add(contact);
+							StaticResource.listContact.add(contact);
 						} while (cursor.moveToNext());
 					}
 				}
