@@ -14,9 +14,14 @@ public class SearchModule extends Module {
 	}
 
 	@Override
-	public void onReceive(String data, String id) {
-		if (TextUtils.isEmpty(data)) return;
+	public boolean onReceive(String data, String id) {
+		if (TextUtils.isEmpty(data)) return false;
 		AppUtils.showGoogleSearchIntent(getContext(), data);
+		return true;
+	}
+
+	@Override
+	public void onFail(String id) {
 	}
 
 	@Override

@@ -39,7 +39,10 @@ public class VoiceInput implements Input, SpeechToTextCallback {
 	@Override
 	public void onRecognize(ArrayList<String> data) {
 		if (callback != null) {
-			callback.onReceive(data.get(0), currentId);
+			for (String s : data) {
+				if (callback.onReceive(s, currentId)) { return; }
+			}
+			callback.onFail(currentId);
 		}
 	}
 }

@@ -7,7 +7,6 @@ import org.cnc.msrobot.module.ReadMessageModule;
 import org.cnc.msrobot.module.ReadMessageModule.ReadMessageModuleListener;
 import org.cnc.msrobot.resource.Email;
 import org.cnc.msrobot.task.MarkEmailSeenTask;
-import org.cnc.msrobot.task.MarkSmsSeenTask;
 import org.cnc.msrobot.task.ReadEmailTask;
 import org.cnc.msrobot.task.ReadSMSTask;
 
@@ -127,7 +126,7 @@ public class ReadEmailSmsActivity extends BaseActivity implements OnClickListene
 			mWebView.loadData(item.subject, "text/html", "UTF-8");
 			ask = getString(R.string.sms_ask_read_message, item.from);
 			content = mAdapter.getItem(mPosition).subject;
-			//new MarkSmsSeenTask(this, position).execute();
+			// new MarkSmsSeenTask(this, position).execute();
 		}
 		mAskModule.readAsk(ask, content);
 	}
@@ -180,7 +179,7 @@ public class ReadEmailSmsActivity extends BaseActivity implements OnClickListene
 				readEmail(mPosition);
 				break;
 			case R.id.imgStop:
-				getTextToSpeech().stop();
+				getTextToSpeech().stopSpeak();
 				break;
 			case R.id.imgNext:
 				if (mPosition < mAdapter.getCount() - 1) {

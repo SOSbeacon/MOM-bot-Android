@@ -16,6 +16,7 @@ import org.cnc.msrobot.utils.Actions;
 import org.cnc.msrobot.utils.Consts;
 import org.cnc.msrobot.utils.Consts.RequestCode;
 import org.cnc.msrobot.utils.DialogUtils.OnConfirmClickListener;
+import org.cnc.msrobot.utils.SpeechToText.SpeechToTextListener;
 
 import android.app.Activity;
 import android.content.Intent;
@@ -44,7 +45,8 @@ import com.android.volley.Response.ErrorListener;
 import com.android.volley.Response.Listener;
 import com.android.volley.VolleyError;
 
-public class MainActivity extends BaseActivity implements LoaderCallbacks<Cursor>, OnClickListener {
+public class MainActivity extends BaseActivity implements LoaderCallbacks<Cursor>, OnClickListener,
+		SpeechToTextListener {
 	private static final int LOADER_GET_LIST_CONTACT = 1;
 	private String[] mPlanetTitles;
 	private DrawerLayout mDrawerLayout;
@@ -102,6 +104,10 @@ public class MainActivity extends BaseActivity implements LoaderCallbacks<Cursor
 		super.onCreate(savedInstanceState);
 		mActionbar.setOnClickListener(this);
 		setContentView(R.layout.activity_main);
+
+		// set listener for Speech To Text
+		getSpeechToText().setListener(this);
+
 		touchInterceptor = new FrameLayout(this);
 		touchInterceptor.setClickable(true); // otherwise clicks will fall through
 		rootViewGroup = (FrameLayout) findViewById(R.id.content_frame);
@@ -420,5 +426,15 @@ public class MainActivity extends BaseActivity implements LoaderCallbacks<Cursor
 		} else if (fragment != null && fragment instanceof ClassicFragment && fragment.isAdded()) {
 			((ClassicFragment) fragment).changeEmailItem(count, readFail);
 		}
+	}
+
+	@Override
+	public void onSpeechStart() {
+		getCusomActionBar().showRecAnimation();
+	}
+
+	@Override
+	public void onSpeechStop() {
+		getCusomActionBar().hideRecAnimation();
 	}
 }

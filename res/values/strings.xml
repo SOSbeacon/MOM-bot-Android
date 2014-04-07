@@ -17,6 +17,7 @@
     <string name="common_comma">,</string>
     <string name="common_dot">.</string>
     <string name="common_delete">Delete</string>
+    <string name="common_save">Save</string>
     <string name="common_camera">Camera</string>
     <string name="common_gallery">Gallery</string>
     <string name="choose_sms">SMS</string>
@@ -91,7 +92,7 @@
     <string name="errorResultTimeout">Stop listening</string>
     <string name="msg_warn_location_cannot_determine">Can\'t determine your location. Do you want to adjust your setting now?</string>
     <string name="msg_err_cannot_open_setting">Can not open setting</string>
-    <string name="msg_warn_no_people_recognize">This name  \'%1$s\' doesn\'t exist.</string>
+    <string name="msg_warn_no_people_recognize">This name doesn\'t exist.</string>
     <string name="msg_err_create_event">Create event failed</string>
     <string name="msg_info_create_event">Create event successfully</string>
     <string name="msg_info_send_email_success">Send message successfully</string>

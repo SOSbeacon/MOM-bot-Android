@@ -60,15 +60,13 @@ public class TextToSpeechUtils implements OnInitListener, OnUtteranceCompletedLi
 	}
 
 	public void shutdown() {
-		getTextToSpeech().shutdown();
+		if (getTextToSpeech() != null) {
+			getTextToSpeech().shutdown();
+		}
 	}
 
 	public boolean isSpeaking() {
 		return getTextToSpeech().isSpeaking();
-	}
-
-	public void stop() {
-		getTextToSpeech().stop();
 	}
 
 	public void onActivityResult(int requestCode, int resultCode, Intent data) {
@@ -83,6 +81,7 @@ public class TextToSpeechUtils implements OnInitListener, OnUtteranceCompletedLi
 				// missing data, install it
 				Intent installIntent = new Intent();
 				installIntent.setAction(TextToSpeech.Engine.ACTION_INSTALL_TTS_DATA);
+				installIntent.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
 				context.startActivity(installIntent);
 			}
 		}

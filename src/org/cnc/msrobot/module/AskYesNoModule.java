@@ -28,8 +28,8 @@ public class AskYesNoModule extends Module {
 	}
 
 	@Override
-	public void onReceive(String data, String id) {
-		if (listener == null || data == null) return;
+	public boolean onReceive(String data, String id) {
+		if (listener == null || data == null) return false;
 		String yes = getResource().getString(R.string.common_yes).toLowerCase(Locale.US);
 		if (yes.equals(data.toLowerCase(Locale.US))) {
 			listener.onYes();
@@ -37,6 +37,11 @@ public class AskYesNoModule extends Module {
 			listener.onNo();
 		}
 		getOutput().showAnswer(data);
+		return true;
+	}
+
+	@Override
+	public void onFail(String id) {
 	}
 
 	@Override

@@ -1,5 +1,7 @@
 package org.cnc.msrobot.module;
 
+import java.util.Locale;
+
 import org.cnc.msrobot.R;
 import org.cnc.msrobot.InputOutput.ContactListInput;
 import org.cnc.msrobot.InputOutput.Input;
@@ -41,24 +43,37 @@ public class SendMessageModule extends Module {
 	}
 
 	@Override
-	public void onReceive(String data, String id) {
-		if (TextUtils.isEmpty(data)) return;
+	public boolean onReceive(String data, String id) {
+		if (TextUtils.isEmpty(data)) return false;
 		if (STEP_CONTACT.equals(id)) {
 			// default current position = -1, if found, it will be > -1
 			contactPosition = -1;
-			try {
-				contactPosition = Integer.parseInt(data);
-			} catch (Exception ex) {
-				contactPosition = -1;
+			if (getInput() instanceof VoiceInput) {
+				// voice input, data is voice recognize
+				if (!TextUtils.isEmpty(data) && StaticResource.listContact != null) {
+					for (int i = 0; i < StaticResource.listContact.size(); i++) {
+						String name = StaticResource.listContact.get(i).name.toLowerCase(Locale.US);
+						if (data.toLowerCase(Locale.US).equals(name)) {
+							contactPosition = i;
+							break;
+						}
+					}
+				}
+			} else {
+				// text input, select contact from list, data is position of contact
+				try {
+					contactPosition = Integer.parseInt(data);
+				} catch (Exception ex) {
+					contactPosition = -1;
+				}
 			}
 			if (contactPosition == -1) {
-				// not found in list contact
-				getOutput().showGuide(getResource().getString(R.string.msg_warn_no_people_recognize, data));
-				getOutput().speak(getResource().getString(R.string.msg_warn_no_people_recognize, data), STEP_ERROR);
+				return false;
 			} else {
 				// do next step for message content
 				getOutput().showGuide(getResource().getString(R.string.recognize_message_content));
 				getOutput().speak(getResource().getString(R.string.recognize_message_content), STEP_CONTENT);
+				return true;
 			}
 		} else if (STEP_CONTENT.equals(id)) {
 			Intent intent = new Intent(getContext(), SendSmsEmailActivity.class);
@@ -66,6 +81,16 @@ public class SendMessageModule extends Module {
 			intent.putExtra(SendSmsEmailActivity.EXTRA_BODY, data);
 			intent.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
 			getContext().startActivity(intent);
+		}
+		return true;
+	}
+
+	@Override
+	public void onFail(String id) {
+		if (STEP_CONTACT.equals(id)) {
+			// not found in list contact
+			getOutput().showGuide(getResource().getString(R.string.msg_warn_no_people_recognize));
+			getOutput().speak(getResource().getString(R.string.msg_warn_no_people_recognize), STEP_ERROR);
 		}
 	}
 

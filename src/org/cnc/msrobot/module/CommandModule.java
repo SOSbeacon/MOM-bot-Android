@@ -27,8 +27,8 @@ public class CommandModule extends Module {
 	}
 
 	@Override
-	public void onReceive(String data, String id) {
-		if (TextUtils.isEmpty(data)) return;
+	public boolean onReceive(String data, String id) {
+		if (TextUtils.isEmpty(data)) return false;
 		boolean found = false;
 		data = data.toLowerCase(Locale.US);
 		if (data.contains(getResource().getString(R.string.command_send))
@@ -66,6 +66,11 @@ public class CommandModule extends Module {
 		if (!found) {
 			getOutput().showAnswer(data);
 		}
+		return found;
+	}
+
+	@Override
+	public void onFail(String id) {
 	}
 
 	@Override

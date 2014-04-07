@@ -60,7 +60,7 @@ public class SpeechToText {
 		public void onEndOfSpeech() {
 			Log.d("MsRobot", "onEndOfSpeech");
 			playStopSound();
-			if (listener != null) listener.onStop();
+			if (listener != null) listener.onSpeechStop();
 			isRecording = false;
 		}
 
@@ -68,15 +68,16 @@ public class SpeechToText {
 		public void onError(int error) {
 			Logger.info("Speech", "onError: " + error);
 			if (recognizeRetry < MAX_RETRY_RECOGNIZE) {
-				if (listener != null) listener.onStop();
+				if (listener != null) listener.onSpeechStop();
 				recognizeRetry++;
 				listenAgainWhenError();
 				Log.d("MsRobot", "Error, try again: " + recognizeRetry);
 			} else {
 				Log.d("MsRobot", "Error, max retry");
 				playErrorSound();
-				if (listener != null) listener.onStop();
+				if (listener != null) listener.onSpeechStop();
 				isRecording = false;
+				mRecognize.setRecognitionListener(null);
 				switch (error) {
 					case SpeechRecognizer.ERROR_AUDIO:
 						showCenterToast(R.string.errorResultAudioError);
@@ -97,7 +98,7 @@ public class SpeechToText {
 						showCenterToast(R.string.errorResultServerError);
 						break;
 					case SpeechRecognizer.ERROR_NO_MATCH:
-						showCenterToast(R.string.errorResultNoMatch);
+						// showCenterToast(R.string.errorResultNoMatch);
 						break;
 					case SpeechRecognizer.ERROR_SPEECH_TIMEOUT:
 						showCenterToast(R.string.errorResultTimeout);
@@ -161,17 +162,26 @@ public class SpeechToText {
 	 * prepare to listener for voice recognize
 	 */
 	public void listen() {
+		if (mRecognize == null) {
+			showCenterToast(context.getString(R.string.err_NoDefaultRecognizer));
+			return;
+		}
 		recognizeRetry = 0;
 		// play beep sound and sleep
 		playStartSoundAndSleep();
+		// set listener
+		mRecognize.setRecognitionListener(mRecListener);
+		// start recognize
 		listenAgainWhenError();
 	}
 
 	public void stopListening() {
 		recognizeRetry = MAX_RETRY_RECOGNIZE;
-		if (mRecognize != null) {
-			mRecognize.stopListening();
+		if (mRecognize == null) {
+			showCenterToast(context.getString(R.string.err_NoDefaultRecognizer));
+			return;
 		}
+		mRecognize.stopListening();
 	}
 
 	public void listenAgainWhenError() {
@@ -181,7 +191,7 @@ public class SpeechToText {
 			return;
 		}
 		// stop speech
-		mTts.stop();
+		mTts.stopSpeak();
 		Intent recognizerIntent = new Intent(RecognizerIntent.ACTION_RECOGNIZE_SPEECH);
 		recognizerIntent.putExtra(RecognizerIntent.EXTRA_LANGUAGE_MODEL, RecognizerIntent.LANGUAGE_MODEL_FREE_FORM);
 		recognizerIntent.putExtra(RecognizerIntent.EXTRA_PARTIAL_RESULTS, true);
@@ -191,9 +201,8 @@ public class SpeechToText {
 
 		isRecording = true;
 		// set listener
-		mRecognize.setRecognitionListener(mRecListener);
 		mRecognize.startListening(recognizerIntent);
-		if (listener != null) listener.onStart();
+		if (listener != null) listener.onSpeechStart();
 		Log.d("MsRobot", "listen");
 	}
 
@@ -313,8 +322,8 @@ public class SpeechToText {
 	}
 
 	public interface SpeechToTextListener {
-		void onStart();
+		void onSpeechStart();
 
-		void onStop();
+		void onSpeechStop();
 	}
 }

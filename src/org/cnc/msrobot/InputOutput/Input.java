@@ -15,13 +15,20 @@ public interface Input {
 	
 	public interface InputReceiveCallback {
 		/**
-		 * input return data, mark with id
+		 * input callback data receiver, mark with id
 		 * 
-		 * @param data
-		 *            list of data
+		 * @param data data receiver
+		 * @param id
+		 * @return true if data is result you want. Return false will call next callback for next data receiver
+		 */
+		public boolean onReceive(String data, String id);
+		
+		/**
+		 * input callback onFail when all onReceive return false
+		 * 
 		 * @param id
 		 */
-		void onReceive(String data, String id);
+		public void onFail(String id);
 	}
 }
 

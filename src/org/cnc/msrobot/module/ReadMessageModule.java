@@ -41,8 +41,8 @@ public class ReadMessageModule extends Module {
 	}
 
 	@Override
-	public void onReceive(String data, String id) {
-		if (listener == null) return;
+	public boolean onReceive(String data, String id) {
+		if (listener == null) return false;
 		if (TextUtils.isEmpty(data)) {
 			listener.onNext();
 		} else {
@@ -54,6 +54,11 @@ public class ReadMessageModule extends Module {
 			}
 			getOutput().showAnswer(data);
 		}
+		return true;
+	}
+
+	@Override
+	public void onFail(String id) {
 	}
 
 	@Override

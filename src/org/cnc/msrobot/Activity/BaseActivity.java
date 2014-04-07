@@ -72,11 +72,6 @@ public class BaseActivity extends FragmentActivity {
 	}
 
 	@Override
-	protected void onStart() {
-		super.onStart();
-	}
-
-	@Override
 	protected void onDestroy() {
 		super.onDestroy();
 		mTts.stopSpeak();
