@@ -1,13 +1,15 @@
 package org.cnc.msrobot.requestmanager.request;
 
 import java.lang.reflect.Type;
-import java.util.HashMap;
+import java.util.ArrayList;
 
 import org.cnc.msrobot.provider.DbContract.TableEvent;
+import org.cnc.msrobot.requestmanager.GsonRequest;
 import org.cnc.msrobot.requestmanager.RequestBase;
 import org.cnc.msrobot.resource.EventResource;
 import org.cnc.msrobot.utils.Consts;
 import org.cnc.msrobot.utils.Consts.URLConsts;
+import org.cnc.msrobot.utils.Logger;
 import org.cnc.msrobot.utils.SharePrefs;
 
 import android.content.ContentValues;
@@ -22,23 +24,25 @@ public class CreateEventRequest extends RequestBase<EventResource[]> {
 	}
 
 	@Override
-	protected HashMap<String, String> addParams() {
-		HashMap<String, String> params = new HashMap<String, String>();
-		params.put(Consts.PARAMS_EVENT_CONTENT, getExtra().getString(Consts.PARAMS_EVENT_CONTENT));
-		params.put(Consts.PARAMS_EVENT_END_DATE, getExtra().getString(Consts.PARAMS_EVENT_END_DATE));
-		params.put(Consts.PARAMS_EVENT_END_TIME, getExtra().getString(Consts.PARAMS_EVENT_END_TIME));
-		params.put(Consts.PARAMS_EVENT_REPEAT, getExtra().getString(Consts.PARAMS_EVENT_REPEAT));
-		params.put(Consts.PARAMS_EVENT_START_TIME, getExtra().getString(Consts.PARAMS_EVENT_START_TIME));
-		params.put(Consts.PARAMS_EVENT_TITLE, getExtra().getString(Consts.PARAMS_EVENT_TITLE));
-		params.put(Consts.PARAMS_EVENT_TYPE, getExtra().getString(Consts.PARAMS_EVENT_TYPE));
-		params.put(Consts.PARAMS_AUTH_TOKEN, SharePrefs.getInstance().getLoginToken());
-		String[] dayOfWeeks = getExtra().getStringArray(Consts.PARAMS_EVENT_DAY_WEEK);
-		if (dayOfWeeks != null) {
+	protected void addParams(GsonRequest<EventResource[]> request) {
+		request.addParam(Consts.PARAMS_EVENT_CONTENT, getExtra().getString(Consts.PARAMS_EVENT_CONTENT));
+		request.addParam(Consts.PARAMS_EVENT_END_DATE, getExtra().getString(Consts.PARAMS_EVENT_END_DATE));
+		request.addParam(Consts.PARAMS_EVENT_END_TIME, getExtra().getString(Consts.PARAMS_EVENT_END_TIME));
+		request.addParam(Consts.PARAMS_EVENT_REPEAT, getExtra().getString(Consts.PARAMS_EVENT_REPEAT));
+		request.addParam(Consts.PARAMS_EVENT_START_TIME, getExtra().getString(Consts.PARAMS_EVENT_START_TIME));
+		request.addParam(Consts.PARAMS_EVENT_TITLE, getExtra().getString(Consts.PARAMS_EVENT_TITLE));
+		request.addParam(Consts.PARAMS_EVENT_TYPE, getExtra().getString(Consts.PARAMS_EVENT_TYPE));
+		request.addParam(Consts.PARAMS_AUTH_TOKEN, SharePrefs.getInstance().getLoginToken());
+		ArrayList<String> dayOfWeeks = getExtra().getStringArrayList(Consts.PARAMS_EVENT_DAY_WEEK);
+		if (dayOfWeeks != null && dayOfWeeks.size() > 0) {
 			for (String key : dayOfWeeks) {
-				params.put(Consts.PARAMS_EVENT_DAY_WEEK, key);
+				request.addParam(Consts.PARAMS_EVENT_DAY_WEEK, key);
+				Logger.debug("CreateEventRequest", "day of week: " + key);
 			}
 		}
-		return params;
+		Logger.debug("CreateEventRequest", "type: " + getExtra().getString(Consts.PARAMS_EVENT_TYPE));
+		Logger.debug("CreateEventRequest", "day: " + getExtra().getString(Consts.PARAMS_EVENT_REPEAT));
+		super.addParams(request);
 	}
 
 	@Override

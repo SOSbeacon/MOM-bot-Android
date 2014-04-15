@@ -29,37 +29,25 @@
         android:src="@drawable/speak_now_level0" />
 
     <Button
-        android:id="@+id/btnComma"
-        android:layout_width="@dimen/buttonCommaSize"
-        android:layout_height="@dimen/buttonCommaSize"
-        android:layout_alignBottom="@id/btnMic"
-        android:layout_marginLeft="@dimen/common_margin_layout_medium"
-        android:clickable="true"
-        android:text="@string/common_comma"
-        android:textColor="@color/white"
-        android:textSize="@dimen/common_textsize_xlarge2" />
-
-    <Button
-        android:id="@+id/btnDot"
-        android:layout_width="@dimen/buttonCommaSize"
-        android:layout_height="@dimen/buttonCommaSize"
-        android:layout_alignBottom="@id/btnMic"
-        android:layout_marginLeft="@dimen/common_margin_layout_medium"
-        android:layout_toRightOf="@id/btnComma"
-        android:clickable="true"
-        android:text="@string/common_dot"
-        android:textColor="@color/white"
-        android:textSize="@dimen/common_textsize_xlarge2" />
-
-    <Button
         android:id="@+id/btnDelete"
+        android:layout_width="wrap_content"
+        android:layout_height="@dimen/buttonCommaSize"
+        android:layout_alignBottom="@id/btnMic"
+        android:layout_marginLeft="@dimen/common_margin_layout_medium"
+        android:clickable="true"
+        android:text="@string/common_delete"
+        android:textColor="@color/white"
+        android:textSize="@dimen/common_textsize_xlarge2" />
+
+    <Button
+        android:id="@+id/btnOk"
         android:layout_width="wrap_content"
         android:layout_height="@dimen/buttonCommaSize"
         android:layout_alignBottom="@id/btnMic"
         android:layout_alignParentRight="true"
         android:layout_marginRight="@dimen/common_margin_layout_medium"
         android:clickable="true"
-        android:text="@string/common_delete"
+        android:text="@string/common_ok"
         android:textColor="@color/white"
         android:textSize="@dimen/common_textsize_xlarge2" />
 

@@ -1,12 +1,13 @@
 package org.cnc.msrobot.requestmanager;
 
-import java.io.File;
 import java.io.UnsupportedEncodingException;
 import java.lang.reflect.Type;
+import java.util.ArrayList;
 import java.util.HashMap;
-import java.util.Map;
 
-import com.android.volley.AuthFailureError;
+import org.apache.http.NameValuePair;
+import org.apache.http.message.BasicNameValuePair;
+
 import com.android.volley.NetworkResponse;
 import com.android.volley.ParseError;
 import com.android.volley.Request;
@@ -24,14 +25,12 @@ import com.google.gson.JsonSyntaxException;
  * 
  * @param <T>
  */
+@SuppressWarnings("rawtypes")
 public class GsonRequest<T> extends Request<T> {
-	/* To hold the parameter name and the File to upload */
-	private Map<String, File> fileUploads = new HashMap<String, File>();
-
-	/* To hold the parameter name and the string content to upload */
-	private Map<String, String> stringUploads = new HashMap<String, String>();
-
-	private Map<String, String> headers = new HashMap<String, String>();
+	private ArrayList<NameValuePair> params = new ArrayList<NameValuePair>();
+	private ArrayList<NameValuePair> headers = new ArrayList<NameValuePair>();
+	private boolean isUpload;
+	private HashMap uploadItemInfo;
 	/**
 	 * Gson parser
 	 */
@@ -74,29 +73,58 @@ public class GsonRequest<T> extends Request<T> {
 
 	}
 
-	public void addFileUpload(String param, File file) {
-		fileUploads.put(param, file);
+	/**
+	 * @return the uploadItemInfo
+	 */
+	public HashMap getUploadItemInfo() {
+		return uploadItemInfo;
 	}
 
-	public void addStringUpload(String param, String content) {
-		stringUploads.put(param, content);
+	/**
+	 * @param uploadItemInfo
+	 *            the uploadItemInfo to set
+	 */
+	public void setUploadItemInfo(HashMap uploadItemInfo) {
+		this.uploadItemInfo = uploadItemInfo;
 	}
 
-	public Map<String, File> getFileUploads() {
-		return fileUploads;
+	/**
+	 * @return the isUpload
+	 */
+	public boolean isUpload() {
+		return isUpload;
 	}
 
-	public Map<String, String> getStringUploads() {
-		return stringUploads;
+	/**
+	 * @param isUpload
+	 *            the isUpload to set
+	 */
+	public void setUpload(boolean isUpload) {
+		this.isUpload = isUpload;
 	}
 
-	@Override
-	public Map<String, String> getHeaders() throws AuthFailureError {
+	public void addParam(String name, String value) {
+		params.add(new BasicNameValuePair(name, value));
+	}
+
+	public void addHeader(String name, String value) {
+		headers.add(new BasicNameValuePair(name, value));
+	}
+
+	public ArrayList<NameValuePair> getRequestParams() {
+		return params;
+	}
+
+	public void setParams(ArrayList<NameValuePair> params) {
+		this.params = params;
+	}
+
+	public ArrayList<NameValuePair> getRequestHeaders() {
 		return headers;
 	}
 
-	public void setHeader(String title, String content) {
-		headers.put(title, content);
+	public void setHeaders(ArrayList<NameValuePair> headers) {
+		this.headers = headers;
 	}
 
 	@Override

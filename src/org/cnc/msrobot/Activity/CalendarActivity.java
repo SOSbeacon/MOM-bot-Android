@@ -2,6 +2,7 @@ package org.cnc.msrobot.activity;
 
 import org.cnc.msrobot.R;
 import org.cnc.msrobot.fragment.CalendarEventFragment;
+import org.cnc.msrobot.utils.CustomActionBar;
 
 import android.os.Bundle;
 import android.support.v4.app.FragmentTransaction;
@@ -16,11 +17,10 @@ public class CalendarActivity extends BaseActivity implements OnClickListener {
 		super.onCreate(savedInstanceState);
 		setContentView(R.layout.activity_calendar);
 
+		// set custom action bar
+		getCusomActionBar().setType(CustomActionBar.TYPE_CALENDAR);
+		getCusomActionBar().setOnClickListener(this);
 		initFragment(CalendarEventFragment.TYPE_MONTH);
-
-		findViewById(R.id.btnCalendarMonth).setOnClickListener(this);
-		findViewById(R.id.btnCalendarWeek).setOnClickListener(this);
-		findViewById(R.id.btnCalendarDay).setOnClickListener(this);
 	}
 
 	private void initFragment(int type) {
@@ -36,13 +36,13 @@ public class CalendarActivity extends BaseActivity implements OnClickListener {
 	@Override
 	public void onClick(View v) {
 		switch (v.getId()) {
-			case R.id.btnCalendarMonth:
+			case R.id.tvCalendarMonthly:
 				initFragment(CalendarEventFragment.TYPE_MONTH);
 				break;
-			case R.id.btnCalendarWeek:
+			case R.id.tvCalendarWeekly:
 				initFragment(CalendarEventFragment.TYPE_WEEK);
 				break;
-			case R.id.btnCalendarDay:
+			case R.id.tvCalendarDaily:
 				initFragment(CalendarEventFragment.TYPE_DAY);
 				break;
 		}

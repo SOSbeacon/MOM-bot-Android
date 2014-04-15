@@ -6,11 +6,12 @@ import java.util.Calendar;
 import org.cnc.msrobot.R;
 import org.cnc.msrobot.InputOutput.TextInput;
 import org.cnc.msrobot.InputOutput.VoiceToastOutput;
-import org.cnc.msrobot.activity.AddOrEditEventActivity;
 import org.cnc.msrobot.activity.EmailSetupActivity;
 import org.cnc.msrobot.activity.MainActivity;
 import org.cnc.msrobot.adapter.MainAdapter;
 import org.cnc.msrobot.adapter.MainAdapter.OnFunctionDoListener;
+import org.cnc.msrobot.module.Module;
+import org.cnc.msrobot.module.ModuleManager;
 import org.cnc.msrobot.resource.ItemListFunction;
 import org.cnc.msrobot.resource.WeatherResource;
 import org.cnc.msrobot.task.ReadEmailTask;
@@ -320,14 +321,10 @@ public class ClassicFragment extends BaseFragment implements OnFunctionDoListene
 		adapterMain.add(new ItemListFunction.Builder(getBaseActivity()).setType(ItemListFunction.TYPE_FUNCTION_CLASSIC)
 				.setDescResId(R.string.function_desc_getting_data).setItemClickId(ItemListFunction.FUNCTION_READ_EMAIL)
 				.setColorResId(R.color.event2_color).build());
-		// add information item
+		// add set reminder
 		adapterMain.add(new ItemListFunction.Builder(getBaseActivity()).setType(ItemListFunction.TYPE_FUNCTION_CLASSIC)
 				.setDescResId(R.string.function_desc_set_reminder)
 				.setItemClickId(ItemListFunction.FUNCTION_SET_REMINDER).setColorResId(R.color.white).build());
-		// add emergency item
-		adapterMain.add(new ItemListFunction.Builder(getBaseActivity()).setType(ItemListFunction.TYPE_FUNCTION_CLASSIC)
-				.setDescResId(R.string.function_desc_set_alarm).setItemClickId(ItemListFunction.FUNCTION_SET_ALARM)
-				.setColorResId(R.color.white).build());
 		// add back item
 		adapterMain.add(new ItemListFunction.Builder(getBaseActivity()).setType(ItemListFunction.TYPE_FUNCTION_CLASSIC)
 				.setDescResId(R.string.function_desc_back).setItemClickId(ItemListFunction.FUNCTION_BACK_TO_COMMAND)
@@ -378,10 +375,11 @@ public class ClassicFragment extends BaseFragment implements OnFunctionDoListene
 	private void showAdminMenu() {
 		mMenuIndex = 3;
 		adapterMain.clear();
-		// add sent text message
-		adapterMain.add(new ItemListFunction.Builder(getBaseActivity()).setType(ItemListFunction.TYPE_FUNCTION_CLASSIC)
-				.setDescResId(R.string.function_desc_set_alarm).setItemClickId(ItemListFunction.FUNCTION_SET_ALARM)
-				.setColorResId(R.color.white).build());
+		// // add sent text message
+		// adapterMain.add(new
+		// ItemListFunction.Builder(getBaseActivity()).setType(ItemListFunction.TYPE_FUNCTION_CLASSIC)
+		// .setDescResId(R.string.function_desc_set_alarm).setItemClickId(ItemListFunction.FUNCTION_SET_ALARM)
+		// .setColorResId(R.color.white).build());
 		// add image message
 		adapterMain.add(new ItemListFunction.Builder(getBaseActivity()).setType(ItemListFunction.TYPE_FUNCTION_CLASSIC)
 				.setDescResId(R.string.function_desc_set_reminder)
@@ -416,8 +414,7 @@ public class ClassicFragment extends BaseFragment implements OnFunctionDoListene
 				openTimePickerDialog(true);
 				break;
 			case ItemListFunction.FUNCTION_SET_REMINDER:
-				getBaseActivity().startActivityForResult(new Intent(getBaseActivity(), AddOrEditEventActivity.class),
-						RequestCode.REQUEST_ADD_OR_EDIT_EVENT);
+				ModuleManager.getInstance().runModule(Module.MODULE_SET_REMINDER);
 				break;
 		}
 	}

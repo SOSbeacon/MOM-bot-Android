@@ -1,6 +1,5 @@
 package org.cnc.msrobot.activity;
 
-import org.cnc.msrobot.MainApplication;
 import org.cnc.msrobot.R;
 import org.cnc.msrobot.fragment.BaseFragment;
 import org.cnc.msrobot.fragment.CalendarEventFragment;
@@ -10,15 +9,13 @@ import org.cnc.msrobot.module.Module;
 import org.cnc.msrobot.provider.DbContract.TableContact;
 import org.cnc.msrobot.resource.ContactResource;
 import org.cnc.msrobot.resource.EmptyResource;
-import org.cnc.msrobot.resource.EventResource;
 import org.cnc.msrobot.resource.StaticResource;
 import org.cnc.msrobot.utils.Actions;
-import org.cnc.msrobot.utils.Consts;
 import org.cnc.msrobot.utils.Consts.RequestCode;
 import org.cnc.msrobot.utils.DialogUtils.OnConfirmClickListener;
+import org.cnc.msrobot.utils.Logger;
 import org.cnc.msrobot.utils.SpeechToText.SpeechToTextListener;
 
-import android.app.Activity;
 import android.content.Intent;
 import android.content.res.Configuration;
 import android.database.Cursor;
@@ -48,6 +45,7 @@ import com.android.volley.VolleyError;
 public class MainActivity extends BaseActivity implements LoaderCallbacks<Cursor>, OnClickListener,
 		SpeechToTextListener {
 	private static final int LOADER_GET_LIST_CONTACT = 1;
+	public static final String EXTRA_RECORD_FILE = "EXTRA_RECORD_FILE";
 	private String[] mPlanetTitles;
 	private DrawerLayout mDrawerLayout;
 	private ActionBarDrawerToggle mDrawerToggle;
@@ -76,37 +74,11 @@ public class MainActivity extends BaseActivity implements LoaderCallbacks<Cursor
 		}
 	};
 
-	Listener<EventResource[]> mRequestCreateEventListener = new Listener<EventResource[]>() {
-
-		@Override
-		public void onResponse(EventResource[] response) {
-			if (response == null) {
-				showCenterToast(R.string.msg_err_create_event);
-			} else {
-				showCenterToast(R.string.msg_info_create_event);
-				// set reminder for alarm
-				for (int i = 0; i < response.length; i++) {
-					MainApplication.alarm.setReminder(getApplicationContext(), response[i]);
-				}
-			}
-		}
-	};
-
-	ErrorListener mRequestCreateEventError = new ErrorListener() {
-		@Override
-		public void onErrorResponse(VolleyError error) {
-			showCenterToast(R.string.msg_err_create_event);
-		}
-	};
-
 	@Override
 	protected void onCreate(Bundle savedInstanceState) {
 		super.onCreate(savedInstanceState);
 		mActionbar.setOnClickListener(this);
 		setContentView(R.layout.activity_main);
-
-		// set listener for Speech To Text
-		getSpeechToText().setListener(this);
 
 		touchInterceptor = new FrameLayout(this);
 		touchInterceptor.setClickable(true); // otherwise clicks will fall through
@@ -175,6 +147,14 @@ public class MainActivity extends BaseActivity implements LoaderCallbacks<Cursor
 				}
 			});
 		}
+
+		if (getIntent().getExtras() != null) {
+			String recordFile = getIntent().getExtras().getString(EXTRA_RECORD_FILE);
+			if (!TextUtils.isEmpty(recordFile)) {
+				// check if has record file, request emergency api
+				Logger.debug("Emergency", "request emergency with audio " + recordFile);
+			}
+		}
 	}
 
 	/* Called whenever we call invalidateOptionsMenu() */
@@ -210,6 +190,9 @@ public class MainActivity extends BaseActivity implements LoaderCallbacks<Cursor
 	protected void onResume() {
 		super.onResume();
 		rootViewGroup.removeView(touchInterceptor);
+
+		// set listener for Speech To Text
+		getSpeechToText().setListener(this);
 	}
 
 	private class DrawerItemClickListener implements ListView.OnItemClickListener {
@@ -314,34 +297,6 @@ public class MainActivity extends BaseActivity implements LoaderCallbacks<Cursor
 	}
 
 	@Override
-	public void onActivityResult(int requestCode, int resultCode, Intent data) {
-		super.onActivityResult(requestCode, resultCode, data);
-		switch (requestCode) {
-			case RequestCode.REQUEST_ADD_OR_EDIT_EVENT:
-				if (resultCode == Activity.RESULT_OK) {
-					Bundle bundle = data.getExtras();
-					String id = data.getStringExtra(Consts.PARAMS_ID);
-					if (id == null) {
-						mRequestManager.request(Actions.ACTION_CREATE_EVENT, bundle, mRequestCreateEventListener,
-								mRequestCreateEventError);
-					} else {
-						// TODO update event
-					}
-				}
-				break;
-		// case RequestCode.REQUEST_RECOGNIZE:
-		// if (resultCode == Activity.RESULT_OK) {
-		// ArrayList<String> lstData = new ArrayList<String>();
-		// lstData.add(data.getStringExtra(RecognizeActivity.EXTRA_TEXT));
-		// Module recModule = mRecModule.get(mModuleId);
-		// if (recModule == null) return;
-		// recModule.getListener().onRecoginze(lstData);
-		// }
-		// break;
-		}
-	}
-
-	@Override
 	public void onBackPressed() {
 		if (fragment instanceof HomeFragment) {
 			if (((HomeFragment) fragment).checkBackPress()) {
@@ -434,7 +389,11 @@ public class MainActivity extends BaseActivity implements LoaderCallbacks<Cursor
 	}
 
 	@Override
-	public void onSpeechStop() {
+	public void onSpeechStop(int error) {
 		getCusomActionBar().hideRecAnimation();
+	}
+
+	@Override
+	public void onRmsChanged(float rmsdB) {
 	}
 }

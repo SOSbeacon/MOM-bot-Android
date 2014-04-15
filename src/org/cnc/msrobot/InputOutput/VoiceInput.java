@@ -2,7 +2,7 @@ package org.cnc.msrobot.InputOutput;
 
 import java.util.ArrayList;
 
-import org.cnc.msrobot.activity.BaseActivity;
+import org.cnc.msrobot.utils.SpeechToText;
 import org.cnc.msrobot.utils.SpeechToText.SpeechToTextCallback;
 
 import android.os.Handler;
@@ -12,17 +12,15 @@ public class VoiceInput implements Input, SpeechToTextCallback {
 	private InputReceiveCallback callback;
 	private String currentId;
 	private Handler handler = new Handler();
-	private BaseActivity mActivity;
+	private SpeechToText mStt = SpeechToText.getInstance();
 	private Runnable mListenRunnable = new Runnable() {
 		@Override
 		public void run() {
-			mActivity.getSpeechToText().listen();
+			mStt.listen();
 		}
 	};
 
-	public VoiceInput(BaseActivity activity) {
-		mActivity = activity;
-		mActivity.getSpeechToText().setCallback(this);
+	public VoiceInput() {
 	}
 
 	@Override
@@ -34,6 +32,7 @@ public class VoiceInput implements Input, SpeechToTextCallback {
 	@Override
 	public void setReceiveCallback(InputReceiveCallback callback) {
 		this.callback = callback;
+		mStt.setCallback(this);
 	}
 
 	@Override

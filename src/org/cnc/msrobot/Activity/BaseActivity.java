@@ -44,10 +44,12 @@ public class BaseActivity extends FragmentActivity {
 
 		// Init action bar
 		mActionbar = new CustomActionBar(this);
-		getActionBar().setCustomView(mActionbar);
-		getActionBar().setDisplayShowCustomEnabled(true);
-		getActionBar().setDisplayHomeAsUpEnabled(true);
-		getActionBar().setHomeButtonEnabled(true);
+		if (getActionBar() != null) {
+			getActionBar().setCustomView(mActionbar);
+			getActionBar().setDisplayShowCustomEnabled(true);
+			getActionBar().setDisplayHomeAsUpEnabled(true);
+			getActionBar().setHomeButtonEnabled(true);
+		}
 
 		// init dialog
 		mDialog = new DialogUtils(this);
@@ -72,17 +74,8 @@ public class BaseActivity extends FragmentActivity {
 	}
 
 	@Override
-	protected void onDestroy() {
-		super.onDestroy();
-		mTts.stopSpeak();
-	}
-
-	@Override
 	protected void onStop() {
 		super.onStop();
-		if (mStt != null) {
-			mStt.stopListening();
-		}
 		if (mActionbar != null) {
 			mActionbar.hideRecAnimation();
 		}
@@ -103,15 +96,6 @@ public class BaseActivity extends FragmentActivity {
 			default:
 				return super.onMenuItemSelected(featureId, item);
 		}
-	}
-
-	/**
-	 * set speak animation listener
-	 * 
-	 * @param listener
-	 */
-	public void setSpeechListener(SpeechListener listener) {
-		mTts.setSpeechListenerForModule(listener);
 	}
 
 	public void changeIO(Input input, Output output) {
@@ -193,5 +177,4 @@ public class BaseActivity extends FragmentActivity {
 	public CustomActionBar getCusomActionBar() {
 		return mActionbar;
 	}
-
 }

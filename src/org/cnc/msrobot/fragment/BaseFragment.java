@@ -114,10 +114,4 @@ public class BaseFragment extends Fragment {
 
 	public void refresh() {
 	}
-
-	public void setOnSpeakAnimationListener(SpeechListener listener) {
-		if (getBaseActivity() != null) {
-			getBaseActivity().setSpeechListener(listener);
-		}
-	}
 }

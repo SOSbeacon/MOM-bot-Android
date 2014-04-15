@@ -15,16 +15,17 @@ import android.content.pm.ResolveInfo;
 import android.media.MediaPlayer;
 import android.net.Uri;
 import android.os.Bundle;
+import android.os.Handler;
 import android.os.SystemClock;
 import android.speech.RecognitionListener;
 import android.speech.RecognitionService;
 import android.speech.RecognizerIntent;
 import android.speech.SpeechRecognizer;
-import android.util.Log;
 import android.view.Gravity;
 import android.widget.Toast;
 
 public class SpeechToText {
+	private static final String TAG = SpeechToText.class.getSimpleName();
 	private static final int DELAY_AFTER_START_BEEP = 100;
 	private static final int MAX_RETRY_RECOGNIZE = 3;
 	private static SpeechToText instance = new SpeechToText();
@@ -35,6 +36,7 @@ public class SpeechToText {
 	private Context context;
 	private SpeechToTextCallback callback;
 	private SpeechToTextListener listener;
+	private Handler handler = new Handler();
 
 	public static SpeechToText getInstance() {
 		return instance;
@@ -49,7 +51,7 @@ public class SpeechToText {
 
 		@Override
 		public void onBeginningOfSpeech() {
-			Log.d("MsRobot", "onBeginningOfSpeech");
+			Logger.debug(TAG, "onBeginningOfSpeech");
 		}
 
 		@Override
@@ -58,9 +60,9 @@ public class SpeechToText {
 
 		@Override
 		public void onEndOfSpeech() {
-			Log.d("MsRobot", "onEndOfSpeech");
+			Logger.debug(TAG, "onEndOfSpeech");
 			playStopSound();
-			if (listener != null) listener.onSpeechStop();
+			if (listener != null) listener.onSpeechStop(0);
 			isRecording = false;
 		}
 
@@ -68,14 +70,21 @@ public class SpeechToText {
 		public void onError(int error) {
 			Logger.info("Speech", "onError: " + error);
 			if (recognizeRetry < MAX_RETRY_RECOGNIZE) {
-				if (listener != null) listener.onSpeechStop();
+				if (error == SpeechRecognizer.ERROR_NO_MATCH) {
+					showCenterToast(R.string.errorResultNoMatch);
+				}
 				recognizeRetry++;
-				listenAgainWhenError();
-				Log.d("MsRobot", "Error, try again: " + recognizeRetry);
+				handler.postDelayed(new Runnable() {
+					@Override
+					public void run() {
+						listenAgainWhenError();
+					}
+				}, 200);
+				Logger.debug(TAG, "Error, try again: " + recognizeRetry);
 			} else {
-				Log.d("MsRobot", "Error, max retry");
+				Logger.debug(TAG, "Error, max retry");
 				playErrorSound();
-				if (listener != null) listener.onSpeechStop();
+				if (listener != null) listener.onSpeechStop(error);
 				isRecording = false;
 				mRecognize.setRecognitionListener(null);
 				switch (error) {
@@ -83,7 +92,6 @@ public class SpeechToText {
 						showCenterToast(R.string.errorResultAudioError);
 						break;
 					case SpeechRecognizer.ERROR_CLIENT:
-						showCenterToast(R.string.errorResultClientError);
 						break;
 					case SpeechRecognizer.ERROR_NETWORK:
 						showCenterToast(R.string.errorResultNetworkError);
@@ -98,7 +106,7 @@ public class SpeechToText {
 						showCenterToast(R.string.errorResultServerError);
 						break;
 					case SpeechRecognizer.ERROR_NO_MATCH:
-						// showCenterToast(R.string.errorResultNoMatch);
+						showCenterToast(R.string.errorResultNoMatch);
 						break;
 					case SpeechRecognizer.ERROR_SPEECH_TIMEOUT:
 						showCenterToast(R.string.errorResultTimeout);
@@ -114,7 +122,7 @@ public class SpeechToText {
 
 		@Override
 		public void onEvent(int eventType, Bundle params) {
-			Log.d("MsRobot", "onEvent: " + eventType + " " + params);
+			Logger.debug(TAG, "onEvent: " + eventType + " " + params);
 		}
 
 		@Override
@@ -123,7 +131,7 @@ public class SpeechToText {
 
 		@Override
 		public void onReadyForSpeech(Bundle params) {
-			Log.d("MsRobot", "onReadyForSpeech");
+			Logger.debug(TAG, "onReadyForSpeech");
 		}
 
 		@Override
@@ -137,6 +145,7 @@ public class SpeechToText {
 
 		@Override
 		public void onRmsChanged(float rmsdB) {
+			if (listener != null) listener.onRmsChanged(rmsdB);
 		}
 	};
 
@@ -193,8 +202,12 @@ public class SpeechToText {
 		// stop speech
 		mTts.stopSpeak();
 		Intent recognizerIntent = new Intent(RecognizerIntent.ACTION_RECOGNIZE_SPEECH);
+		// specify number of results to retrieve
+		recognizerIntent.putExtra(RecognizerIntent.EXTRA_MAX_RESULTS, 10);
 		recognizerIntent.putExtra(RecognizerIntent.EXTRA_LANGUAGE_MODEL, RecognizerIntent.LANGUAGE_MODEL_FREE_FORM);
 		recognizerIntent.putExtra(RecognizerIntent.EXTRA_PARTIAL_RESULTS, true);
+		recognizerIntent.putExtra(RecognizerIntent.EXTRA_PROMPT, "Say a word!");
+		recognizerIntent.putExtra(RecognizerIntent.EXTRA_SPEECH_INPUT_MINIMUM_LENGTH_MILLIS, 4000);
 		recognizerIntent.putExtra(RecognizerIntent.EXTRA_CALLING_PACKAGE, context.getApplicationContext()
 				.getPackageName());
 		recognizerIntent.putExtra(RecognizerIntent.EXTRA_LANGUAGE, "en");
@@ -203,7 +216,7 @@ public class SpeechToText {
 		// set listener
 		mRecognize.startListening(recognizerIntent);
 		if (listener != null) listener.onSpeechStart();
-		Log.d("MsRobot", "listen");
+		Logger.debug(TAG, "listen");
 	}
 
 	private void showCenterToast(String message) {
@@ -237,35 +250,39 @@ public class SpeechToText {
 		if (serviceComponent != null) return;
 		// creating a dialog asking user if he want
 		// to install the Voice Search
-		Dialog dialog = new AlertDialog.Builder(context)
-				.setMessage("For recognition its necessary to install \"Google Voice Search\"") // dialog message
-				.setTitle("Install Voice Search from Google Play?") // dialog header
-				.setPositiveButton("Install", new DialogInterface.OnClickListener() { // confirm button
+		try {
+			Dialog dialog = new AlertDialog.Builder(context)
+					.setMessage("For recognition its necessary to install \"Google Voice Search\"") // dialog message
+					.setTitle("Install Voice Search from Google Play?") // dialog header
+					.setPositiveButton("Install", new DialogInterface.OnClickListener() { // confirm button
 
-							// Install Button click handler
-							@Override
-							public void onClick(DialogInterface dialog, int which) {
-								try {
-									// creating an Intent for opening applications page in Google Play
-									// Voice Search package name: com.google.android.voicesearch
-									Intent intent = new Intent(Intent.ACTION_VIEW, Uri
-											.parse("market://details?id=com.google.android.voicesearch"));
-									// setting flags to avoid going in application history (Activity call stack)
-									intent.setFlags(Intent.FLAG_ACTIVITY_NO_HISTORY
-											| Intent.FLAG_ACTIVITY_CLEAR_WHEN_TASK_RESET);
-									// sending an Intent
-									context.startActivity(intent);
-								} catch (Exception ex) {
-									// if something going wrong
-									// doing nothing
+								// Install Button click handler
+								@Override
+								public void onClick(DialogInterface dialog, int which) {
+									try {
+										// creating an Intent for opening applications page in Google Play
+										// Voice Search package name: com.google.android.voicesearch
+										Intent intent = new Intent(Intent.ACTION_VIEW, Uri
+												.parse("market://details?id=com.google.android.voicesearch"));
+										// setting flags to avoid going in application history (Activity call stack)
+										intent.setFlags(Intent.FLAG_ACTIVITY_NO_HISTORY
+												| Intent.FLAG_ACTIVITY_CLEAR_WHEN_TASK_RESET);
+										// sending an Intent
+										context.startActivity(intent);
+									} catch (Exception ex) {
+										// if something going wrong
+										// doing nothing
+									}
 								}
-							}
-						})
+							})
 
-				.setNegativeButton("Cancel", null) // cancel button
-				.create();
+					.setNegativeButton("Cancel", null) // cancel button
+					.create();
 
-		dialog.show(); // showing dialog
+			dialog.show(); // showing dialog
+		} catch (Exception ex) {
+			ex.printStackTrace();
+		}
 	}
 
 	/**
@@ -324,6 +341,14 @@ public class SpeechToText {
 	public interface SpeechToTextListener {
 		void onSpeechStart();
 
-		void onSpeechStop();
+		/**
+		 * speech stop
+		 * 
+		 * @param error
+		 *            0:no error
+		 */
+		void onSpeechStop(int error);
+
+		void onRmsChanged(float rmsdB);
 	}
 }

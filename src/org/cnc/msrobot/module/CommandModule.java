@@ -8,6 +8,7 @@ import java.util.regex.Pattern;
 import org.cnc.msrobot.R;
 import org.cnc.msrobot.InputOutput.Input;
 import org.cnc.msrobot.InputOutput.Output;
+import org.cnc.msrobot.resource.StaticResource;
 import org.cnc.msrobot.utils.AppUtils;
 
 import android.content.Context;
@@ -31,18 +32,39 @@ public class CommandModule extends Module {
 		if (TextUtils.isEmpty(data)) return false;
 		boolean found = false;
 		data = data.toLowerCase(Locale.US);
-		if (data.contains(getResource().getString(R.string.command_send))
-				&& (data.contains(getResource().getString(R.string.command_message)) || data.contains(getResource()
-						.getString(R.string.command_email)))) {
+		if (data.startsWith(getResource().getString(R.string.command_send_message))
+				|| data.startsWith(getResource().getString(R.string.command_send_email))) {
 			getOutput().showAnswer(data);
-			ModuleManager.getInstance().runModule(MODULE_SEND_MESSAGE);
-			found = true;
+			// get contact name
+			String contactName = "";
+			if (data.startsWith(getResource().getString(R.string.command_send_message))) {
+				contactName = data.substring(getResource().getString(R.string.command_send_message).length());
+			} else {
+				contactName = data.substring(getResource().getString(R.string.command_send_email).length());
+			}
+			// check contact name
+			int contactPosition = -1;
+			// voice input, data is voice recognize
+			if (!TextUtils.isEmpty(data) && StaticResource.listContact != null) {
+				for (int i = 0; i < StaticResource.listContact.size(); i++) {
+					String name = StaticResource.listContact.get(i).name.toLowerCase(Locale.US);
+					if (contactName.toLowerCase(Locale.US).equals(name)) {
+						getOutput().showAnswer(contactName);
+						contactPosition = i;
+						break;
+					}
+				}
+			}
+			if (contactPosition != -1) {
+				found = true;
+				new GetMessageContentModule(getContext(), getInput(), getOutput(), contactPosition).run();
+			}
 		} else if (data.startsWith(getResource().getString(R.string.command_search))) {
 			getOutput().showAnswer(data);
 			AppUtils.showGoogleSearchIntent(getContext(),
 					data.substring(getResource().getString(R.string.command_search).length()));
 			found = true;
-		} else if (data.startsWith(getResource().getString(R.string.command_set_alarm))) {
+		} else if (data.startsWith(getResource().getString(R.string.command_set_reminder))) {
 			getOutput().showAnswer(data);
 			// pattern for search number
 			Pattern patternNumber = Pattern.compile("\\d+");

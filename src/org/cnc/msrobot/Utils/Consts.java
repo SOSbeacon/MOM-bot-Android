@@ -9,11 +9,15 @@ public class Consts {
 	public static final String APP_FOLDER_CACHE = "MsRobot/Cache";
 	public static final String PHOTO_JPG_EXTENSION = ".jpg";
 	public static final String BASE_PATH = Environment.getExternalStorageDirectory().toString() + File.separator
-			+ "org.cnc.seedforminecraft" + File.separator;
+			+ "org.cnc.mombot" + File.separator;
 	public static final String TEMP_PATH = BASE_PATH + "temp" + File.separator;
+	public static final String RECORD_TEMP_PATH = TEMP_PATH + "temp_createchat_record.m4a";
+	public static final String TIME_STAMP = "{timestamp}";
+	public static final String TEMP_AUDIO_FILE = TEMP_PATH + "temp_final_record_{timestamp}.m4a";
 	public static final String TEMP_IMAGE_NAME = "temp_image";
 	public static final String TEMP_SELECTED_IMAGE_NAME = "temp_selected_image" + PHOTO_JPG_EXTENSION;
-	private static final String ROOT_URL = "http://ms-robot.herokuapp.com/";
+	private static final String ROOT_URL = "http://162.242.174.218/";
+	// private static final String ROOT_URL = "http://ms-robot.herokuapp.com/";
 	public static final String BASE_URL = "";
 	public static final int TIME_CHECK_REMINDER = 1000 * 60 * 10; // 30 minute
 	public static final float SPEECH_RATE = 1f;
@@ -29,6 +33,9 @@ public class Consts {
 	public static final String PARAMS_CITY = "city";
 	public static final String PARAMS_LON = "lon";
 	public static final String PARAMS_LAT = "lat";
+	public static final String PARAMS_MESSAGE_LAT = "message[lat]";
+	public static final String PARAMS_MESSAGE_LON = "message[lng]";
+	public static final String PARAMS_MESSAGE_AUDIO = "message[audio_url]";
 
 	public static final String HOLDER_ID_PARAM = "{id}";
 	public static final String HOLDER_CITY_PARAM = "{city}";
@@ -37,13 +44,14 @@ public class Consts {
 
 	public static final String PARAMS_QUERY_START = "query_start";
 	public static final String PARAMS_QUERY_END = "query_end";
+	public static final String PARAMS_QUERY_NOT_SAVE_DB = "not_save_db";
 	public static final String PARAMS_USER_EMAIL = "user[email]";
 	public static final String PARAMS_USER_PASSWORD = "user[password]";
 	public static final String PARAMS_AUTH_TOKEN = "auth_token";
 	public static final String PARAMS_EVENT_TITLE = "event[title]";
 	public static final String PARAMS_EVENT_CONTENT = "event[content]";
 	public static final String PARAMS_EVENT_TYPE = "event[type_event]";
-	public static final String PARAMS_EVENT_DAY_WEEK = "event[days_of_week]";
+	public static final String PARAMS_EVENT_DAY_WEEK = "event[days_of_week][]";
 	public static final String PARAMS_EVENT_START_TIME = "event[start_time]";
 	public static final String PARAMS_EVENT_END_TIME = "event[end_time]";
 	public static final String PARAMS_EVENT_END_DATE = "event[end_date]";
@@ -67,10 +75,11 @@ public class Consts {
 		public static final String DELETE_EVENT_URL = ROOT_URL + "event/{id}.json";
 		public static final String EDIT_EVENT_URL = ROOT_URL + "event/{id}.json";
 		public static final String GET_LIST_CONTACT = ROOT_URL + "group_contacts.json?auth_token={auth_token}";
+		public static final String CREATE_EMERGENCY_URL = ROOT_URL + "emergency.json";
+		public static final String UPDATE_EMERGENCY_URL = ROOT_URL + "emergency/{id}.json";
 	}
 
 	public class RequestCode {
-		public final static int REQUEST_ADD_OR_EDIT_EVENT = 1;
 		public static final int REQUEST_CODE_CHECK_TTS = 2;
 		public static final int REQUEST_EMAIL_SETUP = 3;
 		public static final int REQUEST_RECOGNIZE = 4;
@@ -79,6 +88,7 @@ public class Consts {
 		public static final int REQUEST_GALLERY = 6;
 		public static final int REQUEST_CAPTURE = 7;
 		public static final int REQUEST_CROP_AFTER_CAPTURE = 8;
+		public final static int REQUEST_CALL = 9;
 
 	}
 }

@@ -14,11 +14,11 @@ import android.content.Intent;
 import android.os.Bundle;
 import android.os.PowerManager;
 import android.text.TextUtils;
-import android.util.Log;
 
 import com.android.volley.Response.Listener;
 
 public class AlarmReceiver extends BroadcastReceiver {
+	private static final String TAG = AlarmReceiver.class.getSimpleName();
 	private static final String EXTRA_TYPE = "EXTRA_TYPE";
 	private static final String EXTRA_EVENT = "EXTRA_EVENT";
 	private static final int TYPE_CHECK_SERVER = 0;
@@ -41,7 +41,7 @@ public class AlarmReceiver extends BroadcastReceiver {
 	public void onReceive(Context context, Intent intent) {
 		this.context = context;
 		int type = intent.getIntExtra(EXTRA_TYPE, TYPE_CHECK_SERVER);
-		Log.d("AlarmReceiver", "onReceive: " + type);
+		Logger.debug(TAG, "onReceive: " + type);
 		if (type == TYPE_CHECK_SERVER) {
 			requestListEvent();
 		} else if (type == TYPE_SET_REMINDER) {
@@ -62,7 +62,7 @@ public class AlarmReceiver extends BroadcastReceiver {
 	}
 
 	private void requestListEvent() {
-		Log.d("AlarmReceiver", "request list event");
+		Logger.debug(TAG, "request list event");
 		Bundle bundle = new Bundle();
 		Calendar calendar = Calendar.getInstance();
 		calendar.set(Calendar.HOUR, 0);
@@ -72,6 +72,7 @@ public class AlarmReceiver extends BroadcastReceiver {
 		// next 1 days
 		calendar.add(Calendar.DATE, 1);
 		bundle.putLong(Consts.PARAMS_QUERY_END, calendar.getTime().getTime());
+		bundle.putBoolean(Consts.PARAMS_QUERY_NOT_SAVE_DB, true);
 		RequestManager.getInstance().init(context);
 		RequestManager.getInstance().request(Actions.ACTION_GET_LIST_EVENT, bundle, mRequestEventListener, null);
 	}
@@ -102,8 +103,8 @@ public class AlarmReceiver extends BroadcastReceiver {
 		Intent intent = new Intent(context, AlarmReceiver.class);
 		intent.putExtra(EXTRA_TYPE, TYPE_SET_REMINDER);
 		String json = event.toJsonString();
-		Log.d("AlarmReceiver", "set event: " + json);
-		Log.d("AlarmReceiver", "now: " + calendar.getTimeInMillis() + " alarm: " + event.start().getTime());
+		Logger.debug(TAG, "set event: " + json);
+		Logger.debug(TAG, "now: " + calendar.getTimeInMillis() + " alarm: " + event.start().getTime());
 		intent.putExtra(EXTRA_EVENT, json);
 		PendingIntent pi = PendingIntent.getBroadcast(context, event.id, intent, 0);
 		am.set(AlarmManager.RTC_WAKEUP, event.start().getTime(), pi);

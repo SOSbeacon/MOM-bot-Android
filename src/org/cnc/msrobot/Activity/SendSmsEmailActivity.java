@@ -138,7 +138,7 @@ public class SendSmsEmailActivity extends BaseActivity implements OnClickListene
 	@Override
 	public void onClick(View v) {
 		switch (v.getId()) {
-			case R.id.tvSend:
+			case R.id.tvAction:
 				send();
 				break;
 			case R.id.tvAttachment:

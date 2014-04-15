@@ -20,11 +20,17 @@
     <string name="common_save">Save</string>
     <string name="common_camera">Camera</string>
     <string name="common_gallery">Gallery</string>
+    <string name="common_weekly">Weekly</string>
+    <string name="common_daily">Daily</string>
+    <string name="common_monthly">Monthly</string>
+    
+    <!-- Dialog -->
     <string name="choose_sms">SMS</string>
     <string name="choose_email">EMAIL</string>
     <string name="dialog_sent_select_title">Choose type</string>
     <string name="dialog_choose_message_title">Choose message</string>
     <string name="dialog_choose_search_title">Choose search</string>
+    <string name="dialog_choose_time_title">Choose time:</string>
     <string name="dialog_choose_action">Choose actions</string>
     <string name="dialog_confirm_exit">Do you want to exit?</string>
     <string name="dialog_confirm_setup_email">Email account isn\'t setup. Setup it now?</string>
@@ -49,7 +55,7 @@
     <string name="function_sent_text_sms">Send message</string>
     <string name="function_setup_email_account">Setup email account</string>
     <string name="function_desc_set_alarm">Alarm</string>
-    <string name="function_desc_set_reminder">Reminder</string>
+    <string name="function_desc_set_reminder">Set reminder</string>
     <string name="function_calendar">Calendar</string>
 
     <string-array name="array_list_drawer">
@@ -77,6 +83,11 @@
         <item>Rita;rita@gmail.com;841638664689</item>
         <item>Debra;debra@gmail.com;841638664689</item>
     </string-array>
+    <string-array name="array_repeat_type">
+        <item>@string/common_daily</item>
+        <item>@string/common_weekly</item>
+        <item>@string/common_monthly</item>
+    </string-array>
 
     <!-- Toast message -->
     <string name="err_login_fail">Login fail. Please check email and password again.</string>
@@ -88,7 +99,7 @@
     <string name="errorResultNetworkError">Something is wrong with the network</string>
     <string name="errorResultClientError">General client error</string>
     <string name="errorResultServerError">Recognizer server error</string>
-    <string name="errorResultNoMatch">We don\'t understand.</string>
+    <string name="errorResultNoMatch">We don\'t understand. Try again</string>
     <string name="errorResultTimeout">Stop listening</string>
     <string name="msg_warn_location_cannot_determine">Can\'t determine your location. Do you want to adjust your setting now?</string>
     <string name="msg_err_cannot_open_setting">Can not open setting</string>
@@ -98,6 +109,7 @@
     <string name="msg_info_send_email_success">Send message successfully</string>
     <string name="msg_err_send_email_fail">Send message failed</string>
     <string name="msg_err_camera_not_sdcard">Insert sdcard in order to take picture</string>
+    <string name="msg_err_end_time_must_greater_start_time">End time must be greater than Start time.</string>
     <string name="msg_info_setup_email">You must setup email account. Go to Administration \> Setup email account</string>
     <string name="msg_war_no_contact">Contact list is empty.</string>
 
@@ -107,15 +119,19 @@
     <string name="recognize_message_to">Who do you want me to send this message to?</string>
     <string name="recognize_message_content">Please input message content</string>
     <string name="recognize_ask_send_message">Do you want to send this message?</string>
+    <string name="recognize_ask_reminder_name">What is reminder title?</string>
+    <string name="recognize_ask_reminder_description">What is reminder content?</string>
+    <string name="recognize_ask_reminder_start_time">What is reminder start time?</string>
+    <string name="recognize_ask_reminder_end_time">What is reminder end time?</string>
 
     <!-- Command -->
-    <string name="command_example">Your command, for example: send message, send email, set alarm 13 o\'clock 10 minute, what time is it, search xxx</string>
-    <string name="command_send">send</string>
-    <string name="command_email">email</string>
-    <string name="command_message">message</string>
-    <string name="command_set_alarm">set alarm</string>
+    <string name="command_example">Your command, for example: send message(email) to xxx, send email to xxx, set reminder xxx, what time is it, search xxx</string>
+    <string name="command_send_email">send email to</string>
+    <string name="command_send_message">send message to</string>
+    <string name="command_set_reminder">set reminder</string>
     <string name="command_what_time">what time</string>
     <string name="command_search">search</string>
+    <string name="command_calendar">calendar</string>
 
     <!-- Speak time string -->
     <string name="Verbose_Time_Hour">It\'s %1$s o\'clock %3$s.</string>
@@ -149,9 +165,14 @@
     <string name="summary">Title</string>
     <string name="time_start">FROM</string>
     <string name="time_end">TO</string>
-    <string name="summary_hint">Enter the calendar title</string>
-    <string name="event_hint">Enter the event name</string>
-    <string name="event_desc_hint">Description</string>
+    <string name="event_hint">Title</string>
+    <string name="event_desc_hint">Content</string>
+    <string name="event_repeat">Repeat</string>
+    <string name="event_repeats">Repeats:</string>
+    <string name="event_repeat_on">Repeat on:</string>
+    <string name="event_repeat_every">Repeat every:</string>
+    <string name="event_repeat_end_date">End date:</string>
+    <string name="summary_hint">Summary</string>
     <string name="cancel">Cancel</string>
     <string name="save">Save</string>
     <string name="icon_desc">Application icon</string>
@@ -168,6 +189,18 @@
     <string name="error_format">[Error] %s</string>
     <string name="calendar_all_day">All day</string>
 
+    <plurals name="day">
+        <item quantity="one">day</item>
+        <item quantity="other">days</item>
+    </plurals>
+    <plurals name="week">
+        <item quantity="one">week</item>
+        <item quantity="other">weeks</item>
+    </plurals>
+    <plurals name="month">
+        <item quantity="one">month</item>
+        <item quantity="other">months</item>
+    </plurals>
     <!-- Email -->
     <string name="email_instructions">Please enter your correct email and password and click on login button to proceed. We will use this email account for receiver and send mail.</string>
     <string name="email_name_hint">Enter your Gmail email</string>
@@ -178,7 +211,7 @@
     <string name="email_hint_to">Click here and choose people</string>
 
     <!-- Login -->
-    <string name="login_instructions">Please enter your correct email and password and click on login button. Account for test: tester1@cnc.vn. Pass: Admin123</string>
+    <string name="login_instructions">Please enter your correct email and password and click on login button. Account for test: tester1@cnc.vn. Pass: 12345678</string>
     <string name="login_name_hint">Enter your email</string>
     <string name="login_pass_hint">Enter your password</string>
 

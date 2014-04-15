@@ -1,16 +1,16 @@
 package org.cnc.msrobot.requestmanager.request;
 
 import java.lang.reflect.Type;
-import java.util.HashMap;
 
+import org.cnc.msrobot.requestmanager.GsonRequest;
 import org.cnc.msrobot.requestmanager.RequestBase;
 import org.cnc.msrobot.resource.UserResource;
 import org.cnc.msrobot.utils.Consts;
 import org.cnc.msrobot.utils.Consts.URLConsts;
+import org.cnc.msrobot.utils.Logger;
 import org.cnc.msrobot.utils.SharePrefs;
 
 import android.content.Context;
-import android.util.Log;
 
 import com.android.volley.Request.Method;
 
@@ -23,19 +23,18 @@ public class LoginRequest extends RequestBase<UserResource> {
 	@Override
 	public void postAfterRequest(UserResource result) {
 		if (result != null) {
-			Log.d("MsRobot", "result.auth_token: " + result.auth_token);
+			Logger.debug("LoginRequest", "result.auth_token: " + result.auth_token);
 			SharePrefs.getInstance().saveLoginToken(result.auth_token);
 		}
 	}
 
 	@Override
-	protected HashMap<String, String> addParams() {
+	protected void addParams(GsonRequest<UserResource> request) {
 		String start = getExtra().getString(Consts.PARAMS_USER_EMAIL);
 		String end = getExtra().getString(Consts.PARAMS_USER_PASSWORD);
-		HashMap<String, String> params = new HashMap<String, String>();
-		params.put(Consts.PARAMS_USER_EMAIL, start);
-		params.put(Consts.PARAMS_USER_PASSWORD, end);
-		return params;
+		request.addParam(Consts.PARAMS_USER_EMAIL, start);
+		request.addParam(Consts.PARAMS_USER_PASSWORD, end);
+		super.addParams(request);
 	}
 
 	@Override

@@ -15,6 +15,7 @@ public abstract class Module implements InputReceiveCallback, SpeechListener {
 	public static final int MODULE_SEARCH = 3;
 	public static final int MODULE_ALARM = 4;
 	public static final int MODULE_ASK_YES_NO = 5;
+	public static final int MODULE_SET_REMINDER = 6;
 	
 	private Input input;
 	private Output output;

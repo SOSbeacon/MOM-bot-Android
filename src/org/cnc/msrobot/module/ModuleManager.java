@@ -35,6 +35,9 @@ public class ModuleManager {
 				case Module.MODULE_SEND_MESSAGE:
 					new SendMessageModule(context, input, output).run();
 					break;
+				case Module.MODULE_SET_REMINDER:
+					new SetReminderModule(context, input, output).run();
+					break;
 				default:
 					break;
 			}

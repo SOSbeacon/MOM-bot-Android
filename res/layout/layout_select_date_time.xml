@@ -1,0 +1,30 @@
+<?xml version="1.0" encoding="utf-8"?>
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:id="@+id/linearLayout3"
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content"
+    android:padding="@dimen/common_margin_layout_medium" >
+
+    <TextView
+        android:id="@+id/tvStartDate"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_below="@id/tvStartLabel"
+        android:background="@drawable/item_background_click"
+        android:padding="@dimen/common_margin_layout"
+        android:text="EEE, MMM dd, yyyy"
+        android:textAppearance="?android:attr/textAppearanceMedium" />
+
+    <TextView
+        android:id="@+id/tvStartTime"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_below="@id/tvStartLabel"
+        android:layout_marginLeft="@dimen/common_margin_layout_medium"
+        android:layout_toRightOf="@id/tvStartDate"
+        android:background="@drawable/item_background_click"
+        android:padding="@dimen/common_margin_layout"
+        android:text="KK:mm aa"
+        android:textAppearance="?android:attr/textAppearanceMedium" />
+
+</RelativeLayout>

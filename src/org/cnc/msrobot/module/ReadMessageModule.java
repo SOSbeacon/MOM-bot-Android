@@ -5,6 +5,8 @@ import java.util.Locale;
 import org.cnc.msrobot.R;
 import org.cnc.msrobot.InputOutput.Input;
 import org.cnc.msrobot.InputOutput.Output;
+import org.cnc.msrobot.InputOutput.VoiceInput;
+import org.cnc.msrobot.InputOutput.YesNoInput;
 
 import android.content.Context;
 import android.os.Handler;
@@ -16,9 +18,16 @@ public class ReadMessageModule extends Module {
 	private Handler handler = new Handler();
 	private ReadMessageModuleListener listener;
 	private String ask, content;
+	private Input mYesNoInput;
 
 	public ReadMessageModule(Context context, Input input, Output output) {
 		super(context, input, output);
+		if (input instanceof VoiceInput) {
+			mYesNoInput = input;
+		} else {
+			mYesNoInput = new YesNoInput(context);
+			mYesNoInput.setReceiveCallback(this);
+		}
 	}
 
 	@Override
@@ -69,13 +78,7 @@ public class ReadMessageModule extends Module {
 	public void stopSpeech(final String id) {
 		try {
 			if (STEP_ASK.equals(id)) {
-				// run listener for 200 ms delay
-				handler.postDelayed(new Runnable() {
-					@Override
-					public void run() {
-						getInput().show(id);
-					}
-				}, 200);
+				mYesNoInput.show(id);
 			} else if (STEP_READ.equals(id)) {
 				// run listener for 200 ms delay
 				handler.postDelayed(new Runnable() {

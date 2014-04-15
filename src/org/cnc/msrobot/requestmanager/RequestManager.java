@@ -1,6 +1,6 @@
 package org.cnc.msrobot.requestmanager;
 
-import org.cnc.msrobot.utils.SslHttpStack;
+import org.cnc.msrobot.utils.VolleyHttpClient;
 
 import android.content.Context;
 import android.os.Bundle;
@@ -42,7 +42,7 @@ public class RequestManager {
 
 	public void init(Context context) {
 		mContext=context;
-		mRequestQueue = Volley.newRequestQueue(context, new SslHttpStack());
+		mRequestQueue = Volley.newRequestQueue(context, new VolleyHttpClient());
 	}
 
 	public RequestQueue getRequestQueue() {

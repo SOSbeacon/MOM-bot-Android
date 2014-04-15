@@ -1,15 +1,16 @@
 package org.cnc.msrobot.requestmanager;
 
-import java.io.File;
 import java.lang.reflect.Type;
 import java.util.HashMap;
 
 import org.apache.http.client.utils.URLEncodedUtils;
 import org.cnc.msrobot.utils.Logger;
+import org.cnc.msrobot.utils.VolleyHttpClient;
 
 import android.content.Context;
 import android.os.Bundle;
 
+import com.android.volley.DefaultRetryPolicy;
 import com.android.volley.Response.ErrorListener;
 import com.android.volley.Response.Listener;
 
@@ -42,11 +43,19 @@ public abstract class RequestBase<T> implements RequestListener<T> {
 
 	protected abstract int getMethod();
 
-	protected HashMap<String, String> addParams() {
+	protected void addParams(GsonRequest<T> request) {
+	}
+
+	/**
+	 * return upload file info mimeType
+	 * 
+	 * @return
+	 */
+	protected HashMap<String, String> addUploadFile() {
 		return null;
 	}
 
-	protected HashMap<String, File> addUploadFile() {
+	protected String setHeaderType() {
 		return null;
 	}
 
@@ -55,21 +64,21 @@ public abstract class RequestBase<T> implements RequestListener<T> {
 		Logger.debug(TAG, "request url: " + url);
 		int method = getMethod();
 		GsonRequest<T> request = new GsonRequest<T>(method, url, getClassOf(), this, listener, errorListener);
-		HashMap<String, String> params = addParams();
-		if (params != null) {
-			for (String key : params.keySet()) {
-				request.addStringUpload(key, params.get(key));
+		if (request != null) {
+			request.setTag(action);
+			if (request.isUpload()) {
+				request.setRetryPolicy(new DefaultRetryPolicy(DefaultRetryPolicy.DEFAULT_TIMEOUT_MS, 0,
+						DefaultRetryPolicy.DEFAULT_BACKOFF_MULT));
 			}
-			request.setHeader("Content-Type", URLEncodedUtils.CONTENT_TYPE);
-		}
-		HashMap<String, File> uploadFile = addUploadFile();
-		if (uploadFile != null) {
-			for (String key : uploadFile.keySet()) {
-				request.addFileUpload(key, uploadFile.get(key));
+			addParams(request);
+			HashMap<String, String> files = addUploadFile();
+			if (files != null) {
+				request.setUpload(true);
+				request.setUploadItemInfo(files);
+			} else {
+				request.addHeader(VolleyHttpClient.CONTENT_TYPE, URLEncodedUtils.CONTENT_TYPE);
 			}
-			request.setHeader("Content-Type", URLEncodedUtils.CONTENT_TYPE);
 		}
-		request.setTag(action);
 		mRequestManager.getRequestQueue().add(request);
 	}
 }

@@ -8,11 +8,11 @@ import org.cnc.msrobot.requestmanager.RequestBase;
 import org.cnc.msrobot.resource.GroupContactResource;
 import org.cnc.msrobot.utils.Consts;
 import org.cnc.msrobot.utils.Consts.URLConsts;
+import org.cnc.msrobot.utils.Logger;
 import org.cnc.msrobot.utils.SharePrefs;
 
 import android.content.ContentValues;
 import android.content.Context;
-import android.util.Log;
 
 import com.android.volley.Request.Method;
 
@@ -48,7 +48,7 @@ public class GetListContactRequest extends RequestBase<GroupContactResource[]> {
 	protected String buildRequestUrl() {
 		String token = SharePrefs.getInstance().getLoginToken();
 		String url = URLConsts.GET_LIST_CONTACT.replace(Consts.HOLDER_AUTH_TOKEN, token);
-		Log.d("MsRobot", "Get list contact: " + url);
+		Logger.debug("GetListContactRequest", "Get list contact: " + url);
 		return url;
 	}
 

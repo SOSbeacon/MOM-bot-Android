@@ -9,11 +9,11 @@ import org.cnc.msrobot.resource.EventResource;
 import org.cnc.msrobot.utils.Consts;
 import org.cnc.msrobot.utils.Consts.URLConsts;
 import org.cnc.msrobot.utils.DateTimeFormater;
+import org.cnc.msrobot.utils.Logger;
 import org.cnc.msrobot.utils.SharePrefs;
 
 import android.content.ContentValues;
 import android.content.Context;
-import android.util.Log;
 
 import com.android.volley.Request.Method;
 
@@ -26,10 +26,13 @@ public class GetListEventRequest extends RequestBase<EventResource[]> {
 
 	@Override
 	public void postAfterRequest(EventResource[] result) {
-		String where = TableEvent.START + ">=datetime('" + DateTimeFormater.timeServerFormat.format(start) + "') AND "
-				+ TableEvent.START + "<=datetime('" + DateTimeFormater.timeServerFormat.format(end) + "')";
+		if (getExtra().getBoolean(Consts.PARAMS_QUERY_NOT_SAVE_DB)) return;
+		String where = TableEvent.START + ">=datetime('" + DateTimeFormater.compareFormater.format(start) + "') AND "
+				+ TableEvent.START + "<=datetime('" + DateTimeFormater.compareFormater.format(end) + "')";
+		Logger.debug("GetListEventRequest", "where: " + where);
 		// delete all event in range
-		mContext.getContentResolver().delete(TableEvent.CONTENT_URI, where, null);
+		int rowDelete = mContext.getContentResolver().delete(TableEvent.CONTENT_URI, where, null);
+		Logger.debug("GetListEventRequest", "row deleted: " + rowDelete);
 		// insert events
 		if (result != null && result.length > 0) {
 			ContentValues[] values = new ContentValues[result.length];
@@ -52,7 +55,7 @@ public class GetListEventRequest extends RequestBase<EventResource[]> {
 				.replace(Consts.HOLDER_QUERY_START, DateTimeFormater.timeServerFormat.format(start))
 				.replace(Consts.HOLDER_QUERY_END, DateTimeFormater.timeServerFormat.format(end))
 				.replace(Consts.HOLDER_AUTH_TOKEN, token);
-		Log.d("GetListEventRequest",url);
+		Logger.debug("GetListEventRequest", url);
 		return url;
 	}
 

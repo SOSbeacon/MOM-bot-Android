@@ -21,9 +21,10 @@ public class CustomActionBar extends RelativeLayout implements OnClickListener {
 	public static final int TYPE_EMAIL = 2;
 	public static final int TYPE_CLASSIC = 3;
 	public static final int TYPE_SEND = 4;
+	public static final int TYPE_CALENDAR = 5;
 	private ImageView imgRec, imgPlay, imgStop, imgNext;
-	private TextView tvSMS, tvEmail, tvTitle, tvWeather, tvSend;
-	private View rlActionEmail, rlActionHome, rlActionSend;
+	private TextView tvSMS, tvEmail, tvTitle, tvWeather, tvAction;
+	private View rlActionEmail, rlActionHome, rlAction, rlActionCalendar;
 	private ProgressBar prgLoading;
 	private int mType = TYPE_DEFAULT;
 	private boolean mInitial = false;
@@ -68,19 +69,23 @@ public class CustomActionBar extends RelativeLayout implements OnClickListener {
 		prgLoading = (ProgressBar) findViewById(R.id.prgLoading);
 		rlActionEmail = findViewById(R.id.rlActionEmail);
 		rlActionHome = findViewById(R.id.rlActionHome);
-		rlActionSend = findViewById(R.id.rlActionSend);
-		tvSend = (TextView) rlActionSend.findViewById(R.id.tvSend);
+		rlAction = findViewById(R.id.rlAction);
+		rlActionCalendar = findViewById(R.id.rlCalendarAction);
+		tvAction = (TextView) rlAction.findViewById(R.id.tvAction);
 		imgPlay = (ImageView) findViewById(R.id.imgPlay);
 		imgStop = (ImageView) findViewById(R.id.imgStop);
 		imgNext = (ImageView) findViewById(R.id.imgNext);
 
 		tvSMS.setOnClickListener(this);
 		tvEmail.setOnClickListener(this);
-		tvSend.setOnClickListener(this);
+		tvAction.setOnClickListener(this);
 
 		imgPlay.setOnClickListener(this);
 		imgStop.setOnClickListener(this);
 		imgNext.setOnClickListener(this);
+		rlActionCalendar.findViewById(R.id.tvCalendarDaily).setOnClickListener(this);
+		rlActionCalendar.findViewById(R.id.tvCalendarWeekly).setOnClickListener(this);
+		rlActionCalendar.findViewById(R.id.tvCalendarMonthly).setOnClickListener(this);
 
 		tvTitle.setText(((Activity) getContext()).getTitle());
 		mInitial = true;
@@ -109,23 +114,28 @@ public class CustomActionBar extends RelativeLayout implements OnClickListener {
 			case TYPE_CLASSIC:
 				rlActionHome.setVisibility(View.VISIBLE);
 				rlActionEmail.setVisibility(View.GONE);
-				rlActionSend.setVisibility(View.GONE);
+				rlAction.setVisibility(View.GONE);
 				break;
 			case TYPE_EMAIL:
 				rlActionHome.setVisibility(View.GONE);
 				rlActionEmail.setVisibility(View.VISIBLE);
-				rlActionSend.setVisibility(View.GONE);
+				rlAction.setVisibility(View.GONE);
 				break;
 			case TYPE_SEND:
 				rlActionHome.setVisibility(View.GONE);
 				rlActionEmail.setVisibility(View.GONE);
-				rlActionSend.setVisibility(View.VISIBLE);
+				rlAction.setVisibility(View.VISIBLE);
+				break;
+			case TYPE_CALENDAR:
+				rlActionHome.setVisibility(View.GONE);
+				rlActionCalendar.setVisibility(View.VISIBLE);
+				rlAction.setVisibility(View.GONE);
 				break;
 			case TYPE_DEFAULT:
 			default:
 				rlActionHome.setVisibility(View.GONE);
 				rlActionEmail.setVisibility(View.GONE);
-				rlActionSend.setVisibility(View.GONE);
+				rlAction.setVisibility(View.GONE);
 				break;
 
 		}
@@ -179,12 +189,28 @@ public class CustomActionBar extends RelativeLayout implements OnClickListener {
 		}
 	}
 
+	/**
+	 * set weather text in action bar
+	 * 
+	 * @param text
+	 */
 	public void setWeatherText(String text) {
 		if (TextUtils.isEmpty(text)) {
 			tvWeather.setVisibility(View.GONE);
 		} else {
 			tvWeather.setVisibility(View.VISIBLE);
 			tvWeather.setText(text);
+		}
+	}
+
+	/**
+	 * set right action text in action bar
+	 * 
+	 * @param text
+	 */
+	public void setActionText(String text) {
+		if (tvAction != null) {
+			tvAction.setText(text);
 		}
 	}
 

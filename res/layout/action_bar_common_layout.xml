@@ -111,13 +111,56 @@
         </RelativeLayout>
 
         <RelativeLayout
-            android:id="@+id/rlActionSend"
+            android:id="@+id/rlCalendarAction"
+            android:layout_width="wrap_content"
+            android:layout_height="match_parent"
+            android:layout_toRightOf="@id/rlActionHome"
+            android:visibility="gone" >
+
+            <TextView
+                android:id="@+id/tvCalendarMonthly"
+                android:layout_width="wrap_content"
+                android:layout_height="match_parent"
+                android:background="@drawable/item_background_click"
+                android:gravity="center_vertical"
+                android:paddingLeft="@dimen/common_margin_layout_medium"
+                android:paddingRight="@dimen/common_margin_layout_medium"
+                android:src="@drawable/ic_action_play"
+                android:text="@string/common_monthly" />
+
+            <TextView
+                android:id="@+id/tvCalendarWeekly"
+                android:layout_width="wrap_content"
+                android:layout_height="match_parent"
+                android:layout_toRightOf="@id/tvCalendarMonthly"
+                android:background="@drawable/item_background_click"
+                android:gravity="center_vertical"
+                android:paddingLeft="@dimen/common_margin_layout_medium"
+                android:paddingRight="@dimen/common_margin_layout_medium"
+                android:src="@drawable/ic_action_stop"
+                android:text="@string/common_weekly" />
+
+            <TextView
+                android:id="@+id/tvCalendarDaily"
+                android:layout_width="wrap_content"
+                android:layout_height="match_parent"
+                android:layout_toRightOf="@id/tvCalendarWeekly"
+                android:background="@drawable/item_background_click"
+                android:gravity="center_vertical"
+                android:paddingLeft="@dimen/common_margin_layout_medium"
+                android:paddingRight="@dimen/common_margin_layout_medium"
+                android:src="@drawable/ic_action_next"
+                android:text="@string/common_daily" />
+        </RelativeLayout>
+
+        <RelativeLayout
+            android:id="@+id/rlAction"
             android:layout_width="wrap_content"
             android:layout_height="match_parent"
             android:layout_toRightOf="@id/rlActionEmail" >
 
             <TextView
-                android:id="@+id/tvSend"
+                android:id="@+id/tvAction"
                 android:layout_width="wrap_content"
                 android:layout_height="match_parent"
                 android:background="@drawable/item_background_click"

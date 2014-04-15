@@ -7,7 +7,6 @@ import java.util.Random;
 import org.cnc.msrobot.R;
 import org.cnc.msrobot.InputOutput.VoiceInput;
 import org.cnc.msrobot.InputOutput.VoiceSecretaryOutput;
-import org.cnc.msrobot.activity.AddOrEditEventActivity;
 import org.cnc.msrobot.activity.EmailSetupActivity;
 import org.cnc.msrobot.activity.MainActivity;
 import org.cnc.msrobot.adapter.ChatAdapter;
@@ -164,8 +163,7 @@ public class HomeFragment extends BaseFragment implements LoaderCallbacks<Cursor
 		super.onCreate(savedInstanceState);
 
 		// change input, output
-		getBaseActivity().changeIO(new VoiceInput(getBaseActivity()),
-				new VoiceSecretaryOutput((MainActivity) getBaseActivity()));
+		getBaseActivity().changeIO(new VoiceInput(), new VoiceSecretaryOutput((MainActivity) getBaseActivity()));
 
 		// init adapter
 		adapterChat = new ChatAdapter(getBaseActivity(), new ArrayList<String>());
@@ -178,7 +176,8 @@ public class HomeFragment extends BaseFragment implements LoaderCallbacks<Cursor
 		initCursorLoader();
 		// request list event from server
 		requestListEvent();
-		getBaseActivity().getTextToSpeech().setSpeechListenerForAll(this);
+
+		showCenterToast("Click above secretary to listen your command!");
 	}
 
 	@Override
@@ -194,6 +193,7 @@ public class HomeFragment extends BaseFragment implements LoaderCallbacks<Cursor
 	public void onResume() {
 		super.onResume();
 		adapterChat.clear();
+		getBaseActivity().getTextToSpeech().setSpeechListenerForAll(this);
 	}
 
 	@Override
@@ -364,10 +364,6 @@ public class HomeFragment extends BaseFragment implements LoaderCallbacks<Cursor
 	private void showCommandMenu() {
 		mMenuIndex = 1;
 		adapterMain.clear();
-		// add back item
-		adapterMain.add(new ItemListFunction.Builder(getBaseActivity()).setType(ItemListFunction.TYPE_FUNCTION)
-				.setDescResId(R.string.function_desc_back).setItemClickId(ItemListFunction.FUNCTION_BACK_TO_MAIN)
-				.setColorResId(R.color.black).build());
 		// add communication item
 		adapterMain.add(new ItemListFunction.Builder(getBaseActivity()).setType(ItemListFunction.TYPE_FUNCTION)
 				.setDescResId(R.string.function_desc_communication)
@@ -384,16 +380,16 @@ public class HomeFragment extends BaseFragment implements LoaderCallbacks<Cursor
 		adapterMain.add(new ItemListFunction.Builder(getBaseActivity()).setType(ItemListFunction.TYPE_FUNCTION)
 				.setDescResId(R.string.function_desc_admin).setItemClickId(ItemListFunction.FUNCTION_GROUP_ADMIN)
 				.setColorResId(R.color.black).build());
+		// add back item
+		adapterMain.add(new ItemListFunction.Builder(getBaseActivity()).setType(ItemListFunction.TYPE_FUNCTION)
+				.setDescResId(R.string.function_desc_back).setItemClickId(ItemListFunction.FUNCTION_BACK_TO_MAIN)
+				.setColorResId(R.color.black).build());
 		adapterMain.notifyDataSetChanged();
 	}
 
 	private void showCommunicationMenu() {
 		mMenuIndex = 2;
 		adapterMain.clear();
-		// add back item
-		adapterMain.add(new ItemListFunction.Builder(getBaseActivity()).setType(ItemListFunction.TYPE_FUNCTION)
-				.setDescResId(R.string.function_desc_back).setItemClickId(ItemListFunction.FUNCTION_BACK_TO_COMMAND)
-				.setColorResId(R.color.black).build());
 		// add sent text message
 		adapterMain.add(new ItemListFunction.Builder(getBaseActivity()).setType(ItemListFunction.TYPE_FUNCTION)
 				.setDescResId(R.string.function_sent_text_sms).setItemClickId(ItemListFunction.FUNCTION_SENT_MESSAGE)
@@ -402,13 +398,13 @@ public class HomeFragment extends BaseFragment implements LoaderCallbacks<Cursor
 		adapterMain.add(new ItemListFunction.Builder(getBaseActivity()).setType(ItemListFunction.TYPE_FUNCTION)
 				.setDescResId(R.string.function_calendar).setItemClickId(ItemListFunction.FUNCTION_CHECK_MY_CALENDAR)
 				.setColorResId(R.color.black).build());
-		// add information item
+		// add set reminder item
 		adapterMain.add(new ItemListFunction.Builder(getBaseActivity()).setType(ItemListFunction.TYPE_FUNCTION)
 				.setDescResId(R.string.function_desc_set_reminder)
 				.setItemClickId(ItemListFunction.FUNCTION_SET_REMINDER).setColorResId(R.color.black).build());
-		// add emergency item
+		// add back item
 		adapterMain.add(new ItemListFunction.Builder(getBaseActivity()).setType(ItemListFunction.TYPE_FUNCTION)
-				.setDescResId(R.string.function_desc_set_alarm).setItemClickId(ItemListFunction.FUNCTION_SET_ALARM)
+				.setDescResId(R.string.function_desc_back).setItemClickId(ItemListFunction.FUNCTION_BACK_TO_COMMAND)
 				.setColorResId(R.color.black).build());
 		adapterMain.notifyDataSetChanged();
 	}
@@ -416,10 +412,6 @@ public class HomeFragment extends BaseFragment implements LoaderCallbacks<Cursor
 	private void showInformationMenu() {
 		mMenuIndex = 3;
 		adapterMain.clear();
-		// add back item
-		adapterMain.add(new ItemListFunction.Builder(getBaseActivity()).setType(ItemListFunction.TYPE_FUNCTION)
-				.setDescResId(R.string.function_desc_back).setItemClickId(ItemListFunction.FUNCTION_BACK_TO_COMMAND)
-				.setColorResId(R.color.black).build());
 		// add sent text message
 		adapterMain.add(new ItemListFunction.Builder(getBaseActivity()).setType(ItemListFunction.TYPE_FUNCTION)
 				.setDescResId(R.string.function_desc_news).setItemClickId(ItemListFunction.FUNCTION_CHECK_NEWS)
@@ -428,16 +420,16 @@ public class HomeFragment extends BaseFragment implements LoaderCallbacks<Cursor
 		adapterMain.add(new ItemListFunction.Builder(getBaseActivity()).setType(ItemListFunction.TYPE_FUNCTION)
 				.setDescResId(R.string.function_desc_weather).setItemClickId(ItemListFunction.FUNCTION_CHECK_WEATHER)
 				.setColorResId(R.color.black).build());
+		// add back item
+		adapterMain.add(new ItemListFunction.Builder(getBaseActivity()).setType(ItemListFunction.TYPE_FUNCTION)
+				.setDescResId(R.string.function_desc_back).setItemClickId(ItemListFunction.FUNCTION_BACK_TO_COMMAND)
+				.setColorResId(R.color.black).build());
 		adapterMain.notifyDataSetChanged();
 	}
 
 	private void showAdminMenu() {
 		mMenuIndex = 4;
 		adapterMain.clear();
-		// add back item
-		adapterMain.add(new ItemListFunction.Builder(getBaseActivity()).setType(ItemListFunction.TYPE_FUNCTION)
-				.setDescResId(R.string.function_desc_back).setItemClickId(ItemListFunction.FUNCTION_BACK_TO_COMMAND)
-				.setColorResId(R.color.black).build());
 		// add sent text message
 		adapterMain.add(new ItemListFunction.Builder(getBaseActivity()).setType(ItemListFunction.TYPE_FUNCTION)
 				.setDescResId(R.string.function_desc_set_alarm).setItemClickId(ItemListFunction.FUNCTION_SET_ALARM)
@@ -446,6 +438,10 @@ public class HomeFragment extends BaseFragment implements LoaderCallbacks<Cursor
 		adapterMain.add(new ItemListFunction.Builder(getBaseActivity()).setType(ItemListFunction.TYPE_FUNCTION)
 				.setDescResId(R.string.function_desc_set_reminder)
 				.setItemClickId(ItemListFunction.FUNCTION_SET_REMINDER).setColorResId(R.color.black).build());
+		// add back item
+		adapterMain.add(new ItemListFunction.Builder(getBaseActivity()).setType(ItemListFunction.TYPE_FUNCTION)
+				.setDescResId(R.string.function_desc_back).setItemClickId(ItemListFunction.FUNCTION_BACK_TO_COMMAND)
+				.setColorResId(R.color.black).build());
 		adapterMain.notifyDataSetChanged();
 	}
 
@@ -596,8 +592,7 @@ public class HomeFragment extends BaseFragment implements LoaderCallbacks<Cursor
 				openTimePickerDialog(true);
 				break;
 			case ItemListFunction.FUNCTION_SET_REMINDER:
-				getBaseActivity().startActivityForResult(new Intent(getBaseActivity(), AddOrEditEventActivity.class),
-						RequestCode.REQUEST_ADD_OR_EDIT_EVENT);
+				ModuleManager.getInstance().runModule(Module.MODULE_SET_REMINDER);
 				break;
 		}
 	}

@@ -7,11 +7,16 @@ import org.cnc.msrobot.InputOutput.ContactListInput;
 import org.cnc.msrobot.InputOutput.Input;
 import org.cnc.msrobot.InputOutput.Output;
 import org.cnc.msrobot.InputOutput.VoiceInput;
+import org.cnc.msrobot.activity.RecognizeActivity;
 import org.cnc.msrobot.activity.SendSmsEmailActivity;
 import org.cnc.msrobot.resource.StaticResource;
 
+import android.annotation.SuppressLint;
 import android.content.Context;
 import android.content.Intent;
+import android.os.Handler;
+import android.os.Message;
+import android.os.Messenger;
 import android.text.TextUtils;
 
 public class SendMessageModule extends Module {
@@ -20,6 +25,16 @@ public class SendMessageModule extends Module {
 	private static final String STEP_ERROR = "error";
 	private int contactPosition;
 	private Input mContactInput;
+	@SuppressLint("HandlerLeak")
+	private Handler handler = new Handler() {
+		@Override
+		public void handleMessage(Message msg) {
+			if (msg.what == 0 && msg.obj instanceof String) {
+				String text = (String) msg.obj;
+				onReceive(text, STEP_CONTENT);
+			}
+		}
+	};
 
 	public SendMessageModule(Context context, Input input, Output output) {
 		super(context, input, output);
@@ -54,6 +69,7 @@ public class SendMessageModule extends Module {
 					for (int i = 0; i < StaticResource.listContact.size(); i++) {
 						String name = StaticResource.listContact.get(i).name.toLowerCase(Locale.US);
 						if (data.toLowerCase(Locale.US).equals(name)) {
+							getOutput().showAnswer(data);
 							contactPosition = i;
 							break;
 						}
@@ -108,7 +124,13 @@ public class SendMessageModule extends Module {
 			mContactInput.show(id);
 		} else {
 			// if step is message content step, set null
-			getInput().show(id);
+			if (getInput() instanceof VoiceInput) {
+				Intent intent = new Intent(getContext(), RecognizeActivity.class);
+				intent.putExtra(RecognizeActivity.EXTRA_HANDLER, new Messenger(handler));
+				getContext().startActivity(intent);
+			} else {
+				getInput().show(id);
+			}
 		}
 	}
 }
