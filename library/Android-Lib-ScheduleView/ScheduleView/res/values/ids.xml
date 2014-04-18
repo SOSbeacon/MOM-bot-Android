@@ -1,0 +1,18 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <item type="id" name="month_day" />
+    <item type="id" name="week_time" />
+    <item type="id" name="day_time" />
+    <item type="id" name="line" />
+    <item type="id" name="event1" />
+    <item type="id" name="event2" />
+    <item type="id" name="event3" />
+    <item type="id" name="event4" />
+    <item type="id" name="event5" />
+    <item type="id" name="event6" />
+    <item type="id" name="event7" />
+    <item type="id" name="event8" />
+    <item type="id" name="event9" />
+    <item type="id" name="event10" />
+    <item type="id" name="llEvent" />
+</resources>

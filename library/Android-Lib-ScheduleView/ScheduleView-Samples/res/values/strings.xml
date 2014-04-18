@@ -1,0 +1,7 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <string name="app_name">ScheduleView Samples</string>
+    <string name="month_view">Month View</string>
+    <string name="week_view">Week View</string>
+    <string name="day_view">Day View</string>
+</resources>

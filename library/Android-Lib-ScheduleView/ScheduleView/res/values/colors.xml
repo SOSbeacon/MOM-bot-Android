@@ -1,0 +1,17 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <color name="border_color">#999</color>
+    <color name="gray">#CCC</color>
+    <color name="white">#ffffffff</color>
+    <color name="black">#ff000000</color>
+    <color name="event1_color">#5AC76A</color>
+    <color name="event2_color">#C75AB7</color>
+    <color name="event3_color">#755AC7</color>
+    <color name="event4_color">#5AC7C7</color>
+    <color name="event5_color">#D11746</color>
+    <color name="event6_color">#D13917</color>
+    <color name="event7_color">#E6F037</color>
+    <color name="event8_color">#BB37F0</color>
+    <color name="event9_color">#F0A937</color>
+    <color name="event10_color">#37F0B8</color>
+</resources>

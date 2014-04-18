@@ -1,0 +1,53 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<resources>
+    <declare-styleable name="ScheduleView">
+        <attr
+            name="headerBackground"
+            format="reference" />
+        <attr
+            name="previousDrawable"
+            format="reference" />
+        <attr
+            name="nextDrawable"
+            format="reference" />
+        <attr
+            name="title"
+            format="reference|string" />
+        <attr
+            name="titleSize"
+            format="reference|dimension" />
+        <attr
+            name="titleColor"
+            format="reference|color" />
+        <attr
+            name="sundayBackground"
+            format="reference|color" />
+        <attr
+            name="mondayBackground"
+            format="reference|color" />
+        <attr
+            name="tuesdayBackground"
+            format="reference|color" />
+        <attr
+            name="wednesdayBackground"
+            format="reference|color" />
+        <attr
+            name="thursdayBackground"
+            format="reference|color" />
+        <attr
+            name="fridayBackground"
+            format="reference|color" />
+        <attr
+            name="saturdayBackground"
+            format="reference|color" />
+        <attr
+            name="interval"
+            format="integer" />
+        <attr
+            name="startInterval"
+            format="integer" />
+        <attr
+            name="endInterval"
+            format="integer" />
+    </declare-styleable>
+</resources>
