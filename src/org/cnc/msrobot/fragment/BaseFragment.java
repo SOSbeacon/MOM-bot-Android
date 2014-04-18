@@ -3,7 +3,6 @@ package org.cnc.msrobot.fragment;
 import org.cnc.msrobot.activity.BaseActivity;
 import org.cnc.msrobot.requestmanager.RequestManager;
 import org.cnc.msrobot.utils.SharePrefs;
-import org.cnc.msrobot.utils.TextToSpeechUtils.SpeechListener;
 
 import android.app.Activity;
 import android.content.ContentResolver;

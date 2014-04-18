@@ -108,6 +108,12 @@ public class ReadEmailSmsActivity extends BaseActivity implements OnClickListene
 		}, 1000);
 	}
 
+	@Override
+	protected void onStop() {
+		super.onStop();
+		mStt.stopListening();
+	}
+
 	private void readEmail(int position) {
 		if (position >= mAdapter.getCount()) return;
 		mPosition = position;

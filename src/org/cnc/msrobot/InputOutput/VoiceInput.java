@@ -41,7 +41,7 @@ public class VoiceInput implements Input, SpeechToTextCallback {
 			for (String s : data) {
 				if (callback.onReceive(s, currentId)) { return; }
 			}
-			callback.onFail(currentId);
+			callback.onFail(data.get(0), currentId);
 		}
 	}
 }

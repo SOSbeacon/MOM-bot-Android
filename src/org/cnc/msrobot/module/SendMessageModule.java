@@ -29,8 +29,11 @@ public class SendMessageModule extends Module {
 	private Handler handler = new Handler() {
 		@Override
 		public void handleMessage(Message msg) {
-			if (msg.what == 0 && msg.obj instanceof String) {
-				String text = (String) msg.obj;
+			if (msg.what == 0) {
+				String text = "";
+				if (msg.obj instanceof String) {
+					text = (String) msg.obj;
+				}
 				onReceive(text, STEP_CONTENT);
 			}
 		}
@@ -59,8 +62,8 @@ public class SendMessageModule extends Module {
 
 	@Override
 	public boolean onReceive(String data, String id) {
-		if (TextUtils.isEmpty(data)) return false;
 		if (STEP_CONTACT.equals(id)) {
+			if (TextUtils.isEmpty(data)) return false;
 			// default current position = -1, if found, it will be > -1
 			contactPosition = -1;
 			if (getInput() instanceof VoiceInput) {
@@ -102,11 +105,12 @@ public class SendMessageModule extends Module {
 	}
 
 	@Override
-	public void onFail(String id) {
+	public void onFail(String data, String id) {
 		if (STEP_CONTACT.equals(id)) {
 			// not found in list contact
-			getOutput().showGuide(getResource().getString(R.string.msg_warn_no_people_recognize));
-			getOutput().speak(getResource().getString(R.string.msg_warn_no_people_recognize), STEP_ERROR);
+			getOutput().showGuide(getResource().getString(R.string.msg_warn_no_people_recognize, data));
+			getOutput().showAnswer(data);
+			getOutput().speak(getResource().getString(R.string.msg_warn_no_people_recognize, data), STEP_ERROR);
 		}
 	}
 

@@ -111,14 +111,15 @@ public class TextToSpeechUtils implements OnInitListener, OnUtteranceCompletedLi
 
 	// It's callback
 	public void onUtteranceCompleted(String utteranceId) {
-		// listener for activity
-		if (mListenerAll != null) {
-			mListenerAll.stopSpeech(utteranceId);
-		}
+		Logger.debug("TextToSpeech", "onUtteranceCompleted " + utteranceId);
 		// check for manual stop
 		if (mStop) {
 			mStop = false;
 			return;
+		}
+		// listener for activity
+		if (mListenerAll != null) {
+			mListenerAll.stopSpeech(utteranceId);
 		}
 		// listener for module
 		if (mListenerModule != null) {
@@ -135,6 +136,7 @@ public class TextToSpeechUtils implements OnInitListener, OnUtteranceCompletedLi
 	 * @param id
 	 */
 	public void speakBeforeRecognize(String msg, String id) {
+		Logger.debug("TextToSpeech", "speaking before recognize " + id);
 		if (getTextToSpeech() == null) {
 			if (mListenerModule != null) {
 				mListenerModule.stopSpeech(id);
@@ -151,7 +153,6 @@ public class TextToSpeechUtils implements OnInitListener, OnUtteranceCompletedLi
 		if (mListenerAll != null) {
 			mListenerAll.startSpeech(id);
 		}
-		mStt.isRecording = true;
 		mStop = false;
 		HashMap<String, String> myHashAlarm = new HashMap<String, String>();
 		myHashAlarm.put(TextToSpeech.Engine.KEY_PARAM_STREAM, String.valueOf(AudioManager.STREAM_MUSIC));
@@ -160,6 +161,7 @@ public class TextToSpeechUtils implements OnInitListener, OnUtteranceCompletedLi
 	}
 
 	public void speak(String msg, String id) {
+		Logger.debug("TextToSpeech", "speaking " + id);
 		if (getTextToSpeech() == null) {
 			if (mListenerModule != null) {
 				mListenerModule.stopSpeech(id);
@@ -190,6 +192,7 @@ public class TextToSpeechUtils implements OnInitListener, OnUtteranceCompletedLi
 	 * @param queueMode
 	 */
 	public void speak(String msg, int queueMode) {
+		Logger.debug("TextToSpeech", "speaking 0");
 		if (getTextToSpeech() == null) {
 			if (mListenerModule != null) {
 				mListenerModule.stopSpeech(null);
@@ -206,6 +209,7 @@ public class TextToSpeechUtils implements OnInitListener, OnUtteranceCompletedLi
 		if (mListenerAll != null) {
 			mListenerAll.startSpeech("");
 		}
+		mStop = false;
 		HashMap<String, String> myHashAlarm = new HashMap<String, String>();
 		myHashAlarm.put(TextToSpeech.Engine.KEY_PARAM_STREAM, String.valueOf(AudioManager.STREAM_MUSIC));
 		myHashAlarm.put(TextToSpeech.Engine.KEY_PARAM_UTTERANCE_ID, "0");
@@ -213,8 +217,12 @@ public class TextToSpeechUtils implements OnInitListener, OnUtteranceCompletedLi
 	}
 
 	public void stopSpeak() {
-		if (getTextToSpeech() == null) return;
-		mStt.isRecording = false;
+		if (getTextToSpeech() == null || !isSpeaking()) return;
+		Logger.debug("TextToSpeech", "stop speaking manual");
+		// listener for activity
+		if (mListenerAll != null) {
+			mListenerAll.stopSpeech("");
+		}
 		mStop = true;
 		getTextToSpeech().stop();
 	}

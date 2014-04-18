@@ -34,6 +34,8 @@ public class GetListContactRequest extends RequestBase<GroupContactResource[]> {
 			for (int i = 0; i < result.length; i++) {
 				valueGroups[i] = result[i].prepareContentValue();
 				valueContacts = result[i].prepareContactContentValue();
+				Logger.debug("GetListContactRequest", "insert group: " + result[i].name + " - "
+						+ result[i].contacts.length);
 				if (valueContacts != null) {
 					mContext.getContentResolver().bulkInsert(TableContact.CONTENT_URI, valueContacts);
 				}

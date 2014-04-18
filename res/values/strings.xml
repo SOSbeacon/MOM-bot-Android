@@ -23,7 +23,7 @@
     <string name="common_weekly">Weekly</string>
     <string name="common_daily">Daily</string>
     <string name="common_monthly">Monthly</string>
-    
+
     <!-- Dialog -->
     <string name="choose_sms">SMS</string>
     <string name="choose_email">EMAIL</string>
@@ -103,7 +103,7 @@
     <string name="errorResultTimeout">Stop listening</string>
     <string name="msg_warn_location_cannot_determine">Can\'t determine your location. Do you want to adjust your setting now?</string>
     <string name="msg_err_cannot_open_setting">Can not open setting</string>
-    <string name="msg_warn_no_people_recognize">This name doesn\'t exist.</string>
+    <string name="msg_warn_no_people_recognize">This name \'%1$s\' doesn\'t exist.</string>
     <string name="msg_err_create_event">Create event failed</string>
     <string name="msg_info_create_event">Create event successfully</string>
     <string name="msg_info_send_email_success">Send message successfully</string>
@@ -125,13 +125,17 @@
     <string name="recognize_ask_reminder_end_time">What is reminder end time?</string>
 
     <!-- Command -->
-    <string name="command_example">Your command, for example: send message(email) to xxx, send email to xxx, set reminder xxx, what time is it, search xxx</string>
-    <string name="command_send_email">send email to</string>
-    <string name="command_send_message">send message to</string>
+    <string name="command_example">Your command, for example: send message(email), send message(email) to xxx, set reminder, set reminder xxx, what time is it, search xxx, view message, view email, view calendar</string>
+    <string name="command_send_email_to">send email to</string>
+    <string name="command_send_message_to">send message to</string>
+    <string name="command_send_email">send email</string>
+    <string name="command_send_message">send message</string>
     <string name="command_set_reminder">set reminder</string>
     <string name="command_what_time">what time</string>
     <string name="command_search">search</string>
-    <string name="command_calendar">calendar</string>
+    <string name="command_calendar">view calendar</string>
+    <string name="command_read_message">view message</string>
+    <string name="command_read_email">view email</string>
 
     <!-- Speak time string -->
     <string name="Verbose_Time_Hour">It\'s %1$s o\'clock %3$s.</string>
@@ -163,8 +167,10 @@
     <string name="description_add">Add Calendar</string>
     <string name="event_add">Add Event</string>
     <string name="summary">Title</string>
-    <string name="time_start">FROM</string>
-    <string name="time_end">TO</string>
+    <string name="time_start">FROM:</string>
+    <string name="time_end">TO:</string>
+    <string name="event_title">TITLE:</string>
+    <string name="event_desc">CONTENT:</string>
     <string name="event_hint">Title</string>
     <string name="event_desc_hint">Content</string>
     <string name="event_repeat">Repeat</string>

@@ -163,6 +163,7 @@ public class CustomActionBar extends RelativeLayout implements OnClickListener {
 
 	public void showRecAnimation() {
 		imgRec.setVisibility(View.VISIBLE);
+		mHandler.removeCallbacks(mRecAnimation);
 		mHandler.postDelayed(mRecAnimation, INTERVAL_REC_ANIMATION);
 	}
 

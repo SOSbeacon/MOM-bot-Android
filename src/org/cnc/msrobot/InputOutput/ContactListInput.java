@@ -24,35 +24,39 @@ public class ContactListInput implements Input {
 
 			@Override
 			public void run() {
-				contactList = new CharSequence[StaticResource.listContact.size()];
-				for (int i = 0; i < StaticResource.listContact.size(); i++) {
-					contactList[i] = StaticResource.listContact.get(i).name;
+				try {
+					contactList = new CharSequence[StaticResource.listContact.size()];
+					for (int i = 0; i < StaticResource.listContact.size(); i++) {
+						contactList[i] = StaticResource.listContact.get(i).name;
+					}
+
+					AlertDialog.Builder builder = new AlertDialog.Builder(mContext);
+					builder.setTitle("Select contact");
+					builder.setPositiveButton("Cancel", new OnClickListener() {
+
+						@Override
+						public void onClick(DialogInterface arg0, int arg1) {
+							if (callback != null) {
+								callback.onReceive(null, id);
+							}
+						}
+					});
+					builder.setItems(contactList, new OnClickListener() {
+
+						@Override
+						public void onClick(DialogInterface arg0, int position) {
+							if (callback != null) {
+								callback.onReceive(position + "", id);
+							}
+						}
+					});
+
+					AlertDialog dialog = builder.create();
+					dialog.setCanceledOnTouchOutside(false);
+					dialog.show();
+				} catch (Exception ex) {
+					ex.printStackTrace();
 				}
-
-				AlertDialog.Builder builder = new AlertDialog.Builder(mContext);
-				builder.setTitle("Select contact");
-				builder.setPositiveButton("Cancel", new OnClickListener() {
-
-					@Override
-					public void onClick(DialogInterface arg0, int arg1) {
-						if (callback != null) {
-							callback.onReceive(null, id);
-						}
-					}
-				});
-				builder.setItems(contactList, new OnClickListener() {
-
-					@Override
-					public void onClick(DialogInterface arg0, int position) {
-						if (callback != null) {
-							callback.onReceive(position + "", id);
-						}
-					}
-				});
-
-				AlertDialog dialog = builder.create();
-				dialog.setCanceledOnTouchOutside(false);
-				dialog.show();
 			}
 		});
 

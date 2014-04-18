@@ -4,6 +4,7 @@ import java.util.ArrayList;
 import java.util.List;
 
 import org.cnc.msrobot.R;
+import org.cnc.msrobot.utils.Logger;
 import org.cnc.msrobot.utils.SpeechToText.SpeechToTextCallback;
 import org.cnc.msrobot.utils.SpeechToText.SpeechToTextListener;
 
@@ -27,7 +28,7 @@ import android.widget.ImageButton;
 
 public class RecognizeActivity extends BaseActivity implements OnClickListener, SpeechToTextListener,
 		SpeechToTextCallback {
-	private static final int DELAY_SHOW_RMSDB = 200;
+	private static final int DELAY_SHOW_RMSDB = 300;
 	public static final String EXTRA_TEXT = "EXTRA_TEXT";
 	public static final String EXTRA_HANDLER = "EXTRA_HANDLER";
 	private EditText mEditText;
@@ -184,6 +185,7 @@ public class RecognizeActivity extends BaseActivity implements OnClickListener, 
 
 	@Override
 	public void onSpeechStop(int error) {
+		Logger.debug("RecognizeActivity", "onSpeechStop " + error);
 		handler.removeCallbacks(runVolumn);
 		if (error == SpeechRecognizer.ERROR_NO_MATCH || error == SpeechRecognizer.ERROR_SPEECH_TIMEOUT) {
 			mStt.listen();
@@ -193,7 +195,9 @@ public class RecognizeActivity extends BaseActivity implements OnClickListener, 
 	@Override
 	public void onRecognize(ArrayList<String> data) {
 		addText(data.get(0) + ". ");
-		mStt.listen();
+		if (!isFinishing()) {
+			mStt.listen();
+		}
 	}
 
 	@Override

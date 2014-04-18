@@ -46,39 +46,43 @@ public class DateTimeInput implements Input, android.view.View.OnClickListener {
 
 			@Override
 			public void run() {
-				AlertDialog.Builder builder = new AlertDialog.Builder(mContext);
-				builder.setTitle(R.string.dialog_choose_time_title);
+				try {
+					AlertDialog.Builder builder = new AlertDialog.Builder(mContext);
+					builder.setTitle(R.string.dialog_choose_time_title);
 
-				Calendar calendar = Calendar.getInstance();
-				calendar.set(Calendar.SECOND, 0);
-				calendar.add(Calendar.MINUTE, 1);
-				startTime = calendar.getTime();
-				tvStartDate.setText(DateTimeFormater.dateFullFormater.format(startTime));
-				tvStartTime.setText(DateTimeFormater.timeFormater.format(startTime));
+					Calendar calendar = Calendar.getInstance();
+					calendar.set(Calendar.SECOND, 0);
+					calendar.add(Calendar.MINUTE, 1);
+					startTime = calendar.getTime();
+					tvStartDate.setText(DateTimeFormater.dateFullFormater.format(startTime));
+					tvStartTime.setText(DateTimeFormater.timeFormater.format(startTime));
 
-				builder.setView(viewChooseTime);
-				builder.setPositiveButton("Ok", new OnClickListener() {
+					builder.setView(viewChooseTime);
+					builder.setPositiveButton("Ok", new OnClickListener() {
 
-					@Override
-					public void onClick(DialogInterface arg0, int arg1) {
-						if (callback != null) {
-							callback.onReceive(DateTimeFormater.timeServerFormat.format(startTime), id);
+						@Override
+						public void onClick(DialogInterface arg0, int arg1) {
+							if (callback != null) {
+								callback.onReceive(DateTimeFormater.timeServerFormat.format(startTime), id);
+							}
 						}
-					}
-				});
-				builder.setNegativeButton("Cancel", new OnClickListener() {
+					});
+					builder.setNegativeButton("Cancel", new OnClickListener() {
 
-					@Override
-					public void onClick(DialogInterface arg0, int arg1) {
-						if (callback != null) {
-							callback.onReceive(null, id);
+						@Override
+						public void onClick(DialogInterface arg0, int arg1) {
+							if (callback != null) {
+								callback.onReceive(null, id);
+							}
 						}
-					}
-				});
+					});
 
-				AlertDialog dialog = builder.create();
-				dialog.setCanceledOnTouchOutside(false);
-				dialog.show();
+					AlertDialog dialog = builder.create();
+					dialog.setCanceledOnTouchOutside(false);
+					dialog.show();
+				} catch (Exception ex) {
+					ex.printStackTrace();
+				}
 			}
 		});
 

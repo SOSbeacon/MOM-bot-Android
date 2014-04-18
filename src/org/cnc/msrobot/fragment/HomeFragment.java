@@ -30,6 +30,8 @@ import org.cnc.msrobot.utils.CustomActionBar;
 import org.cnc.msrobot.utils.DateTimeFormater;
 import org.cnc.msrobot.utils.LocationUtils;
 import org.cnc.msrobot.utils.LocationUtils.LocationUtilsListener;
+import org.cnc.msrobot.utils.Logger;
+import org.cnc.msrobot.utils.SpeechToText;
 import org.cnc.msrobot.utils.TextToSpeechUtils.SpeechListener;
 
 import android.app.Activity;
@@ -71,6 +73,38 @@ public class HomeFragment extends BaseFragment implements LoaderCallbacks<Cursor
 	private ImageView mImgSecretary;
 	private boolean readFail;
 	private int mMenuIndex = 0;
+	private TimePickerDialog timePickerDialog;
+	private int resSpeakingId = R.drawable.img_secretary_close;
+	private boolean mIsSpeaking = false;
+	private final Handler handler = new Handler();
+	private final Random random = new Random();
+	private final Runnable mRunnableSpeaking = new Runnable() {
+
+		@Override
+		public void run() {
+			if (resSpeakingId == R.drawable.img_secretary_close) {
+				resSpeakingId = R.drawable.img_secretary_open;
+			} else {
+				resSpeakingId = R.drawable.img_secretary_close;
+			}
+			if (mImgSecretary != null) {
+				mImgSecretary.setImageResource(resSpeakingId);
+			}
+			if (mIsSpeaking) {
+				handler.postDelayed(this, (int) (DELAY_SPEAKING_ANIMATION * random.nextFloat()));
+			}
+		}
+	};
+	final Runnable mRunnableStopSpeaking = new Runnable() {
+
+		@Override
+		public void run() {
+			if (mImgSecretary != null) {
+				mImgSecretary.setImageResource(R.drawable.img_secretary_close);
+			}
+		}
+	};
+
 	private Listener<WeatherResource> mRequestWeatherListener = new Listener<WeatherResource>() {
 		@Override
 		public void onResponse(WeatherResource response) {
@@ -130,8 +164,12 @@ public class HomeFragment extends BaseFragment implements LoaderCallbacks<Cursor
 			@Override
 			public void onClick(View v) {
 				adapterChat.clear();
-				adapterChat.add(getString(R.string.command_example));
-				ModuleManager.getInstance().runModule(Module.MODULE_COMMAND);
+				if (SpeechToText.getInstance().isRecording) {
+					SpeechToText.getInstance().stopListening();
+				} else {
+					adapterChat.add(getString(R.string.command_example));
+					ModuleManager.getInstance().runModule(Module.MODULE_COMMAND);
+				}
 			}
 		});
 
@@ -518,42 +556,18 @@ public class HomeFragment extends BaseFragment implements LoaderCallbacks<Cursor
 		requestListEvent();
 	}
 
-	int resSpeakingId = R.drawable.img_secretary_close;
-	final Handler handler = new Handler();
-	final Random random = new Random();
-	final Runnable mRunnableSpeaking = new Runnable() {
-
-		@Override
-		public void run() {
-			if (resSpeakingId == R.drawable.img_secretary_close) {
-				resSpeakingId = R.drawable.img_secretary_open;
-			} else {
-				resSpeakingId = R.drawable.img_secretary_close;
-			}
-			if (mImgSecretary != null) {
-				mImgSecretary.setImageResource(resSpeakingId);
-			}
-			handler.postDelayed(this, (int) (DELAY_SPEAKING_ANIMATION * random.nextFloat()));
-		}
-	};
-	final Runnable mRunnableStopSpeaking = new Runnable() {
-
-		@Override
-		public void run() {
-			if (mImgSecretary != null) {
-				mImgSecretary.setImageResource(R.drawable.img_secretary_close);
-			}
-		}
-	};
-
 	@Override
 	public void startSpeech(String id) {
+		Logger.debug("TextToSpeech", "start speaking");
+		mIsSpeaking = true;
 		handler.removeCallbacks(mRunnableSpeaking);
 		handler.postDelayed(mRunnableSpeaking, (int) (DELAY_SPEAKING_ANIMATION * random.nextFloat()));
 	}
 
 	@Override
 	public void stopSpeech(String id) {
+		Logger.debug("TextToSpeech", "stop speaking, stop animation");
+		mIsSpeaking = false;
 		handler.removeCallbacks(mRunnableSpeaking);
 		handler.post(mRunnableStopSpeaking);
 	}
@@ -596,8 +610,6 @@ public class HomeFragment extends BaseFragment implements LoaderCallbacks<Cursor
 				break;
 		}
 	}
-
-	TimePickerDialog timePickerDialog;
 
 	private void openTimePickerDialog(boolean is24r) {
 		Calendar calendar = Calendar.getInstance();

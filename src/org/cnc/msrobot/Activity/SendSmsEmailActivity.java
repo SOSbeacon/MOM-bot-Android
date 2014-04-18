@@ -79,6 +79,12 @@ public class SendSmsEmailActivity extends BaseActivity implements OnClickListene
 	}
 
 	@Override
+	protected void onStop() {
+		super.onStop();
+		mStt.stopListening();
+	}
+
+	@Override
 	protected void onResume() {
 		super.onResume();
 		// check email config

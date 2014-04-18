@@ -14,7 +14,6 @@ import android.content.Intent;
 import android.os.Handler;
 import android.os.Message;
 import android.os.Messenger;
-import android.text.TextUtils;
 
 public class GetMessageContentModule extends Module {
 	private static final String STEP_CONTENT = "content";
@@ -49,7 +48,6 @@ public class GetMessageContentModule extends Module {
 
 	@Override
 	public boolean onReceive(String data, String id) {
-		if (TextUtils.isEmpty(data)) return false;
 		if (STEP_CONTENT.equals(id)) {
 			Intent intent = new Intent(getContext(), SendSmsEmailActivity.class);
 			intent.putExtra(SendSmsEmailActivity.EXTRA_CONTACT_POSITION, contactPosition);
@@ -61,7 +59,7 @@ public class GetMessageContentModule extends Module {
 	}
 
 	@Override
-	public void onFail(String id) {
+	public void onFail(String data, String id) {
 	}
 
 	@Override

@@ -21,7 +21,7 @@ public class SearchModule extends Module {
 	}
 
 	@Override
-	public void onFail(String id) {
+	public void onFail(String data, String id) {
 	}
 
 	@Override

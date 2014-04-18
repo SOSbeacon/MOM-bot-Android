@@ -20,32 +20,35 @@ public class YesNoInput implements Input {
 
 			@Override
 			public void run() {
+				try {
+					AlertDialog.Builder builder = new AlertDialog.Builder(mContext);
+					builder.setTitle("Yes or No?");
+					builder.setPositiveButton("Yes", new DialogInterface.OnClickListener() {
 
-				AlertDialog.Builder builder = new AlertDialog.Builder(mContext);
-				builder.setTitle("Yes or No?");
-				builder.setPositiveButton("Yes", new DialogInterface.OnClickListener() {
-
-					@Override
-					public void onClick(DialogInterface dialog, int whichButton) {
-						if (callback != null) {
-							callback.onReceive("yes", id);
+						@Override
+						public void onClick(DialogInterface dialog, int whichButton) {
+							if (callback != null) {
+								callback.onReceive("yes", id);
+							}
 						}
-					}
-				});
+					});
 
-				builder.setNegativeButton("No", new DialogInterface.OnClickListener() {
+					builder.setNegativeButton("No", new DialogInterface.OnClickListener() {
 
-					@Override
-					public void onClick(DialogInterface dialog, int which) {
-						if (callback != null) {
-							callback.onReceive("no", id);
+						@Override
+						public void onClick(DialogInterface dialog, int which) {
+							if (callback != null) {
+								callback.onReceive("no", id);
+							}
 						}
-					}
-				});
+					});
 
-				AlertDialog dialog = builder.create();
-				dialog.setCanceledOnTouchOutside(false);
-				dialog.show();
+					AlertDialog dialog = builder.create();
+					dialog.setCanceledOnTouchOutside(false);
+					dialog.show();
+				} catch (Exception ex) {
+					ex.printStackTrace();
+				}
 			}
 		});
 
