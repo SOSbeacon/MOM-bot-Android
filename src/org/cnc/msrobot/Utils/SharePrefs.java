@@ -2,12 +2,12 @@ package org.cnc.msrobot.utils;
 
 import org.cnc.msrobot.resource.WeatherResource;
 import org.cnc.msrobot.resource.Weather.WeatherCondition;
-import org.cnc.msrobot.resource.Weather.WeatherLocation;
 import org.cnc.msrobot.resource.Weather.WeatherTemperature;
 import org.cnc.msrobot.resource.Weather.WeatherWind;
 
 import android.content.Context;
 import android.content.SharedPreferences;
+import android.location.Location;
 import android.preference.PreferenceManager;
 
 public class SharePrefs {
@@ -66,26 +66,18 @@ public class SharePrefs {
 		return sharedPreferences.getBoolean(key, _default);
 	}
 
-	public WeatherLocation getCurrentLocation() {
-		int id = sharedPreferences.getInt(CURRENT_LOCATION + ".id", 0);
-		if (id != 0) {
-			String city = sharedPreferences.getString(CURRENT_LOCATION + ".city", DEFAULT_BLANK);
-			String country = sharedPreferences.getString(CURRENT_LOCATION + ".country", DEFAULT_BLANK);
-			String lng = sharedPreferences.getString(CURRENT_LOCATION + ".lng", DEFAULT_BLANK);
-			String lat = sharedPreferences.getString(CURRENT_LOCATION + ".lat", DEFAULT_BLANK);
-			WeatherLocation location = new WeatherLocation(id, city, country, lng, lat);
-			return location;
-		} else {
-			return null;
-		}
+	public Location getCurrentLocation() {
+		Location l = new Location("MOM-BOT");
+		Double lng = Double.parseDouble(sharedPreferences.getString(CURRENT_LOCATION + ".lng", DEFAULT_BLANK));
+		Double lat = Double.parseDouble(sharedPreferences.getString(CURRENT_LOCATION + ".lat", DEFAULT_BLANK));
+		l.setLongitude(lng);
+		l.setLatitude(lat);
+		return l;
 	}
 
-	public void saveCurrentLocation(WeatherLocation location) {
-		sharedPreferences.edit().putInt(CURRENT_LOCATION + ".id", location.id).commit();
-		sharedPreferences.edit().putString(CURRENT_LOCATION + ".city", location.city).commit();
-		sharedPreferences.edit().putString(CURRENT_LOCATION + ".country", location.country).commit();
-		sharedPreferences.edit().putString(CURRENT_LOCATION + ".lng", location.lng).commit();
-		sharedPreferences.edit().putString(CURRENT_LOCATION + ".lat", location.lat).commit();
+	public void saveCurrentLocation(Location location) {
+		sharedPreferences.edit().putString(CURRENT_LOCATION + ".lng", location.getLongitude() + "").commit();
+		sharedPreferences.edit().putString(CURRENT_LOCATION + ".lat", location.getLatitude() + "").commit();
 	}
 
 	public WeatherResource getCurrentWeather() {

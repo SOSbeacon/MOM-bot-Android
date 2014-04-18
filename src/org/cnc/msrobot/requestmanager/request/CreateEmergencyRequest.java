@@ -35,6 +35,7 @@ public class CreateEmergencyRequest extends RequestBase<EmergencyResource> {
 		request.addParam(Consts.PARAMS_AUTH_TOKEN, SharePrefs.getInstance().getLoginToken());
 		request.addParam(Consts.PARAMS_MESSAGE_LAT, lat);
 		request.addParam(Consts.PARAMS_MESSAGE_LON, lon);
+		Logger.debug("CreateEmergencyRequest", "request params lon: " + lon + ", lat: " + lat + ", token: " + SharePrefs.getInstance().getLoginToken());
 		super.addParams(request);
 	}
 

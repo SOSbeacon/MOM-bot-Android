@@ -261,6 +261,8 @@ public class ClassicFragment extends BaseFragment implements OnFunctionDoListene
 	}
 
 	private void requestWeather(Location location) {
+		// save current location
+		mSharePrefs.saveCurrentLocation(location);
 		Bundle bundle = new Bundle();
 		bundle.putString(Consts.PARAMS_LON, location.getLongitude() + "");
 		bundle.putString(Consts.PARAMS_LAT, location.getLatitude() + "");

@@ -13,7 +13,6 @@ import org.cnc.msrobot.module.Module;
 import org.cnc.msrobot.module.ModuleManager;
 import org.cnc.msrobot.requestmanager.RequestManager;
 import org.cnc.msrobot.resource.ItemListFunction;
-import org.cnc.msrobot.resource.Weather.WeatherLocation;
 import org.cnc.msrobot.utils.Actions;
 import org.cnc.msrobot.utils.AppUtils;
 import org.cnc.msrobot.utils.Consts;
@@ -25,6 +24,7 @@ import org.cnc.msrobot.utils.SharePrefs;
 import android.content.Context;
 import android.content.Intent;
 import android.graphics.Bitmap;
+import android.location.Location;
 import android.net.Uri;
 import android.os.Bundle;
 import android.speech.tts.TextToSpeech;
@@ -201,12 +201,12 @@ public class MainAdapter extends ArrayAdapter<ItemListFunction> implements OnCli
 	private void startCallAndRecording() {
 		try {
 			// get current location
-			WeatherLocation location = SharePrefs.getInstance().getCurrentLocation();
+			Location location = SharePrefs.getInstance().getCurrentLocation();
 			// set long, lat in bundle
 			Bundle bundle = new Bundle();
 			if (location != null) {
-				bundle.putString(Consts.PARAMS_MESSAGE_LAT, location.lat + "");
-				bundle.putString(Consts.PARAMS_MESSAGE_LON, location.lng + "");
+				bundle.putString(Consts.PARAMS_MESSAGE_LAT, location.getLatitude() + "");
+				bundle.putString(Consts.PARAMS_MESSAGE_LON, location.getLongitude() + "");
 			}
 			// request create emergency
 			RequestManager.getInstance().request(Actions.ACTION_CREATE_EMERGENCY, bundle, null, null);

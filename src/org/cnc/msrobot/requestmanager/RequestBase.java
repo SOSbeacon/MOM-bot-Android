@@ -78,6 +78,7 @@ public abstract class RequestBase<T> implements RequestListener<T> {
 			} else {
 				request.addHeader(VolleyHttpClient.CONTENT_TYPE, URLEncodedUtils.CONTENT_TYPE);
 			}
+			request.addHeader("Cache-Control", "no-cache");
 		}
 		mRequestManager.getRequestQueue().add(request);
 	}
