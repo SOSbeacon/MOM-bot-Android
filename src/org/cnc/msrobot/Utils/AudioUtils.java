@@ -30,7 +30,7 @@ public class AudioUtils {
 		try {
 			mMediaRecorder.prepare();
 			mMediaRecorder.start();
-		} catch (IOException e) {
+		} catch (Exception e) {
 			Logger.error(TAG, "prepare() failed");
 			mMediaRecorder.reset();
 			mMediaRecorder.release();

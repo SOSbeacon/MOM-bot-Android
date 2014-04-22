@@ -208,10 +208,10 @@ public class MainActivity extends BaseActivity implements LoaderCallbacks<Cursor
 		// Create a new fragment and specify the planet to show based on position
 		Bundle bundle = new Bundle();
 		switch (position) {
-			case 1:
+			case 0:
 				fragment = new ClassicFragment();
 				break;
-			case 0:
+			case 1:
 				fragment = new HomeFragment();
 				break;
 			case 2:
