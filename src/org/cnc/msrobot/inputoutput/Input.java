@@ -1,4 +1,4 @@
-package org.cnc.msrobot.InputOutput;
+package org.cnc.msrobot.inputoutput;
 
 
 public interface Input {

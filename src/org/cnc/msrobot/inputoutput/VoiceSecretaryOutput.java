@@ -1,4 +1,4 @@
-package org.cnc.msrobot.InputOutput;
+package org.cnc.msrobot.inputoutput;
 
 import org.cnc.msrobot.activity.MainActivity;
 import org.cnc.msrobot.utils.TextToSpeechUtils.SpeechListener;

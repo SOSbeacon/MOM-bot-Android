@@ -1,8 +1,8 @@
 package org.cnc.msrobot.module;
 
 import org.cnc.msrobot.R;
-import org.cnc.msrobot.InputOutput.Input;
-import org.cnc.msrobot.InputOutput.Output;
+import org.cnc.msrobot.inputoutput.Input;
+import org.cnc.msrobot.inputoutput.Output;
 import org.cnc.msrobot.utils.AppUtils;
 
 import android.content.Context;

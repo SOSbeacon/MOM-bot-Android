@@ -1,16 +1,20 @@
-package org.cnc.msrobot.InputOutput;
+package org.cnc.msrobot.inputoutput;
+
+import org.cnc.msrobot.resource.StaticResource;
 
 import android.app.AlertDialog;
 import android.content.Context;
 import android.content.DialogInterface;
+import android.content.DialogInterface.OnClickListener;
 import android.os.Handler;
 
-public class YesNoInput implements Input {
+public class ContactListInput implements Input {
 	private InputReceiveCallback callback;
 	private Context mContext;
 	private Handler handler = new Handler();
+	private CharSequence[] contactList = null;
 
-	public YesNoInput(Context context) {
+	public ContactListInput(Context context) {
 		this.mContext = context;
 	}
 
@@ -21,24 +25,28 @@ public class YesNoInput implements Input {
 			@Override
 			public void run() {
 				try {
+					contactList = new CharSequence[StaticResource.listContact.size()];
+					for (int i = 0; i < StaticResource.listContact.size(); i++) {
+						contactList[i] = StaticResource.listContact.get(i).name;
+					}
+
 					AlertDialog.Builder builder = new AlertDialog.Builder(mContext);
-					builder.setTitle("Yes or No?");
-					builder.setPositiveButton("Yes", new DialogInterface.OnClickListener() {
+					builder.setTitle("Select contact");
+					builder.setPositiveButton("Cancel", new OnClickListener() {
 
 						@Override
-						public void onClick(DialogInterface dialog, int whichButton) {
+						public void onClick(DialogInterface arg0, int arg1) {
 							if (callback != null) {
-								callback.onReceive("yes", id);
+								callback.onReceive(null, id);
 							}
 						}
 					});
-
-					builder.setNegativeButton("No", new DialogInterface.OnClickListener() {
+					builder.setItems(contactList, new OnClickListener() {
 
 						@Override
-						public void onClick(DialogInterface dialog, int which) {
+						public void onClick(DialogInterface arg0, int position) {
 							if (callback != null) {
-								callback.onReceive("no", id);
+								callback.onReceive(position + "", id);
 							}
 						}
 					});

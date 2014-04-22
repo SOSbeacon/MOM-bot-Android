@@ -1,4 +1,4 @@
-package org.cnc.msrobot.resource.Weather;
+package org.cnc.msrobot.resource.weather;
 
 public class WeatherWind {
 	public float	speed;

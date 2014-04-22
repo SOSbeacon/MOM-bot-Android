@@ -4,10 +4,10 @@ import java.util.Calendar;
 import java.util.Date;
 
 import org.cnc.msrobot.R;
-import org.cnc.msrobot.InputOutput.DateTimeInput;
-import org.cnc.msrobot.InputOutput.Input;
-import org.cnc.msrobot.InputOutput.Output;
 import org.cnc.msrobot.activity.ReminderAddActivity;
+import org.cnc.msrobot.inputoutput.DateTimeInput;
+import org.cnc.msrobot.inputoutput.Input;
+import org.cnc.msrobot.inputoutput.Output;
 import org.cnc.msrobot.utils.Consts;
 import org.cnc.msrobot.utils.DateTimeFormater;
 

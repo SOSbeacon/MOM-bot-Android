@@ -5,13 +5,13 @@ import java.util.Calendar;
 import java.util.Random;
 
 import org.cnc.msrobot.R;
-import org.cnc.msrobot.InputOutput.VoiceInput;
-import org.cnc.msrobot.InputOutput.VoiceSecretaryOutput;
 import org.cnc.msrobot.activity.EmailSetupActivity;
 import org.cnc.msrobot.activity.MainActivity;
 import org.cnc.msrobot.adapter.ChatAdapter;
 import org.cnc.msrobot.adapter.MainAdapter;
 import org.cnc.msrobot.adapter.MainAdapter.OnFunctionDoListener;
+import org.cnc.msrobot.inputoutput.VoiceInput;
+import org.cnc.msrobot.inputoutput.VoiceSecretaryOutput;
 import org.cnc.msrobot.module.Module;
 import org.cnc.msrobot.module.ModuleManager;
 import org.cnc.msrobot.provider.DbContract.TableEvent;

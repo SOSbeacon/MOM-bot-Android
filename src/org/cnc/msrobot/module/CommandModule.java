@@ -3,11 +3,11 @@ package org.cnc.msrobot.module;
 import java.util.Locale;
 
 import org.cnc.msrobot.R;
-import org.cnc.msrobot.InputOutput.Input;
-import org.cnc.msrobot.InputOutput.Output;
 import org.cnc.msrobot.activity.CalendarActivity;
 import org.cnc.msrobot.activity.ReadEmailSmsActivity;
 import org.cnc.msrobot.activity.ReminderAddActivity;
+import org.cnc.msrobot.inputoutput.Input;
+import org.cnc.msrobot.inputoutput.Output;
 import org.cnc.msrobot.resource.StaticResource;
 import org.cnc.msrobot.utils.AppUtils;
 import org.cnc.msrobot.utils.Consts;

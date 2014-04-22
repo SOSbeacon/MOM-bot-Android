@@ -2,9 +2,9 @@ package org.cnc.msrobot.resource;
 
 import java.util.ArrayList;
 
-import org.cnc.msrobot.resource.Weather.WeatherCondition;
-import org.cnc.msrobot.resource.Weather.WeatherTemperature;
-import org.cnc.msrobot.resource.Weather.WeatherWind;
+import org.cnc.msrobot.resource.weather.WeatherCondition;
+import org.cnc.msrobot.resource.weather.WeatherTemperature;
+import org.cnc.msrobot.resource.weather.WeatherWind;
 
 import com.google.gson.annotations.SerializedName;
 

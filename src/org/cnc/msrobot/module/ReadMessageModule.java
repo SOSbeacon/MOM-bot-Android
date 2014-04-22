@@ -3,10 +3,10 @@ package org.cnc.msrobot.module;
 import java.util.Locale;
 
 import org.cnc.msrobot.R;
-import org.cnc.msrobot.InputOutput.Input;
-import org.cnc.msrobot.InputOutput.Output;
-import org.cnc.msrobot.InputOutput.VoiceInput;
-import org.cnc.msrobot.InputOutput.YesNoInput;
+import org.cnc.msrobot.inputoutput.Input;
+import org.cnc.msrobot.inputoutput.Output;
+import org.cnc.msrobot.inputoutput.VoiceInput;
+import org.cnc.msrobot.inputoutput.YesNoInput;
 
 import android.content.Context;
 import android.os.Handler;

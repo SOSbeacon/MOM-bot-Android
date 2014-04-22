@@ -1,4 +1,4 @@
-package org.cnc.msrobot.InputOutput;
+package org.cnc.msrobot.inputoutput;
 
 import android.app.AlertDialog;
 import android.content.Context;

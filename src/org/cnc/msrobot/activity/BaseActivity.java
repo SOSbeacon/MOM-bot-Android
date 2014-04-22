@@ -1,9 +1,9 @@
 package org.cnc.msrobot.activity;
 
-import org.cnc.msrobot.InputOutput.Input;
-import org.cnc.msrobot.InputOutput.Output;
-import org.cnc.msrobot.InputOutput.TextInput;
-import org.cnc.msrobot.InputOutput.VoiceToastOutput;
+import org.cnc.msrobot.inputoutput.Input;
+import org.cnc.msrobot.inputoutput.Output;
+import org.cnc.msrobot.inputoutput.TextInput;
+import org.cnc.msrobot.inputoutput.VoiceToastOutput;
 import org.cnc.msrobot.module.ModuleManager;
 import org.cnc.msrobot.requestmanager.RequestManager;
 import org.cnc.msrobot.utils.CustomActionBar;

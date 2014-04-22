@@ -1,4 +1,4 @@
-package org.cnc.msrobot.resource.Weather;
+package org.cnc.msrobot.resource.weather;
 
 import com.google.gson.annotations.SerializedName;
 
