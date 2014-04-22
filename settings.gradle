@@ -1,0 +1,4 @@
+include ':library:Android-Lib-ScheduleView:ScheduleView'
+include ':library:Caldroid'
+include ':library:google-play-services_lib'
+include ':'

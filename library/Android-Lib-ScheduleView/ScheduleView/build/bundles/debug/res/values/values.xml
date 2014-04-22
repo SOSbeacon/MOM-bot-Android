@@ -1,0 +1,67 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+
+    <!-- From: file:/home/thanhle/Android/MsRobot/library/Android-Lib-ScheduleView/ScheduleView/res/values/colors.xml -->
+    <eat-comment />
+
+    <color name="black">#ff000000</color>
+    <color name="border_color">#999</color>
+    <color name="event10_color">#37F0B8</color>
+    <color name="event1_color">#5AC76A</color>
+    <color name="event2_color">#C75AB7</color>
+    <color name="event3_color">#755AC7</color>
+    <color name="event4_color">#5AC7C7</color>
+    <color name="event5_color">#D11746</color>
+    <color name="event6_color">#D13917</color>
+    <color name="event7_color">#E6F037</color>
+    <color name="event8_color">#BB37F0</color>
+    <color name="event9_color">#F0A937</color>
+    <color name="gray">#CCC</color>
+    <color name="white">#ffffffff</color>
+    <!-- From: file:/home/thanhle/Android/MsRobot/library/Android-Lib-ScheduleView/ScheduleView/res/values/attrs.xml -->
+    <eat-comment />
+
+    <declare-styleable name="ScheduleView">
+        <attr name="headerBackground" format="reference" />
+        <attr name="previousDrawable" format="reference" />
+        <attr name="nextDrawable" format="reference" />
+        <attr name="title" format="reference|string" />
+        <attr name="titleSize" format="reference|dimension" />
+        <attr name="titleColor" format="reference|color" />
+        <attr name="sundayBackground" format="reference|color" />
+        <attr name="mondayBackground" format="reference|color" />
+        <attr name="tuesdayBackground" format="reference|color" />
+        <attr name="wednesdayBackground" format="reference|color" />
+        <attr name="thursdayBackground" format="reference|color" />
+        <attr name="fridayBackground" format="reference|color" />
+        <attr name="saturdayBackground" format="reference|color" />
+        <attr name="interval" format="integer" />
+        <attr name="startInterval" format="integer" />
+        <attr name="endInterval" format="integer" />
+    </declare-styleable>
+    <!-- From: file:/home/thanhle/Android/MsRobot/library/Android-Lib-ScheduleView/ScheduleView/res/values/dimens.xml -->
+    <eat-comment />
+
+    <dimen name="row_height">30dp</dimen>
+    <dimen name="time_width">40dp</dimen>
+    <dimen name="widget_spacing">4dp</dimen>
+    <!-- From: file:/home/thanhle/Android/MsRobot/library/Android-Lib-ScheduleView/ScheduleView/res/values/ids.xml -->
+    <eat-comment />
+
+    <item name="day_time" type="id"/>
+    <item name="event1" type="id"/>
+    <item name="event10" type="id"/>
+    <item name="event2" type="id"/>
+    <item name="event3" type="id"/>
+    <item name="event4" type="id"/>
+    <item name="event5" type="id"/>
+    <item name="event6" type="id"/>
+    <item name="event7" type="id"/>
+    <item name="event8" type="id"/>
+    <item name="event9" type="id"/>
+    <item name="line" type="id"/>
+    <item name="llEvent" type="id"/>
+    <item name="month_day" type="id"/>
+    <item name="week_time" type="id"/>
+
+</resources>

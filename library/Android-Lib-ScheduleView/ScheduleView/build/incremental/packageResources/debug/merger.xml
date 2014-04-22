@@ -1,0 +1,559 @@
+<?xml version="1.0" encoding="utf-8"?>
+<merger>
+
+    <dataSet config="main" >
+        <source path="/home/thanhle/Android/MsRobot/library/Android-Lib-ScheduleView/ScheduleView/res" >
+            <file
+                name="header_previous_pressed_holo_light"
+                path="/home/thanhle/Android/MsRobot/library/Android-Lib-ScheduleView/ScheduleView/res/drawable-xhdpi/header_previous_pressed_holo_light.png"
+                qualifiers="xhdpi"
+                type="drawable" />
+            <file
+                name="header_previous_disabled_holo_dark"
+                path="/home/thanhle/Android/MsRobot/library/Android-Lib-ScheduleView/ScheduleView/res/drawable-xhdpi/header_previous_disabled_holo_dark.png"
+                qualifiers="xhdpi"
+                type="drawable" />
+            <file
+                name="header_previous_pressed_holo_dark"
+                path="/home/thanhle/Android/MsRobot/library/Android-Lib-ScheduleView/ScheduleView/res/drawable-xhdpi/header_previous_pressed_holo_dark.png"
+                qualifiers="xhdpi"
+                type="drawable" />
+            <file
+                name="header_next_normal_holo_light"
+                path="/home/thanhle/Android/MsRobot/library/Android-Lib-ScheduleView/ScheduleView/res/drawable-xhdpi/header_next_normal_holo_light.png"
+                qualifiers="xhdpi"
+                type="drawable" />
+            <file
+                name="header_next_normal_holo_dark"
+                path="/home/thanhle/Android/MsRobot/library/Android-Lib-ScheduleView/ScheduleView/res/drawable-xhdpi/header_next_normal_holo_dark.png"
+                qualifiers="xhdpi"
+                type="drawable" />
+            <file
+                name="header_transparent_holo"
+                path="/home/thanhle/Android/MsRobot/library/Android-Lib-ScheduleView/ScheduleView/res/drawable-xhdpi/header_transparent_holo.9.png"
+                qualifiers="xhdpi"
+                type="drawable" />
+            <file
+                name="header_next_disabled_focused_holo_light"
+                path="/home/thanhle/Android/MsRobot/library/Android-Lib-ScheduleView/ScheduleView/res/drawable-xhdpi/header_next_disabled_focused_holo_light.png"
+                qualifiers="xhdpi"
+                type="drawable" />
+            <file
+                name="header_previous_disabled_focused_holo_dark"
+                path="/home/thanhle/Android/MsRobot/library/Android-Lib-ScheduleView/ScheduleView/res/drawable-xhdpi/header_previous_disabled_focused_holo_dark.png"
+                qualifiers="xhdpi"
+                type="drawable" />
+            <file
+                name="header_previous_normal_holo_dark"
+                path="/home/thanhle/Android/MsRobot/library/Android-Lib-ScheduleView/ScheduleView/res/drawable-xhdpi/header_previous_normal_holo_dark.png"
+                qualifiers="xhdpi"
+                type="drawable" />
+            <file
+                name="header_previous_normal_holo_light"
+                path="/home/thanhle/Android/MsRobot/library/Android-Lib-ScheduleView/ScheduleView/res/drawable-xhdpi/header_previous_normal_holo_light.png"
+                qualifiers="xhdpi"
+                type="drawable" />
+            <file
+                name="header_next_disabled_focused_holo_dark"
+                path="/home/thanhle/Android/MsRobot/library/Android-Lib-ScheduleView/ScheduleView/res/drawable-xhdpi/header_next_disabled_focused_holo_dark.png"
+                qualifiers="xhdpi"
+                type="drawable" />
+            <file
+                name="header_next_disabled_holo_dark"
+                path="/home/thanhle/Android/MsRobot/library/Android-Lib-ScheduleView/ScheduleView/res/drawable-xhdpi/header_next_disabled_holo_dark.png"
+                qualifiers="xhdpi"
+                type="drawable" />
+            <file
+                name="header_next_pressed_holo_light"
+                path="/home/thanhle/Android/MsRobot/library/Android-Lib-ScheduleView/ScheduleView/res/drawable-xhdpi/header_next_pressed_holo_light.png"
+                qualifiers="xhdpi"
+                type="drawable" />
+            <file
+                name="header_previous_disabled_focused_holo_light"
+                path="/home/thanhle/Android/MsRobot/library/Android-Lib-ScheduleView/ScheduleView/res/drawable-xhdpi/header_previous_disabled_focused_holo_light.png"
+                qualifiers="xhdpi"
+                type="drawable" />
+            <file
+                name="header_next_disabled_holo_light"
+                path="/home/thanhle/Android/MsRobot/library/Android-Lib-ScheduleView/ScheduleView/res/drawable-xhdpi/header_next_disabled_holo_light.png"
+                qualifiers="xhdpi"
+                type="drawable" />
+            <file
+                name="header_previous_disabled_holo_light"
+                path="/home/thanhle/Android/MsRobot/library/Android-Lib-ScheduleView/ScheduleView/res/drawable-xhdpi/header_previous_disabled_holo_light.png"
+                qualifiers="xhdpi"
+                type="drawable" />
+            <file
+                name="header_next_pressed_holo_dark"
+                path="/home/thanhle/Android/MsRobot/library/Android-Lib-ScheduleView/ScheduleView/res/drawable-xhdpi/header_next_pressed_holo_dark.png"
+                qualifiers="xhdpi"
+                type="drawable" />
+            <file
+                path="/home/thanhle/Android/MsRobot/library/Android-Lib-ScheduleView/ScheduleView/res/values/attrs.xml"
+                qualifiers="" >
+                <declare-styleable name="ScheduleView" >
+                    <attr
+                        name="headerBackground"
+                        format="reference" />
+                    <attr
+                        name="previousDrawable"
+                        format="reference" />
+                    <attr
+                        name="nextDrawable"
+                        format="reference" />
+                    <attr
+                        name="title"
+                        format="reference|string" />
+                    <attr
+                        name="titleSize"
+                        format="reference|dimension" />
+                    <attr
+                        name="titleColor"
+                        format="reference|color" />
+                    <attr
+                        name="sundayBackground"
+                        format="reference|color" />
+                    <attr
+                        name="mondayBackground"
+                        format="reference|color" />
+                    <attr
+                        name="tuesdayBackground"
+                        format="reference|color" />
+                    <attr
+                        name="wednesdayBackground"
+                        format="reference|color" />
+                    <attr
+                        name="thursdayBackground"
+                        format="reference|color" />
+                    <attr
+                        name="fridayBackground"
+                        format="reference|color" />
+                    <attr
+                        name="saturdayBackground"
+                        format="reference|color" />
+                    <attr
+                        name="interval"
+                        format="integer" />
+                    <attr
+                        name="startInterval"
+                        format="integer" />
+                    <attr
+                        name="endInterval"
+                        format="integer" />
+                </declare-styleable>
+            </file>
+            <file
+                path="/home/thanhle/Android/MsRobot/library/Android-Lib-ScheduleView/ScheduleView/res/values/ids.xml"
+                qualifiers="" >
+                <item
+                    name="event9"
+                    type="id"/>
+                <item
+                    name="event8"
+                    type="id"/>
+                <item
+                    name="event7"
+                    type="id"/>
+                <item
+                    name="event6"
+                    type="id"/>
+                <item
+                    name="event10"
+                    type="id"/>
+                <item
+                    name="llEvent"
+                    type="id"/>
+                <item
+                    name="day_time"
+                    type="id"/>
+                <item
+                    name="month_day"
+                    type="id"/>
+                <item
+                    name="line"
+                    type="id"/>
+                <item
+                    name="week_time"
+                    type="id"/>
+                <item
+                    name="event1"
+                    type="id"/>
+                <item
+                    name="event5"
+                    type="id"/>
+                <item
+                    name="event4"
+                    type="id"/>
+                <item
+                    name="event3"
+                    type="id"/>
+                <item
+                    name="event2"
+                    type="id"/>
+            </file>
+            <file
+                path="/home/thanhle/Android/MsRobot/library/Android-Lib-ScheduleView/ScheduleView/res/values/colors.xml"
+                qualifiers="" >
+                <color name="event6_color" >#D13917
+                </color>
+                <color name="event5_color" >#D11746
+                </color>
+                <color name="event1_color" >#5AC76A
+                </color>
+                <color name="event4_color" >#5AC7C7
+                </color>
+                <color name="event9_color" >#F0A937
+                </color>
+                <color name="black" >#ff000000
+                </color>
+                <color name="event10_color" >#37F0B8
+                </color>
+                <color name="event3_color" >#755AC7
+                </color>
+                <color name="event8_color" >#BB37F0
+                </color>
+                <color name="border_color" >#999
+                </color>
+                <color name="event7_color" >#E6F037
+                </color>
+                <color name="gray" >#CCC
+                </color>
+                <color name="event2_color" >#C75AB7
+                </color>
+                <color name="white" >#ffffffff
+                </color>
+            </file>
+            <file
+                path="/home/thanhle/Android/MsRobot/library/Android-Lib-ScheduleView/ScheduleView/res/values/dimens.xml"
+                qualifiers="" >
+                <dimen name="time_width" >40dp
+                </dimen>
+                <dimen name="widget_spacing" >4dp
+                </dimen>
+                <dimen name="row_height" >30dp
+                </dimen>
+            </file>
+            <file
+                name="header_previous_pressed_holo_light"
+                path="/home/thanhle/Android/MsRobot/library/Android-Lib-ScheduleView/ScheduleView/res/drawable-hdpi/header_previous_pressed_holo_light.png"
+                qualifiers="hdpi"
+                type="drawable" />
+            <file
+                name="header_previous_disabled_holo_dark"
+                path="/home/thanhle/Android/MsRobot/library/Android-Lib-ScheduleView/ScheduleView/res/drawable-hdpi/header_previous_disabled_holo_dark.png"
+                qualifiers="hdpi"
+                type="drawable" />
+            <file
+                name="header_previous_pressed_holo_dark"
+                path="/home/thanhle/Android/MsRobot/library/Android-Lib-ScheduleView/ScheduleView/res/drawable-hdpi/header_previous_pressed_holo_dark.png"
+                qualifiers="hdpi"
+                type="drawable" />
+            <file
+                name="header_next_normal_holo_light"
+                path="/home/thanhle/Android/MsRobot/library/Android-Lib-ScheduleView/ScheduleView/res/drawable-hdpi/header_next_normal_holo_light.png"
+                qualifiers="hdpi"
+                type="drawable" />
+            <file
+                name="header_next_normal_holo_dark"
+                path="/home/thanhle/Android/MsRobot/library/Android-Lib-ScheduleView/ScheduleView/res/drawable-hdpi/header_next_normal_holo_dark.png"
+                qualifiers="hdpi"
+                type="drawable" />
+            <file
+                name="header_transparent_holo"
+                path="/home/thanhle/Android/MsRobot/library/Android-Lib-ScheduleView/ScheduleView/res/drawable-hdpi/header_transparent_holo.9.png"
+                qualifiers="hdpi"
+                type="drawable" />
+            <file
+                name="header_next_disabled_focused_holo_light"
+                path="/home/thanhle/Android/MsRobot/library/Android-Lib-ScheduleView/ScheduleView/res/drawable-hdpi/header_next_disabled_focused_holo_light.png"
+                qualifiers="hdpi"
+                type="drawable" />
+            <file
+                name="header_previous_disabled_focused_holo_dark"
+                path="/home/thanhle/Android/MsRobot/library/Android-Lib-ScheduleView/ScheduleView/res/drawable-hdpi/header_previous_disabled_focused_holo_dark.png"
+                qualifiers="hdpi"
+                type="drawable" />
+            <file
+                name="header_previous_normal_holo_dark"
+                path="/home/thanhle/Android/MsRobot/library/Android-Lib-ScheduleView/ScheduleView/res/drawable-hdpi/header_previous_normal_holo_dark.png"
+                qualifiers="hdpi"
+                type="drawable" />
+            <file
+                name="header_previous_normal_holo_light"
+                path="/home/thanhle/Android/MsRobot/library/Android-Lib-ScheduleView/ScheduleView/res/drawable-hdpi/header_previous_normal_holo_light.png"
+                qualifiers="hdpi"
+                type="drawable" />
+            <file
+                name="header_next_disabled_focused_holo_dark"
+                path="/home/thanhle/Android/MsRobot/library/Android-Lib-ScheduleView/ScheduleView/res/drawable-hdpi/header_next_disabled_focused_holo_dark.png"
+                qualifiers="hdpi"
+                type="drawable" />
+            <file
+                name="header_next_disabled_holo_dark"
+                path="/home/thanhle/Android/MsRobot/library/Android-Lib-ScheduleView/ScheduleView/res/drawable-hdpi/header_next_disabled_holo_dark.png"
+                qualifiers="hdpi"
+                type="drawable" />
+            <file
+                name="header_next_pressed_holo_light"
+                path="/home/thanhle/Android/MsRobot/library/Android-Lib-ScheduleView/ScheduleView/res/drawable-hdpi/header_next_pressed_holo_light.png"
+                qualifiers="hdpi"
+                type="drawable" />
+            <file
+                name="header_previous_disabled_focused_holo_light"
+                path="/home/thanhle/Android/MsRobot/library/Android-Lib-ScheduleView/ScheduleView/res/drawable-hdpi/header_previous_disabled_focused_holo_light.png"
+                qualifiers="hdpi"
+                type="drawable" />
+            <file
+                name="header_next_disabled_holo_light"
+                path="/home/thanhle/Android/MsRobot/library/Android-Lib-ScheduleView/ScheduleView/res/drawable-hdpi/header_next_disabled_holo_light.png"
+                qualifiers="hdpi"
+                type="drawable" />
+            <file
+                name="header_previous_disabled_holo_light"
+                path="/home/thanhle/Android/MsRobot/library/Android-Lib-ScheduleView/ScheduleView/res/drawable-hdpi/header_previous_disabled_holo_light.png"
+                qualifiers="hdpi"
+                type="drawable" />
+            <file
+                name="header_next_pressed_holo_dark"
+                path="/home/thanhle/Android/MsRobot/library/Android-Lib-ScheduleView/ScheduleView/res/drawable-hdpi/header_next_pressed_holo_dark.png"
+                qualifiers="hdpi"
+                type="drawable" />
+            <file
+                name="header_previous_pressed_holo_light"
+                path="/home/thanhle/Android/MsRobot/library/Android-Lib-ScheduleView/ScheduleView/res/drawable-xxhdpi/header_previous_pressed_holo_light.png"
+                qualifiers="xxhdpi"
+                type="drawable" />
+            <file
+                name="header_previous_disabled_holo_dark"
+                path="/home/thanhle/Android/MsRobot/library/Android-Lib-ScheduleView/ScheduleView/res/drawable-xxhdpi/header_previous_disabled_holo_dark.png"
+                qualifiers="xxhdpi"
+                type="drawable" />
+            <file
+                name="header_previous_pressed_holo_dark"
+                path="/home/thanhle/Android/MsRobot/library/Android-Lib-ScheduleView/ScheduleView/res/drawable-xxhdpi/header_previous_pressed_holo_dark.png"
+                qualifiers="xxhdpi"
+                type="drawable" />
+            <file
+                name="header_next_normal_holo_light"
+                path="/home/thanhle/Android/MsRobot/library/Android-Lib-ScheduleView/ScheduleView/res/drawable-xxhdpi/header_next_normal_holo_light.png"
+                qualifiers="xxhdpi"
+                type="drawable" />
+            <file
+                name="header_next_normal_holo_dark"
+                path="/home/thanhle/Android/MsRobot/library/Android-Lib-ScheduleView/ScheduleView/res/drawable-xxhdpi/header_next_normal_holo_dark.png"
+                qualifiers="xxhdpi"
+                type="drawable" />
+            <file
+                name="header_transparent_holo"
+                path="/home/thanhle/Android/MsRobot/library/Android-Lib-ScheduleView/ScheduleView/res/drawable-xxhdpi/header_transparent_holo.9.png"
+                qualifiers="xxhdpi"
+                type="drawable" />
+            <file
+                name="header_next_disabled_focused_holo_light"
+                path="/home/thanhle/Android/MsRobot/library/Android-Lib-ScheduleView/ScheduleView/res/drawable-xxhdpi/header_next_disabled_focused_holo_light.png"
+                qualifiers="xxhdpi"
+                type="drawable" />
+            <file
+                name="header_previous_disabled_focused_holo_dark"
+                path="/home/thanhle/Android/MsRobot/library/Android-Lib-ScheduleView/ScheduleView/res/drawable-xxhdpi/header_previous_disabled_focused_holo_dark.png"
+                qualifiers="xxhdpi"
+                type="drawable" />
+            <file
+                name="header_previous_normal_holo_dark"
+                path="/home/thanhle/Android/MsRobot/library/Android-Lib-ScheduleView/ScheduleView/res/drawable-xxhdpi/header_previous_normal_holo_dark.png"
+                qualifiers="xxhdpi"
+                type="drawable" />
+            <file
+                name="header_previous_normal_holo_light"
+                path="/home/thanhle/Android/MsRobot/library/Android-Lib-ScheduleView/ScheduleView/res/drawable-xxhdpi/header_previous_normal_holo_light.png"
+                qualifiers="xxhdpi"
+                type="drawable" />
+            <file
+                name="header_next_disabled_focused_holo_dark"
+                path="/home/thanhle/Android/MsRobot/library/Android-Lib-ScheduleView/ScheduleView/res/drawable-xxhdpi/header_next_disabled_focused_holo_dark.png"
+                qualifiers="xxhdpi"
+                type="drawable" />
+            <file
+                name="header_next_disabled_holo_dark"
+                path="/home/thanhle/Android/MsRobot/library/Android-Lib-ScheduleView/ScheduleView/res/drawable-xxhdpi/header_next_disabled_holo_dark.png"
+                qualifiers="xxhdpi"
+                type="drawable" />
+            <file
+                name="header_next_pressed_holo_light"
+                path="/home/thanhle/Android/MsRobot/library/Android-Lib-ScheduleView/ScheduleView/res/drawable-xxhdpi/header_next_pressed_holo_light.png"
+                qualifiers="xxhdpi"
+                type="drawable" />
+            <file
+                name="header_previous_disabled_focused_holo_light"
+                path="/home/thanhle/Android/MsRobot/library/Android-Lib-ScheduleView/ScheduleView/res/drawable-xxhdpi/header_previous_disabled_focused_holo_light.png"
+                qualifiers="xxhdpi"
+                type="drawable" />
+            <file
+                name="header_next_disabled_holo_light"
+                path="/home/thanhle/Android/MsRobot/library/Android-Lib-ScheduleView/ScheduleView/res/drawable-xxhdpi/header_next_disabled_holo_light.png"
+                qualifiers="xxhdpi"
+                type="drawable" />
+            <file
+                name="header_previous_disabled_holo_light"
+                path="/home/thanhle/Android/MsRobot/library/Android-Lib-ScheduleView/ScheduleView/res/drawable-xxhdpi/header_previous_disabled_holo_light.png"
+                qualifiers="xxhdpi"
+                type="drawable" />
+            <file
+                name="header_next_pressed_holo_dark"
+                path="/home/thanhle/Android/MsRobot/library/Android-Lib-ScheduleView/ScheduleView/res/drawable-xxhdpi/header_next_pressed_holo_dark.png"
+                qualifiers="xxhdpi"
+                type="drawable" />
+            <file
+                name="box_border"
+                path="/home/thanhle/Android/MsRobot/library/Android-Lib-ScheduleView/ScheduleView/res/drawable/box_border.xml"
+                qualifiers=""
+                type="drawable" />
+            <file
+                name="header_previous_button_holo_dark"
+                path="/home/thanhle/Android/MsRobot/library/Android-Lib-ScheduleView/ScheduleView/res/drawable/header_previous_button_holo_dark.xml"
+                qualifiers=""
+                type="drawable" />
+            <file
+                name="header_previous_button_holo_light"
+                path="/home/thanhle/Android/MsRobot/library/Android-Lib-ScheduleView/ScheduleView/res/drawable/header_previous_button_holo_light.xml"
+                qualifiers=""
+                type="drawable" />
+            <file
+                name="header_next_button_holo_light"
+                path="/home/thanhle/Android/MsRobot/library/Android-Lib-ScheduleView/ScheduleView/res/drawable/header_next_button_holo_light.xml"
+                qualifiers=""
+                type="drawable" />
+            <file
+                name="header_next_button_holo_dark"
+                path="/home/thanhle/Android/MsRobot/library/Android-Lib-ScheduleView/ScheduleView/res/drawable/header_next_button_holo_dark.xml"
+                qualifiers=""
+                type="drawable" />
+            <file
+                name="week"
+                path="/home/thanhle/Android/MsRobot/library/Android-Lib-ScheduleView/ScheduleView/res/layout/week.xml"
+                qualifiers=""
+                type="layout" />
+            <file
+                name="month"
+                path="/home/thanhle/Android/MsRobot/library/Android-Lib-ScheduleView/ScheduleView/res/layout/month.xml"
+                qualifiers=""
+                type="layout" />
+            <file
+                name="weekday"
+                path="/home/thanhle/Android/MsRobot/library/Android-Lib-ScheduleView/ScheduleView/res/layout/weekday.xml"
+                qualifiers=""
+                type="layout" />
+            <file
+                name="simple_month_item"
+                path="/home/thanhle/Android/MsRobot/library/Android-Lib-ScheduleView/ScheduleView/res/layout/simple_month_item.xml"
+                qualifiers=""
+                type="layout" />
+            <file
+                name="day"
+                path="/home/thanhle/Android/MsRobot/library/Android-Lib-ScheduleView/ScheduleView/res/layout/day.xml"
+                qualifiers=""
+                type="layout" />
+            <file
+                name="simple_day_item"
+                path="/home/thanhle/Android/MsRobot/library/Android-Lib-ScheduleView/ScheduleView/res/layout/simple_day_item.xml"
+                qualifiers=""
+                type="layout" />
+            <file
+                name="simple_week_item"
+                path="/home/thanhle/Android/MsRobot/library/Android-Lib-ScheduleView/ScheduleView/res/layout/simple_week_item.xml"
+                qualifiers=""
+                type="layout" />
+            <file
+                name="header_previous_pressed_holo_light"
+                path="/home/thanhle/Android/MsRobot/library/Android-Lib-ScheduleView/ScheduleView/res/drawable-mdpi/header_previous_pressed_holo_light.png"
+                qualifiers="mdpi"
+                type="drawable" />
+            <file
+                name="header_previous_disabled_holo_dark"
+                path="/home/thanhle/Android/MsRobot/library/Android-Lib-ScheduleView/ScheduleView/res/drawable-mdpi/header_previous_disabled_holo_dark.png"
+                qualifiers="mdpi"
+                type="drawable" />
+            <file
+                name="header_previous_pressed_holo_dark"
+                path="/home/thanhle/Android/MsRobot/library/Android-Lib-ScheduleView/ScheduleView/res/drawable-mdpi/header_previous_pressed_holo_dark.png"
+                qualifiers="mdpi"
+                type="drawable" />
+            <file
+                name="header_next_normal_holo_light"
+                path="/home/thanhle/Android/MsRobot/library/Android-Lib-ScheduleView/ScheduleView/res/drawable-mdpi/header_next_normal_holo_light.png"
+                qualifiers="mdpi"
+                type="drawable" />
+            <file
+                name="header_next_normal_holo_dark"
+                path="/home/thanhle/Android/MsRobot/library/Android-Lib-ScheduleView/ScheduleView/res/drawable-mdpi/header_next_normal_holo_dark.png"
+                qualifiers="mdpi"
+                type="drawable" />
+            <file
+                name="header_transparent_holo"
+                path="/home/thanhle/Android/MsRobot/library/Android-Lib-ScheduleView/ScheduleView/res/drawable-mdpi/header_transparent_holo.9.png"
+                qualifiers="mdpi"
+                type="drawable" />
+            <file
+                name="header_next_disabled_focused_holo_light"
+                path="/home/thanhle/Android/MsRobot/library/Android-Lib-ScheduleView/ScheduleView/res/drawable-mdpi/header_next_disabled_focused_holo_light.png"
+                qualifiers="mdpi"
+                type="drawable" />
+            <file
+                name="header_previous_disabled_focused_holo_dark"
+                path="/home/thanhle/Android/MsRobot/library/Android-Lib-ScheduleView/ScheduleView/res/drawable-mdpi/header_previous_disabled_focused_holo_dark.png"
+                qualifiers="mdpi"
+                type="drawable" />
+            <file
+                name="header_previous_normal_holo_dark"
+                path="/home/thanhle/Android/MsRobot/library/Android-Lib-ScheduleView/ScheduleView/res/drawable-mdpi/header_previous_normal_holo_dark.png"
+                qualifiers="mdpi"
+                type="drawable" />
+            <file
+                name="header_previous_normal_holo_light"
+                path="/home/thanhle/Android/MsRobot/library/Android-Lib-ScheduleView/ScheduleView/res/drawable-mdpi/header_previous_normal_holo_light.png"
+                qualifiers="mdpi"
+                type="drawable" />
+            <file
+                name="header_next_disabled_focused_holo_dark"
+                path="/home/thanhle/Android/MsRobot/library/Android-Lib-ScheduleView/ScheduleView/res/drawable-mdpi/header_next_disabled_focused_holo_dark.png"
+                qualifiers="mdpi"
+                type="drawable" />
+            <file
+                name="header_next_disabled_holo_dark"
+                path="/home/thanhle/Android/MsRobot/library/Android-Lib-ScheduleView/ScheduleView/res/drawable-mdpi/header_next_disabled_holo_dark.png"
+                qualifiers="mdpi"
+                type="drawable" />
+            <file
+                name="header_next_pressed_holo_light"
+                path="/home/thanhle/Android/MsRobot/library/Android-Lib-ScheduleView/ScheduleView/res/drawable-mdpi/header_next_pressed_holo_light.png"
+                qualifiers="mdpi"
+                type="drawable" />
+            <file
+                name="header_previous_disabled_focused_holo_light"
+                path="/home/thanhle/Android/MsRobot/library/Android-Lib-ScheduleView/ScheduleView/res/drawable-mdpi/header_previous_disabled_focused_holo_light.png"
+                qualifiers="mdpi"
+                type="drawable" />
+            <file
+                name="header_next_disabled_holo_light"
+                path="/home/thanhle/Android/MsRobot/library/Android-Lib-ScheduleView/ScheduleView/res/drawable-mdpi/header_next_disabled_holo_light.png"
+                qualifiers="mdpi"
+                type="drawable" />
+            <file
+                name="header_previous_disabled_holo_light"
+                path="/home/thanhle/Android/MsRobot/library/Android-Lib-ScheduleView/ScheduleView/res/drawable-mdpi/header_previous_disabled_holo_light.png"
+                qualifiers="mdpi"
+                type="drawable" />
+            <file
+                name="header_next_pressed_holo_dark"
+                path="/home/thanhle/Android/MsRobot/library/Android-Lib-ScheduleView/ScheduleView/res/drawable-mdpi/header_next_pressed_holo_dark.png"
+                qualifiers="mdpi"
+                type="drawable" />
+        </source>
+        <source path="/home/thanhle/Android/MsRobot/library/Android-Lib-ScheduleView/ScheduleView/build/res/rs/debug" />
+        <source path="/home/thanhle/Android/MsRobot/library/Android-Lib-ScheduleView/ScheduleView/build/res/generated/debug" />
+    </dataSet>
+    <dataSet config="debug" >
+        <source path="/home/thanhle/Android/MsRobot/library/Android-Lib-ScheduleView/ScheduleView/build-types/debug/res" />
+    </dataSet>
+
+</merger>

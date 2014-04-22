@@ -1,0 +1,128 @@
+<?xml version="1.0" encoding="utf-8"?>
+<FrameLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content" >
+
+    <RelativeLayout
+        android:layout_width="match_parent"
+        android:layout_height="@dimen/row_height"
+        android:background="@drawable/box_border"
+        android:padding="0dp" >
+
+        <TextView
+            android:id="@id/day_time"
+            android:layout_width="@dimen/time_width"
+            android:layout_height="wrap_content"
+            android:layout_alignParentLeft="true"
+            android:layout_centerVertical="true"
+            android:layout_marginRight="@dimen/widget_spacing"
+            android:gravity="right"
+            android:textSize="4pt" />
+
+        <TextView
+            android:id="@id/line"
+            android:layout_width="0.5dp"
+            android:layout_height="match_parent"
+            android:layout_toRightOf="@id/day_time"
+            android:background="@color/border_color" />
+
+        <LinearLayout
+            android:id="@id/llEvent"
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:layout_toRightOf="@id/line"
+            android:orientation="horizontal" >
+
+            <TextView
+                android:id="@id/event1"
+                android:layout_width="wrap_content"
+                android:layout_height="match_parent"
+                android:layout_marginLeft="@dimen/widget_spacing"
+                android:background="@color/event1_color"
+                android:padding="@dimen/widget_spacing"
+                android:textSize="4pt" />
+
+            <TextView
+                android:id="@id/event2"
+                android:layout_width="wrap_content"
+                android:layout_height="match_parent"
+                android:layout_marginLeft="@dimen/widget_spacing"
+                android:background="@color/event2_color"
+                android:padding="@dimen/widget_spacing"
+                android:textSize="4pt" />
+
+            <TextView
+                android:id="@id/event3"
+                android:layout_width="wrap_content"
+                android:layout_height="match_parent"
+                android:layout_marginLeft="@dimen/widget_spacing"
+                android:background="@color/event3_color"
+                android:padding="@dimen/widget_spacing"
+                android:textSize="4pt" />
+
+            <TextView
+                android:id="@id/event4"
+                android:layout_width="wrap_content"
+                android:layout_height="match_parent"
+                android:layout_marginLeft="@dimen/widget_spacing"
+                android:background="@color/event4_color"
+                android:padding="@dimen/widget_spacing"
+                android:textSize="4pt" />
+
+            <TextView
+                android:id="@id/event5"
+                android:layout_width="wrap_content"
+                android:layout_height="match_parent"
+                android:layout_marginLeft="@dimen/widget_spacing"
+                android:background="@color/event5_color"
+                android:padding="@dimen/widget_spacing"
+                android:textSize="4pt" />
+
+            <TextView
+                android:id="@id/event6"
+                android:layout_width="wrap_content"
+                android:layout_height="match_parent"
+                android:layout_marginLeft="@dimen/widget_spacing"
+                android:background="@color/event6_color"
+                android:padding="@dimen/widget_spacing"
+                android:textSize="4pt" />
+
+            <TextView
+                android:id="@id/event7"
+                android:layout_width="wrap_content"
+                android:layout_height="match_parent"
+                android:layout_marginLeft="@dimen/widget_spacing"
+                android:background="@color/event7_color"
+                android:padding="@dimen/widget_spacing"
+                android:textSize="4pt" />
+
+            <TextView
+                android:id="@id/event8"
+                android:layout_width="wrap_content"
+                android:layout_height="match_parent"
+                android:layout_marginLeft="@dimen/widget_spacing"
+                android:background="@color/event8_color"
+                android:padding="@dimen/widget_spacing"
+                android:textSize="4pt" />
+
+            <TextView
+                android:id="@id/event9"
+                android:layout_width="wrap_content"
+                android:layout_height="match_parent"
+                android:layout_marginLeft="@dimen/widget_spacing"
+                android:background="@color/event9_color"
+                android:padding="@dimen/widget_spacing"
+                android:textSize="4pt" />
+
+            <TextView
+                android:id="@id/event10"
+                android:layout_width="wrap_content"
+                android:layout_height="match_parent"
+                android:layout_marginLeft="@dimen/widget_spacing"
+                android:background="@color/event10_color"
+                android:padding="@dimen/widget_spacing"
+                android:textSize="4pt" />
+        </LinearLayout>
+    </RelativeLayout>
+
+</FrameLayout><!-- From: file:/home/thanhle/Android/MsRobot/library/Android-Lib-ScheduleView/ScheduleView/res/layout/simple_day_item.xml -->

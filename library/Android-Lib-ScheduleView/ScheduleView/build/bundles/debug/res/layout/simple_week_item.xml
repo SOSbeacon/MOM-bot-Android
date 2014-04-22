@@ -1,0 +1,56 @@
+<?xml version="1.0" encoding="utf-8"?>
+<FrameLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content" >
+
+    <RelativeLayout
+        android:layout_width="match_parent"
+        android:layout_height="@dimen/row_height"
+        android:background="@drawable/box_border"
+        android:padding="0dp" >
+
+        <LinearLayout
+            android:id="@id/llEvent"
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:orientation="horizontal" >
+
+            <TextView
+                android:id="@id/event1"
+                android:layout_width="wrap_content"
+                android:layout_height="match_parent"
+                android:layout_marginLeft="@dimen/widget_spacing"
+                android:background="@color/event1_color"
+                android:padding="@dimen/widget_spacing"
+                android:textSize="4pt" />
+
+            <TextView
+                android:id="@id/event2"
+                android:layout_width="wrap_content"
+                android:layout_height="match_parent"
+                android:layout_marginLeft="@dimen/widget_spacing"
+                android:background="@color/event2_color"
+                android:padding="@dimen/widget_spacing"
+                android:textSize="4pt" />
+
+            <TextView
+                android:id="@id/event3"
+                android:layout_width="wrap_content"
+                android:layout_height="match_parent"
+                android:layout_marginLeft="@dimen/widget_spacing"
+                android:background="@color/event3_color"
+                android:padding="@dimen/widget_spacing"
+                android:textSize="4pt" />
+        </LinearLayout>
+
+        <TextView
+            android:id="@id/week_time"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_alignParentRight="true"
+            android:layout_centerVertical="true"
+            android:layout_marginRight="@dimen/widget_spacing"
+            android:textSize="4pt" />
+    </RelativeLayout>
+
+</FrameLayout><!-- From: file:/home/thanhle/Android/MsRobot/library/Android-Lib-ScheduleView/ScheduleView/res/layout/simple_week_item.xml -->
