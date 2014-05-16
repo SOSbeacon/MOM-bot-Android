@@ -67,7 +67,7 @@
                 android:text="@string/email_body"
                 android:textColor="@color/gray" />
 
-            <org.cnc.msrobot.utils.ContactsEditText
+            <org.cnc.mombot.utils.ContactsEditText
                 android:id="@+id/etTo"
                 android:layout_width="fill_parent"
                 android:layout_height="wrap_content"

@@ -30,7 +30,7 @@
     <uses-permission android:name="android.permission.READ_PHONE_STATE" />
 
     <application
-        android:name="org.cnc.msrobot.MainApplication"
+        android:name="org.cnc.mombot.MainApplication"
         android:allowBackup="true"
         android:allowClearUserData="true"
         android:hardwareAccelerated="true"
@@ -43,7 +43,7 @@
             android:value="@integer/google_play_services_version" />
 
         <activity
-            android:name="org.cnc.msrobot.activity.LoginActivity"
+            android:name="org.cnc.mombot.activity.LoginActivity"
             android:label="@string/app_name" >
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />
@@ -51,57 +51,57 @@
                 <category android:name="android.intent.category.LAUNCHER" />
             </intent-filter>
         </activity>
-        <activity android:name="org.cnc.msrobot.activity.MainActivity" >
+        <activity android:name="org.cnc.mombot.activity.MainActivity" >
         </activity>
-        <activity android:name="org.cnc.msrobot.activity.WeatherActivity" >
+        <activity android:name="org.cnc.mombot.activity.WeatherActivity" >
         </activity>
-        <activity android:name="org.cnc.msrobot.activity.RssActivity" >
+        <activity android:name="org.cnc.mombot.activity.RssActivity" >
         </activity>
         <activity
-            android:name="org.cnc.msrobot.activity.CalendarSampleActivity"
+            android:name="org.cnc.mombot.activity.CalendarSampleActivity"
             android:theme="@android:style/Theme.Light.NoTitleBar" >
         </activity>
         <activity
-            android:name="org.cnc.msrobot.activity.AddOrEditCalendarActivity"
+            android:name="org.cnc.mombot.activity.AddOrEditCalendarActivity"
             android:theme="@android:style/Theme.Light.NoTitleBar" >
         </activity>
-        <activity android:name="org.cnc.msrobot.fragment.CalendarEventFragment" >
+        <activity android:name="org.cnc.mombot.fragment.CalendarEventFragment" >
         </activity>
-        <activity android:name="org.cnc.msrobot.activity.ReminderAddActivity" >
+        <activity android:name="org.cnc.mombot.activity.ReminderAddActivity" >
         </activity>
-        <activity android:name="org.cnc.msrobot.activity.EmailSetupActivity" >
+        <activity android:name="org.cnc.mombot.activity.EmailSetupActivity" >
         </activity>
-        <activity android:name="org.cnc.msrobot.activity.ReadEmailSmsActivity" >
+        <activity android:name="org.cnc.mombot.activity.ReadEmailSmsActivity" >
         </activity>
-        <activity android:name="org.cnc.msrobot.activity.CalendarActivity" >
+        <activity android:name="org.cnc.mombot.activity.CalendarActivity" >
         </activity>
-        <activity android:name="org.cnc.msrobot.activity.SendSmsEmailActivity" >
+        <activity android:name="org.cnc.mombot.activity.SendSmsEmailActivity" >
         </activity>
-        <activity android:name="org.cnc.msrobot.activity.CameraActivity" >
+        <activity android:name="org.cnc.mombot.activity.CameraActivity" >
         </activity>
         <activity
-            android:name="org.cnc.msrobot.activity.RecognizeActivity"
+            android:name="org.cnc.mombot.activity.RecognizeActivity"
             android:theme="@android:style/Theme.Holo.Dialog.NoActionBar" >
         </activity>
 
         <receiver
-            android:name="org.cnc.msrobot.utils.AlarmReceiver"
+            android:name="org.cnc.mombot.utils.AlarmReceiver"
             android:process=":remote" >
         </receiver>
-        <receiver android:name="org.cnc.msrobot.utils.ServiceStarter" >
+        <receiver android:name="org.cnc.mombot.utils.ServiceStarter" >
             <intent-filter>
                 <action android:name="android.intent.action.BOOT_COMPLETED" />
             </intent-filter>
         </receiver>
         <!-- PROVIDER -->
         <provider
-            android:name="org.cnc.msrobot.provider.DbProvider"
+            android:name="org.cnc.mombot.provider.DbProvider"
             android:authorities="org.cnc.msrobot"
             android:exported="false" >
         </provider>
 
         <activity
-            android:name="org.cnc.msrobot.activity.NotificationActivity"
+            android:name="org.cnc.mombot.activity.NotificationActivity"
             android:clearTaskOnLaunch="true"
             android:configChanges="orientation|screenSize"
             android:label="@string/app_name"
