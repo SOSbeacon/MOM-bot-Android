@@ -4,7 +4,7 @@ import java.util.ArrayList;
 import java.util.Calendar;
 import java.util.Random;
 
-import org.cnc.msrobot.R;
+import org.cnc.mombot.R;
 import org.cnc.msrobot.activity.EmailSetupActivity;
 import org.cnc.msrobot.activity.MainActivity;
 import org.cnc.msrobot.adapter.ChatAdapter;

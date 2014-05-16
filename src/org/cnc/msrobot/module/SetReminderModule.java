@@ -3,7 +3,7 @@ package org.cnc.msrobot.module;
 import java.util.Calendar;
 import java.util.Date;
 
-import org.cnc.msrobot.R;
+import org.cnc.mombot.R;
 import org.cnc.msrobot.activity.ReminderAddActivity;
 import org.cnc.msrobot.inputoutput.DateTimeInput;
 import org.cnc.msrobot.inputoutput.Input;

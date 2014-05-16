@@ -2,7 +2,7 @@ package org.cnc.msrobot.module;
 
 import java.util.Locale;
 
-import org.cnc.msrobot.R;
+import org.cnc.mombot.R;
 import org.cnc.msrobot.activity.RecognizeActivity;
 import org.cnc.msrobot.activity.SendSmsEmailActivity;
 import org.cnc.msrobot.inputoutput.ContactListInput;

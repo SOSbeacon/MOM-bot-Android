@@ -2,7 +2,7 @@ package org.cnc.msrobot.utils;
 
 import java.util.ArrayList;
 
-import org.cnc.msrobot.R;
+import org.cnc.mombot.R;
 
 import android.content.Context;
 import android.view.LayoutInflater;

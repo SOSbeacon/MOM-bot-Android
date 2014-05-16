@@ -1,6 +1,6 @@
 package org.cnc.msrobot.activity;
 
-import org.cnc.msrobot.R;
+import org.cnc.mombot.R;
 import org.cnc.msrobot.resource.WeatherResource;
 import org.cnc.msrobot.utils.Actions;
 import org.cnc.msrobot.utils.Consts;

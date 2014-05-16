@@ -3,7 +3,7 @@ package org.cnc.msrobot.inputoutput;
 import java.util.Calendar;
 import java.util.Date;
 
-import org.cnc.msrobot.R;
+import org.cnc.mombot.R;
 import org.cnc.msrobot.utils.DateTimeFormater;
 
 import android.app.AlertDialog;

@@ -2,7 +2,7 @@ package org.cnc.msrobot.module;
 
 import java.util.Locale;
 
-import org.cnc.msrobot.R;
+import org.cnc.mombot.R;
 import org.cnc.msrobot.activity.CalendarActivity;
 import org.cnc.msrobot.activity.ReadEmailSmsActivity;
 import org.cnc.msrobot.activity.ReminderAddActivity;

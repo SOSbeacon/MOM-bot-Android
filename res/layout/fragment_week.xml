@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="utf-8"?>
 <android.lib.schedule.WeekView
     xmlns:android="http://schemas.android.com/apk/res/android"
-    xmlns:schedule="http://schemas.android.com/apk/res/org.cnc.msrobot"
+    xmlns:schedule="http://schemas.android.com/apk/res/org.cnc.mombot"
     android:layout_width="fill_parent"
     android:layout_height="fill_parent"
     schedule:sundayBackground="#ffcaca"

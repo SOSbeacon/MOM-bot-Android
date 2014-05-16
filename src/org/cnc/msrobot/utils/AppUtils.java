@@ -2,7 +2,7 @@ package org.cnc.msrobot.utils;
 
 import java.util.Calendar;
 
-import org.cnc.msrobot.R;
+import org.cnc.mombot.R;
 
 import android.annotation.TargetApi;
 import android.app.Activity;

@@ -2,7 +2,7 @@ package org.cnc.msrobot.adapter;
 
 import java.util.ArrayList;
 
-import org.cnc.msrobot.R;
+import org.cnc.mombot.R;
 import org.cnc.msrobot.activity.BaseActivity;
 import org.cnc.msrobot.activity.CalendarActivity;
 import org.cnc.msrobot.activity.EmailSetupActivity;

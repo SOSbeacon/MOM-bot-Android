@@ -2,7 +2,7 @@ package org.cnc.msrobot.task;
 
 import java.util.ArrayList;
 
-import org.cnc.msrobot.R;
+import org.cnc.mombot.R;
 import org.cnc.msrobot.activity.MainActivity;
 import org.cnc.msrobot.resource.SMS;
 

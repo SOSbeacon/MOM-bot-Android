@@ -1,6 +1,6 @@
 package org.cnc.msrobot.activity;
 
-import org.cnc.msrobot.R;
+import org.cnc.mombot.R;
 import org.cnc.msrobot.fragment.CalendarEventFragment;
 import org.cnc.msrobot.utils.CustomActionBar;
 

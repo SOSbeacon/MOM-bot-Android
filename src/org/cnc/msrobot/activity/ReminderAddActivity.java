@@ -18,7 +18,7 @@ import java.util.Calendar;
 import java.util.Date;
 
 import org.cnc.msrobot.MainApplication;
-import org.cnc.msrobot.R;
+import org.cnc.mombot.R;
 import org.cnc.msrobot.resource.EventResource;
 import org.cnc.msrobot.utils.Actions;
 import org.cnc.msrobot.utils.Consts;

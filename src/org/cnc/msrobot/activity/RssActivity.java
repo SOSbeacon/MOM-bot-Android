@@ -2,7 +2,7 @@ package org.cnc.msrobot.activity;
 
 import java.util.ArrayList;
 
-import org.cnc.msrobot.R;
+import org.cnc.mombot.R;
 import org.mcsoxford.rss.RSSFeed;
 import org.mcsoxford.rss.RSSItem;
 import org.mcsoxford.rss.RSSReader;

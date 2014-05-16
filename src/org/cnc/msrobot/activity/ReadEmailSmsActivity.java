@@ -2,7 +2,7 @@ package org.cnc.msrobot.activity;
 
 import java.util.ArrayList;
 
-import org.cnc.msrobot.R;
+import org.cnc.mombot.R;
 import org.cnc.msrobot.module.ReadMessageModule;
 import org.cnc.msrobot.module.ReadMessageModule.ReadMessageModuleListener;
 import org.cnc.msrobot.resource.Email;

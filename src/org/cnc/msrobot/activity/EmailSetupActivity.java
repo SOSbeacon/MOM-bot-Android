@@ -1,6 +1,6 @@
 package org.cnc.msrobot.activity;
 
-import org.cnc.msrobot.R;
+import org.cnc.mombot.R;
 
 import android.app.Activity;
 import android.content.Intent;

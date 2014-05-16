@@ -3,7 +3,7 @@ package org.cnc.msrobot.utils;
 import java.util.ArrayList;
 import java.util.List;
 
-import org.cnc.msrobot.R;
+import org.cnc.mombot.R;
 
 import android.app.AlertDialog;
 import android.app.Dialog;

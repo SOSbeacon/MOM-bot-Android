@@ -6,7 +6,7 @@ import java.util.Date;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 
-import org.cnc.msrobot.R;
+import org.cnc.mombot.R;
 import org.cnc.msrobot.provider.DbContract.TableEvent;
 import org.cnc.msrobot.resource.EventResource;
 import org.cnc.msrobot.utils.Actions;

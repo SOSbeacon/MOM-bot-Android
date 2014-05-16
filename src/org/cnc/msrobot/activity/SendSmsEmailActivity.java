@@ -2,7 +2,7 @@ package org.cnc.msrobot.activity;
 
 import java.util.List;
 
-import org.cnc.msrobot.R;
+import org.cnc.mombot.R;
 import org.cnc.msrobot.module.AskYesNoModule;
 import org.cnc.msrobot.module.AskYesNoModule.AskYesNoModuleListener;
 import org.cnc.msrobot.resource.ContactResource;

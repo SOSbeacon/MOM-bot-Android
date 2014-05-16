@@ -1,6 +1,6 @@
 package org.cnc.msrobot.fragment;
 
-import org.cnc.msrobot.R;
+import org.cnc.mombot.R;
 
 import android.lib.schedule.WeekView;
 import android.os.Bundle;
