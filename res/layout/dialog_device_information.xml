@@ -1,0 +1,148 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:orientation="vertical"
+    android:padding="@dimen/padding_medium" >
+
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="@dimen/dialog_label_height"
+        android:gravity="center_vertical"
+        android:orientation="horizontal" >
+
+        <TextView
+            android:layout_width="@dimen/dialog_label_width"
+            android:layout_height="wrap_content"
+            android:gravity="right"
+            android:paddingRight="@dimen/padding_medium"
+            android:text="@string/label_name" />
+
+        <TextView
+            android:id="@+id/tvName"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:textStyle="bold" />
+    </LinearLayout>
+
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="@dimen/dialog_label_height"
+        android:gravity="center_vertical"
+        android:orientation="horizontal" >
+
+        <TextView
+            android:layout_width="@dimen/dialog_label_width"
+            android:layout_height="wrap_content"
+            android:gravity="right"
+            android:paddingRight="@dimen/padding_medium"
+            android:text="@string/label_address" />
+
+        <TextView
+            android:id="@+id/tvAddress"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:textStyle="bold" />
+    </LinearLayout>
+
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="@dimen/dialog_label_height"
+        android:gravity="center_vertical"
+        android:orientation="horizontal" >
+
+        <TextView
+            android:layout_width="@dimen/dialog_label_width"
+            android:layout_height="wrap_content"
+            android:gravity="right"
+            android:paddingRight="@dimen/padding_medium"
+            android:text="@string/label_code" />
+
+        <EditText
+            android:id="@+id/etCode"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:inputType="text" />
+    </LinearLayout>
+
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="@dimen/dialog_label_height"
+        android:gravity="center_vertical"
+        android:orientation="horizontal" >
+
+        <TextView
+            android:layout_width="@dimen/dialog_label_width"
+            android:layout_height="wrap_content"
+            android:gravity="right"
+            android:paddingRight="@dimen/padding_medium"
+            android:text="@string/label_group" />
+
+        <EditText
+            android:id="@+id/etGroup"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:inputType="text" />
+    </LinearLayout>
+
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="@dimen/dialog_label_height"
+        android:gravity="center_vertical"
+        android:orientation="horizontal" >
+
+        <TextView
+            android:layout_width="@dimen/dialog_label_width"
+            android:layout_height="wrap_content"
+            android:gravity="right"
+            android:paddingRight="@dimen/padding_medium"
+            android:text="@string/label_location" />
+
+        <EditText
+            android:id="@+id/etLocation"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:inputType="text" />
+    </LinearLayout>
+
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="@dimen/dialog_label_height"
+        android:gravity="center_vertical"
+        android:orientation="horizontal" >
+
+        <TextView
+            android:layout_width="@dimen/dialog_label_width"
+            android:layout_height="wrap_content"
+            android:gravity="right"
+            android:paddingRight="@dimen/padding_medium"
+            android:text="@string/label_location_type" />
+
+        <EditText
+            android:id="@+id/etLocationType"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:inputType="text" />
+    </LinearLayout>
+
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="@dimen/dialog_label_height"
+        android:gravity="center_vertical"
+        android:orientation="horizontal" >
+
+        <TextView
+            android:layout_width="@dimen/dialog_label_width"
+            android:layout_height="wrap_content"
+            android:gravity="right"
+            android:paddingRight="@dimen/padding_medium"
+            android:text="@string/label_note" />
+
+        <EditText
+            android:id="@+id/etNote"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:inputType="text" />
+    </LinearLayout>
+
+</LinearLayout>

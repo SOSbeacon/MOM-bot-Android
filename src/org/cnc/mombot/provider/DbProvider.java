@@ -30,9 +30,11 @@ public class DbProvider extends ContentProvider {
 	public static final String PATH_EVENTS = "PATH_EVENTS";
 	public static final String PATH_CONTACT = "PATH_CONTACT";
 	public static final String PATH_GROUP_CONTACT = "PATH_GROUP_CONTACT";
+	public static final String PATH_DEVICES = "PATH_DEVICES";
 	private static final int CODE_EVENTS = 1;
 	private static final int CODE_CONTACT = 2;
 	private static final int CODE_GROUP_CONTACT = 3;
+	private static final int CODE_DEVICES = 4;
 
 	private DbHelper mDbHelper;
 	private UriMatcher mUriMatcher = buildUriMatcher();
@@ -43,6 +45,7 @@ public class DbProvider extends ContentProvider {
 		matcher.addURI(authority, PATH_EVENTS, CODE_EVENTS);
 		matcher.addURI(authority, PATH_CONTACT, CODE_CONTACT);
 		matcher.addURI(authority, PATH_GROUP_CONTACT, CODE_GROUP_CONTACT);
+		matcher.addURI(authority, PATH_DEVICES, CODE_DEVICES);
 		return matcher;
 	}
 
@@ -209,6 +212,10 @@ public class DbProvider extends ContentProvider {
 				builder.setTables(Tables.GROUP_CONTACT);
 				return builder;
 			}
+			case CODE_DEVICES: {
+				builder.setTables(Tables.DEVICES);
+				return builder;
+			}
 			default: {
 				throw new UnsupportedOperationException("Unknown uri: " + uri);
 			}
@@ -233,6 +240,10 @@ public class DbProvider extends ContentProvider {
 			}
 			case CODE_GROUP_CONTACT: {
 				builder.setTables(Tables.GROUP_CONTACT);
+				return builder;
+			}
+			case CODE_DEVICES: {
+				builder.setTables(Tables.DEVICES);
 				return builder;
 			}
 			default: {

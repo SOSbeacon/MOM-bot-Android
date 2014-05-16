@@ -23,6 +23,15 @@
     <string name="common_weekly">Weekly</string>
     <string name="common_daily">Daily</string>
     <string name="common_monthly">Monthly</string>
+    <string name="ok">OK</string>
+    <string name="cancel">Cancel</string>
+    <string name="turn_on">Turn on</string>
+    <string name="label_data">Data:</string>
+    <string name="label_device_address">Device address:</string>
+    <string name="label_state">State:</string>
+    <string name="label_services">Services</string>
+    <string name="no_data">Please select any service</string>
+    <string name="remove">Remove</string>
 
     <!-- Dialog -->
     <string name="choose_sms">SMS</string>
@@ -179,7 +188,6 @@
     <string name="event_repeat_every">Repeat every:</string>
     <string name="event_repeat_end_date">End date:</string>
     <string name="summary_hint">Summary</string>
-    <string name="cancel">Cancel</string>
     <string name="save">Save</string>
     <string name="icon_desc">Application icon</string>
     <string name="title_separator_desc">Title separator</string>
@@ -230,5 +238,51 @@
 
     <!-- Notification -->
     <string name="notification_title">MOM-Bot reminder </string>
+
+    <!--  -->
+    <string name="empty_scan_list">No devices found</string>
+    <string name="empty_services_list">Loading services list...</string>
+    <string name="loading_model">Loading model...</string>
+
+    <!-- Dialog strings -->
+    <string name="dialog_error_no_ble">Bluetooth Low Energy technology is not supported on your device.</string>
+    <string name="dialog_error_no_bluetooth">Bluetooth is not supported on your device.</string>
+    <string name="dialog_enable_bluetooth">Please turn on Bluetooth to scan for SensorTag devices around you.</string>
+
+    <!-- Actions -->
+    <string name="connected">Connected</string>
+    <string name="disconnected">Disconnected</string>
+    <string name="action_demo">Demo</string>
+
+    <!-- Titles -->
+    <string name="title_devices_recording">BLE Device Recording</string>
+    <string name="title_devices">BLE Device Scan</string>
+    <string name="title_demo_accelerometer">Accelerometer Demo</string>
+    <string name="title_demo_gyroscope">Gyroscope Demo</string>
+    <string name="title_demo_sensor_fusion">Sensor Fusion Demo</string>
+
+    <!-- Unknown values -->
+    <string name="unknown_device">Unknown device</string>
+    <string name="unknown_characteristic">Unknown characteristic</string>
+    <string name="unknown_service">Unknown service</string>
+
+    <!-- Menu items -->
+    <string name="menu_connect">Connect</string>
+    <string name="menu_disconnect">Disconnect</string>
+    <string name="menu_scan">Scan</string>
+    <string name="menu_stop">Stop</string>
+    <string name="menu_demo">@string/action_demo</string>
+    <string name="menu_lock_orientation">Lock screen rotation</string>
+    <string name="menu_unlock_orientation">Allow screen rotation</string>
+
+    <!-- Dialog device information -->
+    <string name="label_code">Code:</string>
+    <string name="label_name">Name:</string>
+    <string name="label_address">Address:</string>
+    <string name="label_group">Group:</string>
+    <string name="label_location">Location:</string>
+    <string name="label_location_type">Location type:</string>
+    <string name="label_note">Note:</string>
+    <string name="label_battery_date">Battery date:</string>
 
 </resources>

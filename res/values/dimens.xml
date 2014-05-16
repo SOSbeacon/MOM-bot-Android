@@ -45,4 +45,10 @@
     <dimen name="activity_horizontal_margin">16dp</dimen>
     <dimen name="activity_vertical_margin">16dp</dimen>
 
+    <dimen name="dialog_label_width">100dp</dimen>
+    <dimen name="dialog_label_height">40dp</dimen>
+    <dimen name="padding_small">6dp</dimen>
+    <dimen name="padding_medium">10dp</dimen>
+    <dimen name="padding_large">14dp</dimen>
+    
 </resources>

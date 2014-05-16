@@ -35,4 +35,22 @@ public class DbContract {
 
 		public static final String NAME = "name";
 	}
+
+	public static class TableDevice implements BaseColumns {
+		public static final Uri CONTENT_URI = DbProvider.BASE_CONTENT_URI.buildUpon()
+				.appendPath(DbProvider.PATH_DEVICES).build();
+		public static final String CONTENT_TYPE = ContentResolver.CURSOR_DIR_BASE_TYPE + "/vnd.mombotble.devices";
+
+		public static final String NAME = "device_name"; // name of device
+		public static final String MANUFACTURER = "device_manufacturer"; // manufacturer name
+		public static final String ADDRESS = "device_address"; // device address
+		public static final String CODE = "device_code"; // device code assigned by user
+		public static final String GROUP = "device_group"; // device group assigned by user
+		public static final String LOCATION = "device_location"; // device location assigned by user
+		public static final String LOCATION_TYPE = "device_location_type"; // device location type assigned by user
+																			// door, refrigerator, medicine case,
+																			// keychain
+		public static final String NOTE = "device_note"; // device note assigned by user
+		public static final String BATTERY_DATE = "device_battery_date"; // date when new battery installed
+	}
 }
