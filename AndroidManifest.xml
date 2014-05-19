@@ -135,6 +135,9 @@
         <service
             android:name="org.ble.sensortag.BleSensorsRecordService"
             android:enabled="true" />
+        <service
+            android:name="org.cnc.mombotble.ble.MyBleSensorsRecordService"
+            android:enabled="true" />
 
         <activity
             android:name="org.cnc.mombot.activity.NotificationActivity"

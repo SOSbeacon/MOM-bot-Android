@@ -1,5 +1,12 @@
 package org.ble.sensortag;
 
+import java.util.List;
+
+import org.ble.sensortag.ble.BleManager;
+import org.ble.sensortag.ble.BleServiceListener;
+import org.ble.sensortag.config.AppConfig;
+import org.ble.sensortag.sensor.TiSensor;
+
 import android.app.Service;
 import android.bluetooth.BluetoothGattService;
 import android.content.Intent;
@@ -7,13 +14,7 @@ import android.os.Binder;
 import android.os.Handler;
 import android.os.IBinder;
 import android.os.Looper;
-
-import java.util.List;
-
-import org.ble.sensortag.ble.BleManager;
-import org.ble.sensortag.ble.BleServiceListener;
-import org.ble.sensortag.config.AppConfig;
-import org.ble.sensortag.sensor.TiSensor;
+import android.util.Log;
 
 /**
  * Service for managing connection and data communication with a GATT server hosted on a

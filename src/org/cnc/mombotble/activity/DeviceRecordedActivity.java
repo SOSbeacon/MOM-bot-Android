@@ -3,6 +3,7 @@ package org.cnc.mombotble.activity;
 import org.cnc.mombot.R;
 import org.cnc.mombot.provider.DbContract.TableDevice;
 import org.cnc.mombotble.adapter.BleDevicesRecordAdapter;
+import org.cnc.mombotble.ble.MyBleSensorsRecordService;
 import org.cnc.mombotble.resource.DeviceResource;
 
 import android.app.Activity;
@@ -22,6 +23,7 @@ import android.widget.ListView;
  * Activity for scanning and displaying available Bluetooth LE devices.
  */
 public class DeviceRecordedActivity extends ListActivity implements LoaderCallbacks<Cursor> {
+	private static final String TAG = DeviceRecordedActivity.class.getSimpleName();
 	private static final int LOADER_GET_LIST_DEVICE = 1;
 	private static final int REQUEST_ENABLE_BT = 1;
 	private BleDevicesRecordAdapter leDeviceListAdapter;
@@ -43,6 +45,15 @@ public class DeviceRecordedActivity extends ListActivity implements LoaderCallba
 
 		// init loader
 		getLoaderManager().initLoader(LOADER_GET_LIST_DEVICE, null, this);
+
+	}
+
+	@Override
+	protected void onStart() {
+		super.onStart();
+		// start server
+		Intent intent = new Intent(this, MyBleSensorsRecordService.class);
+		startService(intent);
 	}
 
 	@Override
@@ -118,4 +129,5 @@ public class DeviceRecordedActivity extends ListActivity implements LoaderCallba
 	public void onLoaderReset(Loader<Cursor> loader) {
 
 	}
+
 }
