@@ -72,12 +72,12 @@ public class DbHelper extends SQLiteOpenHelper {
 
 		// CREATE DEVICES TABLE
 		sqlBuilder = new StringBuilder();
-		sqlBuilder
-				.append("CREATE TABLE IF NOT EXISTS " + Tables.DEVICES + " (");
+		sqlBuilder.append("CREATE TABLE IF NOT EXISTS " + Tables.DEVICES + " (");
 		sqlBuilder.append(TableDevice._ID + " TEXT, ");
 		sqlBuilder.append(TableDevice.NAME + " TEXT, ");
 		sqlBuilder.append(TableDevice.ADDRESS + " TEXT, ");
-		sqlBuilder.append(TableDevice.MANUFACTURER + " INTEGER, ");
+		sqlBuilder.append(TableDevice.MANUFACTURER + " TEXT, ");
+		sqlBuilder.append(TableDevice.STATUS + " INTEGER, ");
 		sqlBuilder.append(TableDevice.CODE + " TEXT, ");
 		sqlBuilder.append(TableDevice.GROUP + " TEXT, ");
 		sqlBuilder.append(TableDevice.LOCATION + " TEXT, ");
@@ -101,10 +101,10 @@ public class DbHelper extends SQLiteOpenHelper {
 			for (int i = oldVersion; i < newVersion; ++i) {
 				int nextVersion = i + 1;
 				switch (nextVersion) {
-					case 2:
-						break;
-					default:
-						break;
+				case 2:
+					break;
+				default:
+					break;
 				}
 			}
 			db.setTransactionSuccessful();

@@ -37,21 +37,21 @@ public class TiTemperatureSensor extends TiSensor<float[]> {
 	@Override
 	public String getDataString() {
 		final float[] data = getData();
-		return "ambient=" + data[0] + "\ntarget=" + data[1];
+		// return json string format
+		return "{ambient:" + data[0] + ",target:" + data[1] + "}";
 	}
 
 	@Override
 	public float[] parse(BluetoothGattCharacteristic c) {
 
 		/*
-		 * The IR Temperature sensor produces two measurements; Object ( AKA
-		 * target or IR) Temperature, and Ambient ( AKA die ) temperature.
+		 * The IR Temperature sensor produces two measurements; Object ( AKA target or IR) Temperature, and Ambient (
+		 * AKA die ) temperature.
 		 * 
-		 * Both need some conversion, and Object temperature is dependent on
-		 * Ambient temperature.
+		 * Both need some conversion, and Object temperature is dependent on Ambient temperature.
 		 * 
-		 * They are stored as [ObjLSB, ObjMSB, AmbLSB, AmbMSB] (4 bytes) Which
-		 * means we need to shift the bytes around to get the correct values.
+		 * They are stored as [ObjLSB, ObjMSB, AmbLSB, AmbMSB] (4 bytes) Which means we need to shift the bytes around
+		 * to get the correct values.
 		 */
 
 		double ambient = extractAmbientTemperature(c);
@@ -60,14 +60,12 @@ public class TiTemperatureSensor extends TiSensor<float[]> {
 		return new float[] { (float) ambient, (float) target };
 	}
 
-	private static double extractAmbientTemperature(
-			BluetoothGattCharacteristic c) {
+	private static double extractAmbientTemperature(BluetoothGattCharacteristic c) {
 		int offset = 2;
 		return TiSensorUtils.shortUnsignedAtOffset(c, offset) / 128.0;
 	}
 
-	private static double extractTargetTemperature(
-			BluetoothGattCharacteristic c, double ambient) {
+	private static double extractTargetTemperature(BluetoothGattCharacteristic c, double ambient) {
 		Integer twoByteValue = TiSensorUtils.shortSignedAtOffset(c, 0);
 
 		double Vobj2 = twoByteValue.doubleValue();

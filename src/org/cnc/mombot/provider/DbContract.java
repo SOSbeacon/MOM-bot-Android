@@ -48,8 +48,7 @@ public class DbContract {
 		public static final String GROUP = "device_group"; // device group assigned by user
 		public static final String LOCATION = "device_location"; // device location assigned by user
 		public static final String LOCATION_TYPE = "device_location_type"; // device location type assigned by user
-																			// door, refrigerator, medicine case,
-																			// keychain
+		public static final String STATUS = "status";
 		public static final String NOTE = "device_note"; // device note assigned by user
 		public static final String BATTERY_DATE = "device_battery_date"; // date when new battery installed
 	}

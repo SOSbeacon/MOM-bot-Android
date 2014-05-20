@@ -10,8 +10,11 @@ import android.content.ContentValues;
 import android.database.Cursor;
 
 public class DeviceResource implements BaseResource {
+	public static final int STATUS_CONNECTED = 1;
+	public static final int STATUS_DISCONNECTED = 0;
 	public int _id;
 	public String name, address, code, manufacturer, group, location, locationType, note;
+	public int status;
 	public Date batteryDate;
 
 	@Override
@@ -21,6 +24,7 @@ public class DeviceResource implements BaseResource {
 		value.put(TableDevice.ADDRESS, address);
 		value.put(TableDevice.CODE, code);
 		value.put(TableDevice.NAME, name);
+		value.put(TableDevice.STATUS, status);
 		value.put(TableDevice.MANUFACTURER, manufacturer);
 		value.put(TableDevice.GROUP, group);
 		value.put(TableDevice.LOCATION, location);
@@ -35,8 +39,8 @@ public class DeviceResource implements BaseResource {
 	public DeviceResource() {
 	}
 
-	public DeviceResource(String name, String address, String manufacturer, String code, String group, String location, String locationType, String note,
-			Date batteryDate) {
+	public DeviceResource(String name, String address, String manufacturer, String code, String group, String location,
+			String locationType, String note, Date batteryDate) {
 		this.name = name;
 		this.address = address;
 		this.manufacturer = manufacturer;
@@ -59,6 +63,7 @@ public class DeviceResource implements BaseResource {
 		int indexLocationType = cursor.getColumnIndex(TableDevice.LOCATION_TYPE);
 		int indexNote = cursor.getColumnIndex(TableDevice.NOTE);
 		int indexBatteryDate = cursor.getColumnIndex(TableDevice.BATTERY_DATE);
+		int indexStatus = cursor.getColumnIndex(TableDevice.STATUS);
 
 		if (indexId > -1)
 			_id = cursor.getInt(indexId);
@@ -78,6 +83,8 @@ public class DeviceResource implements BaseResource {
 			locationType = cursor.getString(indexLocationType);
 		if (indexNote > -1)
 			note = cursor.getString(indexLocationType);
+		if (indexStatus > -1)
+			status = cursor.getInt(indexStatus);
 		try {
 			if (indexBatteryDate > -1)
 				batteryDate = DateTimeFormater.timeServerFormat.parse(cursor.getString(indexLocationType));

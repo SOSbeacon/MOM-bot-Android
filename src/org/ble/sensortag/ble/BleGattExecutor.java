@@ -1,14 +1,14 @@
 package org.ble.sensortag.ble;
 
+import java.util.LinkedList;
+
+import org.ble.sensortag.sensor.TiSensor;
+
 import android.bluetooth.BluetoothGatt;
 import android.bluetooth.BluetoothGattCallback;
 import android.bluetooth.BluetoothGattCharacteristic;
 import android.bluetooth.BluetoothGattDescriptor;
 import android.bluetooth.BluetoothProfile;
-
-import java.util.LinkedList;
-
-import org.ble.sensortag.sensor.TiSensor;
 
 /**
  * Created by steven on 9/3/13.
