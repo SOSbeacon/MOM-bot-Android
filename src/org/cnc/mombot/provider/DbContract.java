@@ -52,4 +52,15 @@ public class DbContract {
 		public static final String NOTE = "device_note"; // device note assigned by user
 		public static final String BATTERY_DATE = "device_battery_date"; // date when new battery installed
 	}
+
+	public static class TableDataRecorded implements BaseColumns {
+		public static final Uri CONTENT_URI = DbProvider.BASE_CONTENT_URI.buildUpon()
+				.appendPath(DbProvider.PATH_DATA_RECORDED).build();
+		public static final String CONTENT_TYPE = ContentResolver.CURSOR_DIR_BASE_TYPE + "/vnd.mombotble.data_recorded";
+
+		public static final String ADDRESS = "device_address"; // device address
+		public static final String SERVICE_UUID = "service_uuid";
+		public static final String DATA = "data_recorded"; 
+		public static final String TIME_SAVED = "time_saved";
+	}
 }

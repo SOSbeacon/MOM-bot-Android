@@ -1,6 +1,7 @@
 package org.cnc.mombot.provider;
 
 import org.cnc.mombot.provider.DbContract.TableContact;
+import org.cnc.mombot.provider.DbContract.TableDataRecorded;
 import org.cnc.mombot.provider.DbContract.TableDevice;
 import org.cnc.mombot.provider.DbContract.TableEvent;
 import org.cnc.mombot.provider.DbContract.TableGroupContact;
@@ -25,6 +26,7 @@ public class DbHelper extends SQLiteOpenHelper {
 		public static final String CONTACT = "contact";
 		public static final String GROUP_CONTACT = "group_contact";
 		public static final String DEVICES = "devices";
+		public static final String DATA_RECORDED = "data_recorded";
 
 	}
 
@@ -84,6 +86,17 @@ public class DbHelper extends SQLiteOpenHelper {
 		sqlBuilder.append(TableDevice.LOCATION_TYPE + " TEXT, ");
 		sqlBuilder.append(TableDevice.NOTE + " TEXT, ");
 		sqlBuilder.append(TableDevice.BATTERY_DATE + " TEXT ");
+		sqlBuilder.append(")");
+		sql = sqlBuilder.toString();
+		db.execSQL(sql);
+
+		// CREATE DATA_RECORDED TABLE
+		sqlBuilder = new StringBuilder();
+		sqlBuilder.append("CREATE TABLE IF NOT EXISTS " + Tables.DATA_RECORDED + " (");
+		sqlBuilder.append(TableDataRecorded.ADDRESS + " TEXT, ");
+		sqlBuilder.append(TableDataRecorded.SERVICE_UUID + " TEXT, ");
+		sqlBuilder.append(TableDataRecorded.TIME_SAVED + " TEXT, ");
+		sqlBuilder.append(TableDataRecorded.DATA + " TEXT ");
 		sqlBuilder.append(")");
 		sql = sqlBuilder.toString();
 		db.execSQL(sql);

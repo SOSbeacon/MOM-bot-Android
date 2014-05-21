@@ -4,6 +4,8 @@ import java.util.ArrayList;
 import java.util.Arrays;
 
 import org.cnc.mombot.provider.DbContract.TableContact;
+import org.cnc.mombot.provider.DbContract.TableDataRecorded;
+import org.cnc.mombot.provider.DbContract.TableDevice;
 import org.cnc.mombot.provider.DbContract.TableEvent;
 import org.cnc.mombot.provider.DbContract.TableGroupContact;
 import org.cnc.mombot.provider.DbHelper.Tables;
@@ -24,17 +26,19 @@ import android.net.Uri;
 
 public class DbProvider extends ContentProvider {
 	private static final String TAG = DbProvider.class.getSimpleName();
-	public static final String CONTENT_AUTHORITY = "org.cnc.msrobot";
+	public static final String CONTENT_AUTHORITY = "org.cnc.mombot";
 
 	public static final Uri BASE_CONTENT_URI = Uri.parse("content://" + CONTENT_AUTHORITY);
 	public static final String PATH_EVENTS = "PATH_EVENTS";
 	public static final String PATH_CONTACT = "PATH_CONTACT";
 	public static final String PATH_GROUP_CONTACT = "PATH_GROUP_CONTACT";
 	public static final String PATH_DEVICES = "PATH_DEVICES";
+	public static final String PATH_DATA_RECORDED = "PATH_DATA_RECORDED";
 	private static final int CODE_EVENTS = 1;
 	private static final int CODE_CONTACT = 2;
 	private static final int CODE_GROUP_CONTACT = 3;
 	private static final int CODE_DEVICES = 4;
+	private static final int CODE_DATA_RECORED = 5;
 
 	private DbHelper mDbHelper;
 	private UriMatcher mUriMatcher = buildUriMatcher();
@@ -46,6 +50,7 @@ public class DbProvider extends ContentProvider {
 		matcher.addURI(authority, PATH_CONTACT, CODE_CONTACT);
 		matcher.addURI(authority, PATH_GROUP_CONTACT, CODE_GROUP_CONTACT);
 		matcher.addURI(authority, PATH_DEVICES, CODE_DEVICES);
+		matcher.addURI(authority, PATH_DATA_RECORDED, CODE_DATA_RECORED);
 		return matcher;
 	}
 
@@ -91,6 +96,10 @@ public class DbProvider extends ContentProvider {
 				return TableContact.CONTENT_TYPE;
 			case CODE_GROUP_CONTACT:
 				return TableGroupContact.CONTENT_TYPE;
+			case CODE_DEVICES:
+				return TableDevice.CONTENT_TYPE;
+			case CODE_DATA_RECORED:
+				return TableDataRecorded.CONTENT_TYPE;
 			default:
 				throw new UnsupportedOperationException("Unknown uri: " + uri);
 		}
@@ -216,6 +225,10 @@ public class DbProvider extends ContentProvider {
 				builder.setTables(Tables.DEVICES);
 				return builder;
 			}
+			case CODE_DATA_RECORED: {
+				builder.setTables(Tables.DATA_RECORDED);
+				return builder;
+			}
 			default: {
 				throw new UnsupportedOperationException("Unknown uri: " + uri);
 			}
@@ -244,6 +257,10 @@ public class DbProvider extends ContentProvider {
 			}
 			case CODE_DEVICES: {
 				builder.setTables(Tables.DEVICES);
+				return builder;
+			}
+			case CODE_DATA_RECORED: {
+				builder.setTables(Tables.DATA_RECORDED);
 				return builder;
 			}
 			default: {

@@ -97,7 +97,7 @@ public class TiServicesAdapter extends BaseExpandableListAdapter {
         if (convertView == null) {
             holder = new GroupViewHolder();
 
-            convertView = inflater.inflate(R.layout.li_service, parent, false);
+            convertView = inflater.inflate(R.layout.item_list_service, parent, false);
             holder.name = (TextView) convertView.findViewById(R.id.name);
             holder.uuid = (TextView) convertView.findViewById(R.id.uuid);
 
@@ -133,7 +133,7 @@ public class TiServicesAdapter extends BaseExpandableListAdapter {
         if (convertView == null) {
             holder = new ChildViewHolder();
 
-            convertView = inflater.inflate(R.layout.li_characteristic, parent, false);
+            convertView = inflater.inflate(R.layout.item_list_characteristic, parent, false);
             holder.name = (TextView) convertView.findViewById(R.id.name);
             holder.uuid = (TextView) convertView.findViewById(R.id.uuid);
             holder.modes = (TextView) convertView.findViewById(R.id.modes);

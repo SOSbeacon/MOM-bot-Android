@@ -32,6 +32,7 @@
     <string name="label_services">Services</string>
     <string name="no_data">Please select any service</string>
     <string name="remove">Remove</string>
+    <string name="report">Report</string>
 
     <!-- Dialog -->
     <string name="choose_sms">SMS</string>
@@ -255,6 +256,7 @@
     <string name="action_demo">Demo</string>
 
     <!-- Titles -->
+    <string name="title_report">Report</string>
     <string name="title_devices_recording">BLE Device Recording</string>
     <string name="title_devices">BLE Device Scan</string>
     <string name="title_demo_accelerometer">Accelerometer Demo</string>

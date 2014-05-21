@@ -1,4 +1,4 @@
-package org.cnc.mombotble.ble;
+package org.cnc.mombot.ble.service;
 
 import java.util.HashMap;
 import java.util.Map.Entry;
@@ -22,12 +22,6 @@ import android.util.Log;
 public class MultiBleService extends Service implements BleServiceListener {
 	private final static String TAG = MultiBleService.class.getSimpleName();
 
-	public class LocalBinder extends Binder {
-		public MultiBleService getService() {
-			return MultiBleService.this;
-		}
-	}
-
 	public class BleSensorRecordServiceBinder extends Binder {
 
 		/**
@@ -37,7 +31,11 @@ public class MultiBleService extends Service implements BleServiceListener {
 		 *            device address
 		 */
 		public void disconnectDevice(String deviceAddress) {
-
+			BleManager ble = bleManager.get(deviceAddress);
+			if (ble != null) {
+				ble.disconnect();
+				bleManager.remove(deviceAddress);
+			}
 		}
 	}
 

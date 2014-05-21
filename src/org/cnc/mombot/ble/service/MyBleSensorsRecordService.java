@@ -1,19 +1,20 @@
-package org.cnc.mombotble.ble;
+package org.cnc.mombot.ble.service;
 
 import java.util.ArrayList;
+import java.util.Date;
 import java.util.HashMap;
 
+import org.ble.sensortag.BleService;
 import org.ble.sensortag.ble.BleDevicesScanner;
 import org.ble.sensortag.ble.BleUtils;
 import org.ble.sensortag.config.AppConfig;
-import org.ble.sensortag.sensor.TiAccelerometerSensor;
 import org.ble.sensortag.sensor.TiSensor;
 import org.ble.sensortag.sensor.TiSensors;
 import org.ble.sensortag.sensor.TiTemperatureSensor;
 import org.cnc.mombot.R;
+import org.cnc.mombot.ble.resource.DeviceResource;
+import org.cnc.mombot.provider.DbContract.TableDataRecorded;
 import org.cnc.mombot.provider.DbContract.TableDevice;
-import org.cnc.mombotble.resource.DeviceResource;
-import org.json.JSONException;
 import org.json.JSONObject;
 
 import android.bluetooth.BluetoothAdapter;
@@ -27,16 +28,19 @@ import android.widget.Toast;
 
 public class MyBleSensorsRecordService extends MultiBleService {
 	private static final String TAG = MyBleSensorsRecordService.class.getSimpleName();
-
-	private static final String RECORD_DEVICE_NAME = "SensorTag";
+	public static final String BROADCAST_FILTER = "ble_service_broadcast_filter";
+	public static final String ACTION_DEVICE_CONNECT = "action_device_connect";
+	public static final String ACTION_DEVICE_DISCONNECT = "action_device_disconnect";
 	protected static final long SCAN_PERIOD = 10000;
-	protected static final long DATA_PERIOD = 1000;
+	protected static final long DATA_TEMPERATURE_PERIOD = 60000;
+	protected static final long DATA_ACCEL_PERIOD = 60000;
 
-	private final TiSensor<?> sensorAccelerometer = TiSensors.getSensor(TiAccelerometerSensor.UUID_SERVICE);
+	// private final TiSensor<?> sensorAccelerometer = TiSensors.getSensor(TiAccelerometerSensor.UUID_SERVICE);
 	private final TiSensor<?> sensorTemperature = TiSensors.getSensor(TiTemperatureSensor.UUID_SERVICE);
 	private BleDevicesScanner scanner;
 	private ArrayList<String> arrayDevice = new ArrayList<String>();
 	private HashMap<String, Long> mapTiming = new HashMap<String, Long>();
+	private HashMap<String, Integer> lastSaved = new HashMap<String, Integer>();
 	private ContentResolver contentResolver;
 
 	@Override
@@ -113,23 +117,26 @@ public class MyBleSensorsRecordService extends MultiBleService {
 	@Override
 	public void onConnected(String deviceAddress) {
 		Log.d(TAG, deviceAddress + " Connected");
+		broadcastUpdate(deviceAddress, BleService.ACTION_GATT_CONNECTED);
 		changeDeviceStatus(deviceAddress, DeviceResource.STATUS_CONNECTED);
 	}
 
 	@Override
 	public void onDisconnected(String deviceAddress) {
 		Log.d(TAG, deviceAddress + " Disconnected");
+		broadcastUpdate(deviceAddress, BleService.ACTION_GATT_DISCONNECTED);
 		changeDeviceStatus(deviceAddress, DeviceResource.STATUS_DISCONNECTED);
 	}
 
 	@Override
 	public void onServiceDiscovered(String deviceAddress) {
 		Log.d(TAG, "Service discovered");
-		long now = System.currentTimeMillis();
-		mapTiming.put(TiAccelerometerSensor.UUID_SERVICE + deviceAddress, now);
+		long now = 0;
 		mapTiming.put(TiTemperatureSensor.UUID_SERVICE + deviceAddress, now);
-		enableSensor(deviceAddress, sensorAccelerometer, true);
+		lastSaved.put(TiTemperatureSensor.UUID_SERVICE, 0);
 		enableSensor(deviceAddress, sensorTemperature, true);
+		// enableSensor(deviceAddress, sensorAccelerometer, true);
+		// mapTiming.put(TiAccelerometerSensor.UUID_SERVICE + deviceAddress, now);
 	}
 
 	@Override
@@ -137,20 +144,25 @@ public class MyBleSensorsRecordService extends MultiBleService {
 			byte[] data) {
 		long now = System.currentTimeMillis();
 		if (TiTemperatureSensor.UUID_SERVICE.equals(serviceUuid)
-				&& now - mapTiming.get(TiTemperatureSensor.UUID_SERVICE + deviceAddress) >= DATA_PERIOD) {
+				&& now - mapTiming.get(TiTemperatureSensor.UUID_SERVICE + deviceAddress) >= DATA_TEMPERATURE_PERIOD) {
+			int t = 0;
+			int lastTemp = lastSaved.get(TiTemperatureSensor.UUID_SERVICE);
 			try {
 				JSONObject json = new JSONObject(text);
-				Log.d(TAG, deviceAddress + " temp ambient: " + json.getInt("ambient"));
-			} catch (JSONException e) {
-				e.printStackTrace();
+				t = json.getInt("ambient");
+			} catch (Exception e) {
+
+			}
+			if (t != 0 && t != lastTemp) {
+				Log.d(TAG, deviceAddress + " -> new temperature data: " + t);
+				saveTemperatureData(deviceAddress, t + "");
 			}
 			mapTiming.put(TiTemperatureSensor.UUID_SERVICE + deviceAddress, now);
-
 		}
-		if (TiAccelerometerSensor.UUID_SERVICE.equals(serviceUuid)
-				&& now - mapTiming.get(TiAccelerometerSensor.UUID_SERVICE + deviceAddress) >= DATA_PERIOD) {
-			mapTiming.put(TiAccelerometerSensor.UUID_SERVICE + deviceAddress, now);
-		}
+		// if (TiAccelerometerSensor.UUID_SERVICE.equals(serviceUuid)
+		// && now - mapTiming.get(TiAccelerometerSensor.UUID_SERVICE + deviceAddress) >= DATA_ACCEL_PERIOD) {
+		// mapTiming.put(TiAccelerometerSensor.UUID_SERVICE + deviceAddress, now);
+		// }
 	}
 
 	/**
@@ -170,5 +182,24 @@ public class MyBleSensorsRecordService extends MultiBleService {
 			String where = TableDevice.ADDRESS + "='" + deviceAddress + "'";
 			contentResolver.update(TableDevice.CONTENT_URI, value, where, null);
 		}
+	}
+
+	private void saveTemperatureData(String deviceAddress, String data) {
+		synchronized (contentResolver) {
+			// change status of device
+			ContentValues value = new ContentValues();
+			value.put(TableDataRecorded.ADDRESS, deviceAddress);
+			value.put(TableDataRecorded.SERVICE_UUID, TiTemperatureSensor.UUID_SERVICE);
+			value.put(TableDataRecorded.DATA, data);
+			value.put(TableDataRecorded.TIME_SAVED, new Date().toString());
+			String where = TableDataRecorded.ADDRESS + "='" + deviceAddress + "'";
+			contentResolver.update(TableDevice.CONTENT_URI, value, where, null);
+		}
+	}
+
+	private void broadcastUpdate(final String deviceAddress, final String action) {
+		final Intent intent = new Intent(action);
+		intent.putExtra(BleService.EXTRA_DEVICE_ADDRESS, deviceAddress);
+		sendBroadcast(intent);
 	}
 }

@@ -1,4 +1,4 @@
-package org.cnc.mombotble.dialogs;
+package org.cnc.mombot.ble.dialogs;
 
 import java.util.Date;
 

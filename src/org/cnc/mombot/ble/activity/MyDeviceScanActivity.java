@@ -1,14 +1,14 @@
-package org.cnc.mombotble.activity;
+package org.cnc.mombot.ble.activity;
 
 import java.util.ArrayList;
 import java.util.Date;
 
 import org.ble.sensortag.DeviceScanActivity;
 import org.ble.sensortag.ble.BleDevicesScanner;
+import org.cnc.mombot.ble.dialogs.DeviceInformationDialog;
+import org.cnc.mombot.ble.dialogs.DeviceInformationDialog.DeviceInformationDialogListener;
+import org.cnc.mombot.ble.resource.DeviceResource;
 import org.cnc.mombot.provider.DbContract.TableDevice;
-import org.cnc.mombotble.dialogs.DeviceInformationDialog;
-import org.cnc.mombotble.dialogs.DeviceInformationDialog.DeviceInformationDialogListener;
-import org.cnc.mombotble.resource.DeviceResource;
 
 import android.bluetooth.BluetoothAdapter;
 import android.bluetooth.BluetoothDevice;

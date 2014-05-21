@@ -1,4 +1,4 @@
-package org.cnc.mombotble.resource;
+package org.cnc.mombot.ble.resource;
 
 import java.text.ParseException;
 import java.util.Date;
@@ -8,6 +8,7 @@ import org.cnc.mombot.utils.DateTimeFormater;
 
 import android.content.ContentValues;
 import android.database.Cursor;
+import android.text.TextUtils;
 
 public class DeviceResource implements BaseResource {
 	public static final int STATUS_CONNECTED = 1;
@@ -82,12 +83,18 @@ public class DeviceResource implements BaseResource {
 		if (indexLocationType > -1)
 			locationType = cursor.getString(indexLocationType);
 		if (indexNote > -1)
-			note = cursor.getString(indexLocationType);
+			note = cursor.getString(indexNote);
 		if (indexStatus > -1)
 			status = cursor.getInt(indexStatus);
 		try {
-			if (indexBatteryDate > -1)
-				batteryDate = DateTimeFormater.timeServerFormat.parse(cursor.getString(indexLocationType));
+			if (indexBatteryDate > -1) {
+				// get date string
+				String date = cursor.getString(indexBatteryDate);
+				// check not null
+				if (!TextUtils.isEmpty(date))
+					// convert string to date
+					batteryDate = DateTimeFormater.timeServerFormat.parse(date);
+			}
 		} catch (ParseException e) {
 			e.printStackTrace();
 		}

@@ -1,4 +1,4 @@
-package org.cnc.mombotble.ble;
+package org.cnc.mombot.ble.service;
 
 import org.ble.sensortag.BleService;
 import org.ble.sensortag.ble.BleUtils;
@@ -13,7 +13,7 @@ import android.content.ServiceConnection;
 import android.os.IBinder;
 import android.util.Log;
 
-public class MyBluetoothStateReciever extends BroadcastReceiver implements ServiceConnection {
+public class BleServiceReciever extends BroadcastReceiver implements ServiceConnection {
 	private BleService bleService;
 	private Context context;
 

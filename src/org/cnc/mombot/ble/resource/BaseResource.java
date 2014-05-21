@@ -1,4 +1,4 @@
-package org.cnc.mombotble.resource;
+package org.cnc.mombot.ble.resource;
 
 import android.content.ContentValues;
 
