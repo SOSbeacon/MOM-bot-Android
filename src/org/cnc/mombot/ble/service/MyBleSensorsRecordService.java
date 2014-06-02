@@ -2,20 +2,19 @@ package org.cnc.mombot.ble.service;
 
 import java.util.ArrayList;
 import java.util.Date;
-import java.util.HashMap;
 
 import org.ble.sensortag.BleService;
 import org.ble.sensortag.ble.BleDevicesScanner;
 import org.ble.sensortag.ble.BleUtils;
 import org.ble.sensortag.config.AppConfig;
-import org.ble.sensortag.sensor.TiSensor;
+import org.ble.sensortag.sensor.TiRangeSensors;
 import org.ble.sensortag.sensor.TiSensors;
 import org.ble.sensortag.sensor.TiTemperatureSensor;
 import org.cnc.mombot.R;
+import org.cnc.mombot.ble.algorithm.AccelerometerCompass;
 import org.cnc.mombot.ble.resource.DeviceResource;
 import org.cnc.mombot.provider.DbContract.TableDataRecorded;
 import org.cnc.mombot.provider.DbContract.TableDevice;
-import org.json.JSONObject;
 
 import android.bluetooth.BluetoothAdapter;
 import android.bluetooth.BluetoothDevice;
@@ -28,20 +27,18 @@ import android.widget.Toast;
 
 public class MyBleSensorsRecordService extends MultiBleService {
 	private static final String TAG = MyBleSensorsRecordService.class.getSimpleName();
-	public static final String BROADCAST_FILTER = "ble_service_broadcast_filter";
-	public static final String ACTION_DEVICE_CONNECT = "action_device_connect";
-	public static final String ACTION_DEVICE_DISCONNECT = "action_device_disconnect";
-	protected static final long SCAN_PERIOD = 10000;
-	protected static final long DATA_TEMPERATURE_PERIOD = 60000;
-	protected static final long DATA_ACCEL_PERIOD = 60000;
-
-	// private final TiSensor<?> sensorAccelerometer = TiSensors.getSensor(TiAccelerometerSensor.UUID_SERVICE);
-	private final TiSensor<?> sensorTemperature = TiSensors.getSensor(TiTemperatureSensor.UUID_SERVICE);
+	public static final String COMMAND_START_SCAN = "command_device_connect";
+	public static final String COMMAND_STOP_SCAN = "command_device_disconnect";
+	private static final int SCAN_PERIOD = 10000;
 	private BleDevicesScanner scanner;
 	private ArrayList<String> arrayDevice = new ArrayList<String>();
-	private HashMap<String, Long> mapTiming = new HashMap<String, Long>();
-	private HashMap<String, Integer> lastSaved = new HashMap<String, Integer>();
+	private ArrayList<String> deviceConnecting = new ArrayList<String>();
 	private ContentResolver contentResolver;
+
+	/**
+	 * Algorithm object
+	 */
+	private AccelerometerCompass algorithm;
 
 	@Override
 	public void onCreate() {
@@ -74,6 +71,9 @@ public class MyBleSensorsRecordService extends MultiBleService {
 			@Override
 			public void onLeScan(BluetoothDevice device, int rssi, byte[] scanRecord) {
 				synchronized (contentResolver) {
+					Log.d(TAG, "Check device connecting and device connected");
+					if (deviceConnecting.contains(device.getAddress()))
+						return;
 					// Get Device is register for recording in database
 					Cursor c = contentResolver.query(TableDevice.CONTENT_URI, null, null, null, null);
 					if (c != null) {
@@ -81,14 +81,16 @@ public class MyBleSensorsRecordService extends MultiBleService {
 							arrayDevice.clear();
 							do {
 								DeviceResource d = new DeviceResource(c);
+								Log.d(TAG, "Device on database: " + d.address);
 								arrayDevice.add(d.address);
 							} while (c.moveToNext());
 						}
 						c.close();
 					}
-					Log.d(TAG, "Device discovered: " + device.getAddress());
-					// check device is in register for record
+					// check device is in register for record and not connecting
 					if (arrayDevice.contains(device.getAddress())) {
+						Log.d(TAG, "Connect device: " + device.getAddress());
+						deviceConnecting.add(device.getAddress());
 						connect(device.getAddress());
 					}
 				}
@@ -99,10 +101,16 @@ public class MyBleSensorsRecordService extends MultiBleService {
 
 	@Override
 	public int onStartCommand(Intent intent, int flags, int startId) {
-		if (scanner == null)
+		if (scanner == null || intent == null)
 			return super.onStartCommand(intent, flags, startId);
 		Log.d(TAG, "Service started");
-		scanner.start();
+		boolean startScan = intent.getBooleanExtra(COMMAND_START_SCAN, true);
+		boolean stopScan = intent.getBooleanExtra(COMMAND_STOP_SCAN, false);
+		if (stopScan) {
+			scanner.stop();
+		} else if (startScan) {
+			scanner.start();
+		}
 		return super.onStartCommand(intent, flags, startId);
 	}
 
@@ -110,6 +118,7 @@ public class MyBleSensorsRecordService extends MultiBleService {
 	public void onDestroy() {
 		super.onDestroy();
 		Log.d(TAG, "Service stopped");
+		changeAllDeviceStatus(DeviceResource.STATUS_DISCONNECTED);
 		if (scanner != null)
 			scanner.stop();
 	}
@@ -119,6 +128,7 @@ public class MyBleSensorsRecordService extends MultiBleService {
 		Log.d(TAG, deviceAddress + " Connected");
 		broadcastUpdate(deviceAddress, BleService.ACTION_GATT_CONNECTED);
 		changeDeviceStatus(deviceAddress, DeviceResource.STATUS_CONNECTED);
+		deviceConnecting.remove(deviceAddress);
 	}
 
 	@Override
@@ -126,45 +136,89 @@ public class MyBleSensorsRecordService extends MultiBleService {
 		Log.d(TAG, deviceAddress + " Disconnected");
 		broadcastUpdate(deviceAddress, BleService.ACTION_GATT_DISCONNECTED);
 		changeDeviceStatus(deviceAddress, DeviceResource.STATUS_DISCONNECTED);
+		deviceConnecting.remove(deviceAddress);
 	}
 
 	@Override
 	public void onServiceDiscovered(String deviceAddress) {
 		Log.d(TAG, "Service discovered");
-		long now = 0;
-		mapTiming.put(TiTemperatureSensor.UUID_SERVICE + deviceAddress, now);
-		lastSaved.put(TiTemperatureSensor.UUID_SERVICE, 0);
-		enableSensor(deviceAddress, sensorTemperature, true);
-		// enableSensor(deviceAddress, sensorAccelerometer, true);
-		// mapTiming.put(TiAccelerometerSensor.UUID_SERVICE + deviceAddress, now);
+		algorithm = new AccelerometerCompass(this, deviceAddress);
+	}
+
+	// we will draw graph after get sampling 50 times (5s)
+	private static final int MAX_SAMPLING = 50;
+	private int count = 0;
+	double[] dataValue = new double[MAX_SAMPLING];
+
+	@Override
+	public void onOrientation(String deviceAddress, float[] values) {
+		dataValue[count] = values[2];
+		count++;
+		if (count == MAX_SAMPLING) {
+			count = 0;
+			phantich(deviceAddress, dataValue);
+		}
+	}
+
+	private static final double delta = 0.05d;
+
+	private void phantich(String deviceAddress, double[] dataY) {
+		// Tim diem cao nhat
+		int indexMax = 0, indexMin = 0;
+		double max = -10, min = 10; // min 10 because value alway < g (9.81)
+		for (int i = 0; i < dataY.length; i++) {
+			if (dataY[i] > max) {
+				max = dataY[i];
+				indexMax = i;
+			}
+			if (dataY[i] < min) {
+				min = dataY[i];
+				indexMin = i;
+			}
+		}
+		// Neu diem cao nhat truoc diem thap nhat -> dong cua
+		// Neu diem cao nhat sau diem thap nhap -> mo cua
+		// Va do lech phai lon hon delta
+		if (Math.abs(max - min) > delta) {
+			// showCenterToast("min: " + min + ", max: " + max + ", indexMin: " + indexMin + ", indexMax: " + indexMax);
+			if (indexMax < indexMin) {
+				// kiem tra do lech so voi 2s truoc do
+				double check = 0;
+				if (indexMax > 20) {
+					check = dataY[indexMax - 20];
+				} else {
+					check = dataY[0];
+				}
+				if (Math.abs(max - check) > delta / 2 && check < max) {
+					// door close
+					saveLogData(deviceAddress, "Door close");
+				} else {
+					// door open
+					saveLogData(deviceAddress, "Door open");
+				}
+			} else {
+				// door open
+				saveLogData(deviceAddress, "Door open");
+			}
+		} else {
+			// no change, not log
+		}
 	}
 
 	@Override
+	@SuppressWarnings("unchecked")
 	public void onDataAvailable(String deviceAddress, String serviceUuid, String characteristicUUid, String text,
 			byte[] data) {
-		long now = System.currentTimeMillis();
-		if (TiTemperatureSensor.UUID_SERVICE.equals(serviceUuid)
-				&& now - mapTiming.get(TiTemperatureSensor.UUID_SERVICE + deviceAddress) >= DATA_TEMPERATURE_PERIOD) {
-			int t = 0;
-			int lastTemp = lastSaved.get(TiTemperatureSensor.UUID_SERVICE);
-			try {
-				JSONObject json = new JSONObject(text);
-				t = json.getInt("ambient");
-			} catch (Exception e) {
-
-			}
-			if (t != 0 && t != lastTemp) {
-				Log.d(TAG, deviceAddress + " -> new temperature data: " + t);
-				saveTemperatureData(deviceAddress, t + "");
-			}
-			mapTiming.put(TiTemperatureSensor.UUID_SERVICE + deviceAddress, now);
-		}
-		// if (TiAccelerometerSensor.UUID_SERVICE.equals(serviceUuid)
-		// && now - mapTiming.get(TiAccelerometerSensor.UUID_SERVICE + deviceAddress) >= DATA_ACCEL_PERIOD) {
-		// mapTiming.put(TiAccelerometerSensor.UUID_SERVICE + deviceAddress, now);
-		// }
+		final TiRangeSensors<float[], Float> sensor = (TiRangeSensors<float[], Float>) TiSensors.getSensor(serviceUuid);
+		final float[] values = sensor.getData();
+		// calibrate(values);
+		algorithm.update(deviceAddress, serviceUuid, values);
 	}
 
+	private void connectAllDeviceSaved() {
+		
+	}
+	
 	/**
 	 * change status of device, save to database.
 	 * 
@@ -176,6 +230,7 @@ public class MyBleSensorsRecordService extends MultiBleService {
 	 */
 	private void changeDeviceStatus(String deviceAddress, int status) {
 		synchronized (contentResolver) {
+			Log.d(TAG, "change device " + deviceAddress + " status " + status);
 			// change status of device
 			ContentValues value = new ContentValues();
 			value.put(TableDevice.STATUS, status);
@@ -184,7 +239,28 @@ public class MyBleSensorsRecordService extends MultiBleService {
 		}
 	}
 
-	private void saveTemperatureData(String deviceAddress, String data) {
+	/**
+	 * change all device status
+	 * 
+	 * @param status
+	 */
+	private void changeAllDeviceStatus(int status) {
+		synchronized (contentResolver) {
+			// change status of device
+			Log.d(TAG, "change all device status " + status);
+			ContentValues value = new ContentValues();
+			value.put(TableDevice.STATUS, status);
+			contentResolver.update(TableDevice.CONTENT_URI, value, null, null);
+		}
+	}
+
+	/**
+	 * save sensor data to database
+	 * 
+	 * @param deviceAddress
+	 * @param data
+	 */
+	public void saveLogData(String deviceAddress, String data) {
 		synchronized (contentResolver) {
 			// change status of device
 			ContentValues value = new ContentValues();
@@ -192,8 +268,7 @@ public class MyBleSensorsRecordService extends MultiBleService {
 			value.put(TableDataRecorded.SERVICE_UUID, TiTemperatureSensor.UUID_SERVICE);
 			value.put(TableDataRecorded.DATA, data);
 			value.put(TableDataRecorded.TIME_SAVED, new Date().toString());
-			String where = TableDataRecorded.ADDRESS + "='" + deviceAddress + "'";
-			contentResolver.update(TableDevice.CONTENT_URI, value, where, null);
+			contentResolver.insert(TableDataRecorded.CONTENT_URI, value);
 		}
 	}
 

@@ -6,8 +6,8 @@ import org.cnc.mombot.R;
 import org.cnc.mombot.ble.adapter.BleDevicesRecordAdapter;
 import org.cnc.mombot.ble.adapter.BleDevicesRecordAdapter.BleDeviceRecordAdapterCallback;
 import org.cnc.mombot.ble.resource.DeviceResource;
-import org.cnc.mombot.ble.service.MyBleSensorsRecordService;
 import org.cnc.mombot.ble.service.MultiBleService.BleSensorRecordServiceBinder;
+import org.cnc.mombot.ble.service.MyBleSensorsRecordService;
 import org.cnc.mombot.provider.DbContract.TableDevice;
 
 import android.app.Activity;
@@ -25,7 +25,6 @@ import android.os.IBinder;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
-import android.widget.ListView;
 
 /**
  * Activity for scanning and displaying available Bluetooth LE devices.
@@ -50,7 +49,7 @@ public class DeviceRecordedActivity extends ListActivity implements LoaderCallba
 
 		// init adapter
 		if (mAdapter == null) {
-			mAdapter = new BleDevicesRecordAdapter(getBaseContext(), this);
+			mAdapter = new BleDevicesRecordAdapter(this, this);
 			setListAdapter(mAdapter);
 		}
 
@@ -125,10 +124,6 @@ public class DeviceRecordedActivity extends ListActivity implements LoaderCallba
 			this.unregisterReceiver(mReceiver);
 		} catch (Exception ex) {
 		}
-	}
-
-	@Override
-	protected void onListItemClick(ListView l, View v, int position, long id) {
 	}
 
 	@Override

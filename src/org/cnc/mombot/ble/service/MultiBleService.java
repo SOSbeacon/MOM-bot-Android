@@ -7,6 +7,7 @@ import org.ble.sensortag.ble.BleManager;
 import org.ble.sensortag.ble.BleServiceListener;
 import org.ble.sensortag.ble.BleUtils;
 import org.ble.sensortag.sensor.TiSensor;
+import org.cnc.mombot.ble.algorithm.SensorAlgorithmInterface;
 
 import android.app.Service;
 import android.bluetooth.BluetoothAdapter;
@@ -19,7 +20,7 @@ import android.util.Log;
  * Service for managing connection and data communication with a GATT server hosted on a given Bluetooth LE device.
  * Service support connect to many device
  */
-public class MultiBleService extends Service implements BleServiceListener {
+public class MultiBleService extends Service implements BleServiceListener, SensorAlgorithmInterface {
 	private final static String TAG = MultiBleService.class.getSimpleName();
 
 	public class BleSensorRecordServiceBinder extends Binder {
@@ -78,6 +79,7 @@ public class MultiBleService extends Service implements BleServiceListener {
 		}
 	}
 
+	@Override
 	public void updateSensor(String deviceAddress, TiSensor<?> sensor) {
 		BleManager ble = bleManager.get(deviceAddress);
 		if (ble != null) {
@@ -129,6 +131,7 @@ public class MultiBleService extends Service implements BleServiceListener {
 	 * @param enabled
 	 *            If true, enable notification. False otherwise.
 	 */
+	@Override
 	public void enableSensor(String deviceAddress, TiSensor<?> sensor, boolean enabled) {
 		BleManager ble = bleManager.get(deviceAddress);
 		if (ble != null) {
@@ -151,5 +154,9 @@ public class MultiBleService extends Service implements BleServiceListener {
 	@Override
 	public void onDataAvailable(String deviceAddress, String serviceUuid, String characteristicUUid, String text,
 			byte[] data) {
+	}
+	
+	@Override
+	public void onOrientation(String deviceAddress, float[] values) {
 	}
 }

@@ -1,9 +1,8 @@
 package org.ble.sensortag.sensor;
 
-import android.bluetooth.BluetoothGattCharacteristic;
-
 import static android.bluetooth.BluetoothGattCharacteristic.FORMAT_SINT8;
 import static android.bluetooth.BluetoothGattCharacteristic.FORMAT_UINT8;
+import android.bluetooth.BluetoothGattCharacteristic;
 
 /**
  * Created by steven on 9/23/13.
@@ -44,6 +43,6 @@ public class TiSensorUtils {
     }
 
     public static String coordinatesToString(float[] coordinates) {
-        return String.format("x=%+.6f\ny=%+.6f\nz=%+.6f", coordinates[0], coordinates[1], coordinates[2]);
+        return String.format("{x:%+.6f,y:%+.6f,z:%+.6f}", coordinates[0], coordinates[1], coordinates[2]);
     }
 }

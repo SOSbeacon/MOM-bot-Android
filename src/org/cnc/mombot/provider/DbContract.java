@@ -61,6 +61,6 @@ public class DbContract {
 		public static final String ADDRESS = "device_address"; // device address
 		public static final String SERVICE_UUID = "service_uuid";
 		public static final String DATA = "data_recorded"; 
-		public static final String TIME_SAVED = "time_saved";
+		public static final String TIME_SAVED = "time_record";
 	}
 }

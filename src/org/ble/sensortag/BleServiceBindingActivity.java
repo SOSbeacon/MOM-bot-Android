@@ -3,8 +3,8 @@ package org.ble.sensortag;
 import org.ble.sensortag.ble.BleActionsReceiver;
 import org.ble.sensortag.ble.BleServiceListener;
 import org.ble.sensortag.config.AppConfig;
+import org.cnc.mombot.activity.BaseActivity;
 
-import android.app.Activity;
 import android.content.BroadcastReceiver;
 import android.content.ComponentName;
 import android.content.Intent;
@@ -13,7 +13,7 @@ import android.os.Bundle;
 import android.os.IBinder;
 import android.util.Log;
 
-public class BleServiceBindingActivity extends Activity implements BleServiceListener, ServiceConnection {
+public class BleServiceBindingActivity extends BaseActivity implements BleServiceListener, ServiceConnection {
 	private final static String TAG = BleServiceBindingActivity.class.getSimpleName();
 
 	public static final String EXTRAS_DEVICE_NAME = "DEVICE_NAME";

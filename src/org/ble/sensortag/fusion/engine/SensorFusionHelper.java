@@ -4,7 +4,7 @@ import java.util.Timer;
 
 public abstract class SensorFusionHelper {
 
-    private static final int TIMER_RATE = 30;
+    private static final int TIMER_RATE = 10;
 
     private Timer fuseTimer = null;
     private SensorFusionEngine fusionEngine = null;

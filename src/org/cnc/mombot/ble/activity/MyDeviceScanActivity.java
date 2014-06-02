@@ -8,13 +8,16 @@ import org.ble.sensortag.ble.BleDevicesScanner;
 import org.cnc.mombot.ble.dialogs.DeviceInformationDialog;
 import org.cnc.mombot.ble.dialogs.DeviceInformationDialog.DeviceInformationDialogListener;
 import org.cnc.mombot.ble.resource.DeviceResource;
+import org.cnc.mombot.ble.service.MyBleSensorsRecordService;
 import org.cnc.mombot.provider.DbContract.TableDevice;
 
 import android.bluetooth.BluetoothAdapter;
 import android.bluetooth.BluetoothDevice;
 import android.content.ContentValues;
+import android.content.Intent;
 import android.database.Cursor;
 import android.os.Bundle;
+import android.util.Log;
 import android.view.View;
 import android.widget.ListView;
 
@@ -34,6 +37,7 @@ public class MyDeviceScanActivity extends DeviceScanActivity implements DeviceIn
 		scanner = new BleDevicesScanner(bluetoothAdapter, new BluetoothAdapter.LeScanCallback() {
 			@Override
 			public void onLeScan(final BluetoothDevice device, final int rssi, byte[] scanRecord) {
+				Log.d("MyDeviceScanActivity", "device scan " + device.getAddress());
 				// check if device not in device recording list
 				if (!deviceRecording.contains(device.getAddress())) {
 					leDeviceListAdapter.addDevice(device, rssi);
@@ -42,6 +46,24 @@ public class MyDeviceScanActivity extends DeviceScanActivity implements DeviceIn
 			}
 		});
 		scanner.setScanPeriod(SCAN_PERIOD);
+	}
+
+	@Override
+	protected void onStart() {
+		super.onStart();
+		// start record service and send stop scan
+		Intent service = new Intent(this, MyBleSensorsRecordService.class);
+		service.putExtra(MyBleSensorsRecordService.COMMAND_STOP_SCAN, true);
+		this.startService(service);
+	}
+
+	@Override
+	protected void onPause() {
+		super.onPause();
+		// start record service and send stop scan
+		Intent service = new Intent(this, MyBleSensorsRecordService.class);
+		service.putExtra(MyBleSensorsRecordService.COMMAND_START_SCAN, true);
+		this.startService(service);
 	}
 
 	@Override

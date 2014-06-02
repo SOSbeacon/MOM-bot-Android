@@ -19,7 +19,7 @@ public class BleServiceReciever extends BroadcastReceiver implements ServiceConn
 
 	@Override
 	public void onReceive(Context context, Intent intent) {
-		Log.i("abc", context.getPackageName() + " bluetooth state change");
+		Log.i("BleServiceReciever", context.getPackageName() + " bluetooth state change");
 		this.context = context;
 		if (!AppConfig.ENABLE_RECORD_SERVICE)
 			return;

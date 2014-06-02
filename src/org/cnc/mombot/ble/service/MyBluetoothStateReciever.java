@@ -19,7 +19,7 @@ public class MyBluetoothStateReciever extends BroadcastReceiver implements Servi
 
 	@Override
 	public void onReceive(Context context, Intent intent) {
-		Log.i("abc", context.getPackageName() + " bluetooth state change");
+		Log.i("MyBluetoothStateReciever", context.getPackageName() + " bluetooth state change");
 		this.context = context;
 		if (!AppConfig.ENABLE_RECORD_SERVICE)
 			return;
