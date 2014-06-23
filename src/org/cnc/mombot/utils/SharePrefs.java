@@ -23,6 +23,7 @@ public class SharePrefs {
 	private static final String PREF_LOGIN_TOKEN = "login_token";
 	private static final String PREF_CHECK_TTS = "check_tts";
 	private static final String PREF_CURRENT_EMERGENCY_ID = "emergency_id";
+	private static final String PREF_DOOR_CLOSE_VALUE = "door_close";
 
 	private static SharePrefs instance = new SharePrefs();
 	private SharedPreferences sharedPreferences;
@@ -168,5 +169,13 @@ public class SharePrefs {
 
 	public String getEmergencyId() {
 		return sharedPreferences.getString(PREF_CURRENT_EMERGENCY_ID, "");
+	}
+
+	public void saveDoorCloseValue(String deviceAddress, float value) {
+		sharedPreferences.edit().putFloat(PREF_DOOR_CLOSE_VALUE + "_" + deviceAddress, value).commit();
+	}
+
+	public float getDoorCloseValue(String deviceAddress) {
+		return sharedPreferences.getFloat(PREF_DOOR_CLOSE_VALUE + "_" + deviceAddress, 0);
 	}
 }

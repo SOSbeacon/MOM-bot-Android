@@ -21,6 +21,7 @@ public class Consts {
 	public static final String BASE_URL = "";
 	public static final int TIME_CHECK_REMINDER = 1000 * 60 * 10; // 30 minute
 	public static final float SPEECH_RATE = 1f;
+	public static final int SAMPLE_RATE = 60 ; // 1m in second
 
 	public class EventType {
 		public static final String TYPE_NOREPEAT = "norepeat";

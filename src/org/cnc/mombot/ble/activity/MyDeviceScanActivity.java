@@ -5,24 +5,32 @@ import java.util.Date;
 
 import org.ble.sensortag.DeviceScanActivity;
 import org.ble.sensortag.ble.BleDevicesScanner;
+import org.cnc.mombot.ble.algorithm.DoorStatusAlgorithm;
 import org.cnc.mombot.ble.dialogs.DeviceInformationDialog;
 import org.cnc.mombot.ble.dialogs.DeviceInformationDialog.DeviceInformationDialogListener;
 import org.cnc.mombot.ble.resource.DeviceResource;
 import org.cnc.mombot.ble.service.MyBleSensorsRecordService;
+import org.cnc.mombot.ble.service.MyBleSensorsRecordService.BleSensorRecordServiceBinder;
 import org.cnc.mombot.provider.DbContract.TableDevice;
 
 import android.bluetooth.BluetoothAdapter;
 import android.bluetooth.BluetoothDevice;
+import android.content.ComponentName;
 import android.content.ContentValues;
+import android.content.Context;
 import android.content.Intent;
+import android.content.ServiceConnection;
 import android.database.Cursor;
 import android.os.Bundle;
+import android.os.IBinder;
 import android.util.Log;
 import android.view.View;
 import android.widget.ListView;
 
 public class MyDeviceScanActivity extends DeviceScanActivity implements DeviceInformationDialogListener {
 	private ArrayList<String> deviceRecording = new ArrayList<String>();
+	private BleSensorRecordServiceBinder mBinder;
+	private Intent mService;
 
 	@Override
 	protected void initScanner() {
@@ -48,22 +56,47 @@ public class MyDeviceScanActivity extends DeviceScanActivity implements DeviceIn
 		scanner.setScanPeriod(SCAN_PERIOD);
 	}
 
+	private ServiceConnection mConnection = new ServiceConnection() {
+		public void onServiceConnected(ComponentName className, IBinder service) {
+			// set service binder to media player fragment
+			mBinder = (BleSensorRecordServiceBinder) service;
+		}
+
+		public void onServiceDisconnected(ComponentName className) {
+			// set service binder null
+			mBinder = null;
+		}
+	};
+
+	private void initService() {
+		// start MediaService
+		mService = new Intent(this, MyBleSensorsRecordService.class);
+		this.startService(mService);
+	}
+
 	@Override
 	protected void onStart() {
 		super.onStart();
-		// start record service and send stop scan
-		Intent service = new Intent(this, MyBleSensorsRecordService.class);
-		service.putExtra(MyBleSensorsRecordService.COMMAND_STOP_SCAN, true);
-		this.startService(service);
+		initService();
+	}
+
+	@Override
+	protected void onResume() {
+		super.onResume();
+		// bind the service with mConnection
+		if (mService == null) {
+			mService = new Intent(this, MyBleSensorsRecordService.class);
+		}
+		this.bindService(mService, mConnection, Context.BIND_AUTO_CREATE);
 	}
 
 	@Override
 	protected void onPause() {
 		super.onPause();
-		// start record service and send stop scan
-		Intent service = new Intent(this, MyBleSensorsRecordService.class);
-		service.putExtra(MyBleSensorsRecordService.COMMAND_START_SCAN, true);
-		this.startService(service);
+		try {
+			this.unbindService(mConnection);
+		} catch (Exception ex) {
+		}
 	}
 
 	@Override
@@ -82,8 +115,8 @@ public class MyDeviceScanActivity extends DeviceScanActivity implements DeviceIn
 	}
 
 	@Override
-	public void onOk(String name, String address, String code, String group, String location, String locationType,
-			String note, Date batteryDate) {
+	public void onOk(String name, String address, final String code, String group, String location,
+			String locationType, String note, Date batteryDate) {
 		DeviceResource device = new DeviceResource(name, address, "", code, group, location, locationType, note,
 				batteryDate);
 		ContentValues value = device.prepareContentValue();
@@ -91,6 +124,22 @@ public class MyDeviceScanActivity extends DeviceScanActivity implements DeviceIn
 		deviceRecording.add(address);
 		leDeviceListAdapter.removeDevice(address);
 		leDeviceListAdapter.notifyDataSetChanged();
+		if (mBinder != null) {
+			mBinder.connectDevice(device.address);
+		}
+		// new Thread(new Runnable() {
+		//
+		// @Override
+		// public void run() {
+		// try {
+		// DeviceRecordedActivity.cloudDevice.authenticate();
+		// DeviceRecordedActivity.cloudDevice.getListTimeseriesData(code, DoorStatusAlgorithm.CHANNEL_NAME, 0,
+		// new Date().getTime());
+		// } catch (Exception e) {
+		// e.printStackTrace();
+		// }
+		// }
+		// }).start();
 	}
 
 	@Override

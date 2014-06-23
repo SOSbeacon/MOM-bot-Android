@@ -5,7 +5,7 @@ public class DataFilter {
 	 * time smoothing constant for low-pass filter 0 ≤ alpha ≤ 1 ; a smaller value basically means more smoothing See:
 	 * http://en.wikipedia.org/wiki/Low-pass_filter#Discrete-time_realization
 	 */
-	static final float ALPHA = 0.1f;
+	static final float ALPHA = 0.01f;
 
 	/**
 	 * @see http://en.wikipedia.org/wiki/Low-pass_filter#Algorithmic_implementation

@@ -96,6 +96,7 @@ public class DbHelper extends SQLiteOpenHelper {
 		sqlBuilder.append(TableDataRecorded.ADDRESS + " TEXT, ");
 		sqlBuilder.append(TableDataRecorded.SERVICE_UUID + " TEXT, ");
 		sqlBuilder.append(TableDataRecorded.TIME_SAVED + " TEXT, ");
+		sqlBuilder.append(TableDataRecorded.SYNCED + " INTEGER, ");
 		sqlBuilder.append(TableDataRecorded.DATA + " TEXT ");
 		sqlBuilder.append(")");
 		sql = sqlBuilder.toString();

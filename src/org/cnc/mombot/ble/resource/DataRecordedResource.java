@@ -6,7 +6,10 @@ import android.content.ContentValues;
 import android.database.Cursor;
 
 public class DataRecordedResource implements BaseResource {
+	public static final int STATE_SYNCED = 1;
+	public static final int STATE_NOT_SYNCED = 0;
 	public String address, data, timeSaved, serviceUUID;
+	public int synced;
 
 	@Override
 	public ContentValues prepareContentValue() {
@@ -15,6 +18,7 @@ public class DataRecordedResource implements BaseResource {
 		value.put(TableDataRecorded.DATA, data);
 		value.put(TableDataRecorded.TIME_SAVED, timeSaved);
 		value.put(TableDataRecorded.SERVICE_UUID, serviceUUID);
+		value.put(TableDataRecorded.SYNCED, synced);
 		return value;
 	}
 
@@ -33,6 +37,7 @@ public class DataRecordedResource implements BaseResource {
 		int indexServiceUUID = cursor.getColumnIndex(TableDataRecorded.SERVICE_UUID);
 		int indexTimeSaved = cursor.getColumnIndex(TableDataRecorded.TIME_SAVED);
 		int indexData = cursor.getColumnIndex(TableDataRecorded.DATA);
+		int indexSynced = cursor.getColumnIndex(TableDataRecorded.SYNCED);
 
 		if (indexAddress > -1)
 			address = cursor.getString(indexAddress);
@@ -42,5 +47,7 @@ public class DataRecordedResource implements BaseResource {
 			timeSaved = cursor.getString(indexTimeSaved);
 		if (indexData > -1)
 			data = cursor.getString(indexData);
+		if (indexSynced > -1)
+			synced = cursor.getInt(indexSynced);
 	}
 }

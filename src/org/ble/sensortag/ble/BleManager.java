@@ -1,7 +1,9 @@
 package org.ble.sensortag.ble;
 
 import java.util.List;
+import java.util.UUID;
 
+import org.ble.sensortag.info.TiDeviceInfoSerivce;
 import org.ble.sensortag.sensor.TiSensor;
 import org.ble.sensortag.sensor.TiSensors;
 
@@ -70,7 +72,7 @@ public class BleManager implements BleExecutorListener {
 	 *         {@code BluetoothGattCallback#onConnectionStateChange(android.bluetooth.BluetoothGatt, int, int)}
 	 *         callback.
 	 */
-	public boolean connect(Context context, String address) {
+	public boolean connect(Context context, String address, boolean autoReconnect) {
 		if (adapter == null || address == null) {
 			Log.w(TAG, "BluetoothAdapter not initialized or unspecified address.");
 			return false;
@@ -83,6 +85,11 @@ public class BleManager implements BleExecutorListener {
 				connectionState = STATE_CONNECTING;
 				return true;
 			} else {
+				// thanhle: close current connect, try a new connect
+				Log.d(TAG,
+						"Trying to close current connect, reset gatt and connect again when existing BluetoothGatt fail");
+				close();
+				connect(context, address, autoReconnect);
 				return false;
 			}
 		}
@@ -94,11 +101,15 @@ public class BleManager implements BleExecutorListener {
 		}
 		// We want to directly connect to the device, so we are setting the autoConnect
 		// parameter to false.
-		gatt = device.connectGatt(context, false, executor);
+		gatt = device.connectGatt(context, autoReconnect, executor);
 		Log.d(TAG, "Trying to create a new connection.");
 		deviceAddress = address;
 		connectionState = STATE_CONNECTING;
 		return true;
+	}
+
+	public boolean connect(Context context, String address) {
+		return connect(context, address, false);
 	}
 
 	/**
@@ -177,11 +188,17 @@ public class BleManager implements BleExecutorListener {
 		if (newState == BluetoothProfile.STATE_CONNECTED) {
 			connectionState = STATE_CONNECTED;
 			Log.i(TAG, "Connected to GATT server.");
-			// Attempts to discover services after successful connection.
-			Log.i(TAG, "Attempting to start service discovery:" + gatt.discoverServices());
-
 			if (serviceListener != null)
 				serviceListener.onConnected(deviceAddress);
+			// fix: check device's service is discovered
+			// author: thanhle
+			if (gatt.getService(UUID.fromString(TiDeviceInfoSerivce.UUID_SERVICE)) == null) {
+				// Attempts to discover services after successful connection.
+				Log.i(TAG, "Attempting to start service discovery:" + gatt.discoverServices());
+			} else {
+				// device is discovered, call onServiceDiscovered callback
+				serviceListener.onServiceDiscovered(gatt.getDevice().getAddress());
+			}
 		} else if (newState == BluetoothProfile.STATE_DISCONNECTED) {
 			connectionState = STATE_DISCONNECTED;
 			Log.i(TAG, "Disconnected from GATT server.");

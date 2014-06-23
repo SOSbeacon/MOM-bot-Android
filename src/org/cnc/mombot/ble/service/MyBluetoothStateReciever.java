@@ -19,7 +19,6 @@ public class MyBluetoothStateReciever extends BroadcastReceiver implements Servi
 
 	@Override
 	public void onReceive(Context context, Intent intent) {
-		Log.i("MyBluetoothStateReciever", context.getPackageName() + " bluetooth state change");
 		this.context = context;
 		if (!AppConfig.ENABLE_RECORD_SERVICE)
 			return;
@@ -27,10 +26,12 @@ public class MyBluetoothStateReciever extends BroadcastReceiver implements Servi
 		final BluetoothAdapter adapter = BleUtils.getBluetoothAdapter(context);
 		final Intent gattServiceIntent = new Intent(context, MyBleSensorsRecordService.class);
 		if (adapter != null && adapter.isEnabled()) {
-			Log.i("MyBluetoothStateReciever", "start service");
+			Log.i("MyBluetoothStateReciever", context.getPackageName() + " bluetooth state change turn on");
 			context.startService(gattServiceIntent);
 		} else {
-			context.stopService(gattServiceIntent);
+			Log.i("MyBluetoothStateReciever", context.getPackageName() + " bluetooth state change turn off");
+			gattServiceIntent.putExtra(MyBleSensorsRecordService.EXTRA_COMMAND, MyBleSensorsRecordService.COMMAND_STOP);
+			context.startService(gattServiceIntent);
 		}
 	}
 

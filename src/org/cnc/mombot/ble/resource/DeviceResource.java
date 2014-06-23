@@ -13,10 +13,14 @@ import android.text.TextUtils;
 public class DeviceResource implements BaseResource {
 	public static final int STATUS_CONNECTED = 1;
 	public static final int STATUS_DISCONNECTED = 0;
+	public static final int STATUS_CONNECTING = 2;
+	public static final int STATUS_RECONNECT = 3;
+	public static final int STATUS_ERROR = 4;
 	public int _id;
 	public String name, address, code, manufacturer, group, location, locationType, note;
 	public int status;
 	public Date batteryDate;
+	public String doorStatus = "waiting...";
 
 	@Override
 	public ContentValues prepareContentValue() {

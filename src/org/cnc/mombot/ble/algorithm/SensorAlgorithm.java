@@ -22,6 +22,7 @@ import android.hardware.Sensor;
  * 
  */
 public abstract class SensorAlgorithm {
+	protected static final int SENSOR_DURATION = 20; // 20 milisecond
 	protected final SensorAlgorithmInterface service;
 	/**
 	 * Sync-token for syncing read/write to sensor-data from sensor manager and fusion algorithm
@@ -83,5 +84,11 @@ public abstract class SensorAlgorithm {
 	}
 
 	public void update(String deviceAddress, String sensorUUID, float[] values) {
+	}
+
+	public void enableSensor(String deviceAddress) {
+	}
+
+	public void onDeviceDisconnect(String deviceAddress) {
 	}
 }

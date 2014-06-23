@@ -62,5 +62,6 @@ public class DbContract {
 		public static final String SERVICE_UUID = "service_uuid";
 		public static final String DATA = "data_recorded"; 
 		public static final String TIME_SAVED = "time_record";
+		public static final String SYNCED = "synced";
 	}
 }

@@ -55,7 +55,7 @@ public class SensorLogActivity extends BleServiceBindingActivity implements Sens
 		graphView.getGraphViewStyle().setVerticalLabelsColor(Color.BLACK);
 		graphView.getGraphViewStyle().setNumVerticalLabels(10);
 		graphView.getGraphViewStyle().setVerticalLabelsWidth(100);
-		graphView.setManualYAxisBounds(1, -1);
+		graphView.setManualYAxisBounds(360, -360);
 		graphView.addSeries(seriesX);
 		graphView.addSeries(seriesY);
 		graphView.addSeries(seriesZ);
@@ -106,13 +106,16 @@ public class SensorLogActivity extends BleServiceBindingActivity implements Sens
 	GraphViewData[] dataY = new GraphViewData[MAX_SAMPLING];
 	GraphViewData[] dataZ = new GraphViewData[MAX_SAMPLING];
 
+	private float azimuth = 0f;
 	@Override
 	public void onOrientation(String deviceAddress, float[] values) {
-		dataValue[count] = new GraphViewData(count, Math.sqrt(values[0] * values[0] + values[1] * values[1] + values[2]
-				* values[2]));
-		dataX[count] = new GraphViewData(count, values[0]);
-		dataY[count] = new GraphViewData(count, values[1]);
-		dataZ[count] = new GraphViewData(count, values[2]);
+		azimuth = (float) Math.toDegrees(values[0]); // orientation
+		//azimuth = (azimuth + 360) % 360;
+		dataValue[count] = new GraphViewData(count, azimuth);
+		dataX[count] = new GraphViewData(count, (float) Math.toDegrees(values[0]));
+		dataY[count] = new GraphViewData(count, (float) Math.toDegrees(values[1]));
+		dataZ[count] = new GraphViewData(count, (float) Math.toDegrees(values[2]));
+		Log.d("abc","dataX[count]: " + dataX[count].valueY + " dataY[count]: " + dataY[count].valueY + " dataZ[count]: " + dataZ[count].valueY);
 		count++;
 		if (count == MAX_SAMPLING) {
 			count = 0;
@@ -120,7 +123,7 @@ public class SensorLogActivity extends BleServiceBindingActivity implements Sens
 			seriesX.resetData(dataX);
 			seriesY.resetData(dataY);
 			seriesZ.resetData(dataZ);
-			phantich(dataZ);
+			// phantich(dataZ);
 		}
 	}
 
@@ -164,5 +167,9 @@ public class SensorLogActivity extends BleServiceBindingActivity implements Sens
 		} else {
 			showCenterToast("no change");
 		}
+	}
+
+	@Override
+	public void onSaveLog(String deviceAddress, String data) {
 	}
 }

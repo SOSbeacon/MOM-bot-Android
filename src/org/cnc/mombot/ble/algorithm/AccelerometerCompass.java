@@ -27,6 +27,8 @@ public class AccelerometerCompass extends SensorAlgorithm {
 	 */
 	private float[] accelerometerValues = new float[3];
 
+	// orientation angles from accel and magnet
+	private float[] accMagOrientation = new float[3];
 	/**
 	 * Initialises a new AccelerometerCompassProvider
 	 * 
@@ -40,26 +42,17 @@ public class AccelerometerCompass extends SensorAlgorithm {
 		// Add the compass and the accelerometer
 		TiRangeSensors<float[], Float> sensorAccelerometer = (TiRangeSensors<float[], Float>) TiSensors
 				.getSensor(TiAccelerometerSensor.UUID_SERVICE);
-		sensorAccelerometer.setPeriod(sensorAccelerometer.getMinPeriod());
+		sensorAccelerometer.setPeriod(SENSOR_DURATION);
 		service.enableSensor(deviceAddress, sensorAccelerometer, true);
 		service.updateSensor(deviceAddress, sensorAccelerometer);
 
 		// enable sensorMagnetometer
-		// TiRangeSensors<float[], Float> sensorMagnetometer = (TiRangeSensors<float[], Float>) TiSensors
-		// .getSensor(TiMagnetometerSensor.UUID_SERVICE);
-		// sensorMagnetometer.setPeriod(sensorMagnetometer.getMinPeriod());
-		// service.enableSensor(deviceAddress, sensorMagnetometer, true);
-		// service.updateSensor(deviceAddress, sensorMagnetometer);
-
-		// enable sensor Gyroscope
-		// TiRangeSensors<float[], Float> sensorGyro = (TiRangeSensors<float[], Float>) TiSensors
-		// .getSensor(TiGyroscopeSensor.UUID_SERVICE);
-		// sensorGyro.setPeriod(sensorGyro.getMinPeriod());
-		// service.enableSensor(deviceAddress, sensorGyro, true);
+		TiRangeSensors<float[], Float> sensorMagnetometer = (TiRangeSensors<float[], Float>) TiSensors
+				.getSensor(TiMagnetometerSensor.UUID_SERVICE);
+		sensorMagnetometer.setPeriod(SENSOR_DURATION);
+		service.enableSensor(deviceAddress, sensorMagnetometer, true);
+		service.updateSensor(deviceAddress, sensorMagnetometer);
 	}
-
-	// orientation angles from accel and magnet
-	private float[] accMagOrientation = new float[3];
 
 	@Override
 	public void update(String deviceAddress, String sensorUUID, float[] values) {
@@ -68,18 +61,22 @@ public class AccelerometerCompass extends SensorAlgorithm {
 		// that we received the proper event
 		if (sensorUUID.equals(TiMagnetometerSensor.UUID_SERVICE)) {
 			magnitudeValues = DataFilter.lowPass(values, magnitudeValues);
+			service.onOrientation(deviceAddress, magnitudeValues);
 		} else if (sensorUUID.equals(TiAccelerometerSensor.UUID_SERVICE)) {
 			accelerometerValues = DataFilter.lowPass(values, accelerometerValues);
-			service.onOrientation(deviceAddress, accelerometerValues);
 		} else if (sensorUUID.equals(TiGyroscopeSensor.UUID_SERVICE)) {
 		}
 		if (magnitudeValues != null && accelerometerValues != null) {
 			// Fuse accelerometer with compass
-			SensorManager.getRotationMatrix(currentOrientationRotationMatrix.matrix, null, accelerometerValues,
+
+			float R[] = new float[9];
+			float I[] = new float[9];
+			boolean success = SensorManager.getRotationMatrix(R, I, accelerometerValues,
 					magnitudeValues);
-			float[] orientation = new float[3];
-			SensorManager.getOrientation(currentOrientationRotationMatrix.matrix, orientation);
-			accMagOrientation = DataFilter.lowPass(orientation, accMagOrientation);
+			if (success) {
+				float orientation[] = new float[3];
+				SensorManager.getOrientation(R, orientation);
+			}
 		}
 	}
 }
